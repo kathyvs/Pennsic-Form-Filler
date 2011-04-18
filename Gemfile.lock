@@ -24,6 +24,10 @@ GEM
       activesupport (= 3.0.5)
       arel (~> 2.0.2)
       tzinfo (~> 0.3.23)
+    activerecord-jdbc-adapter (1.1.1)
+    activerecord-jdbcmysql-adapter (1.1.1)
+      activerecord-jdbc-adapter (= 1.1.1)
+      jdbc-mysql (~> 5.1.0)
     activeresource (3.0.5)
       activemodel (= 3.0.5)
       activesupport (= 3.0.5)
@@ -83,6 +87,8 @@ PLATFORMS
   java
 
 DEPENDENCIES
+  activerecord-jdbc-adapter
+  activerecord-jdbcmysql-adapter
   jdbc-mysql
   rails (= 3.0.5)
   rspec-rails
