@@ -1,0 +1,20 @@
+
+admin:
+  name: 'Admin'
+  id: 1
+  salt: 1001
+  is_admin: true
+  hashed_password: <%= Account.encrypt_password('admin_pwd', '1001') %>
+  
+pennsic:
+  id: 2
+  name: 'Pennsic'
+  salt: 2002
+  is_admin: false
+
+war_practice:
+  id: 3
+  name: 'War Practice'
+  salt: 3003
+  is_admin: false
+    

@@ -1,4 +1,6 @@
 FormFiller::Application.routes.draw do
+  resources :events
+
   resources :accounts
 
   # The priority is based upon order of creation:
