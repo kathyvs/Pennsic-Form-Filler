@@ -10,13 +10,41 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110411221759) do
+ActiveRecord::Schema.define(:version => 20110520034631) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
     t.string   "hashed_password"
     t.string   "salt"
     t.boolean  "is_admin",        :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "clients", :force => true do |t|
+    t.string   "society_name"
+    t.string   "legal_name"
+    t.string   "address_1"
+    t.string   "address_2"
+    t.string   "branch_name"
+    t.string   "phone_number"
+    t.date     "birth_date"
+    t.string   "email"
+    t.integer  "event_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "kingdom_id",   :default => 1
+  end
+
+  create_table "events", :force => true do |t|
+    t.string   "title"
+    t.integer  "account_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "kingdoms", :force => true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

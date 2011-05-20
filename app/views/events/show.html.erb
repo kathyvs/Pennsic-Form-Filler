@@ -5,11 +5,33 @@
   <%= @event.title %>
 </p>
 
+<table>
+  <thead>
+    <tr>
+      <th>Society name</th>
+      <th>Legal name</th>
+      <th>Forms</th>
+      <th/>
+    </tr>
+  </thead>
+  <tbody>
+    <% @event.clients.each do |client| %>
+      <tr>
+        <td><%= client.society_name %> </td>
+	<td><%= client.legal_name %></td>
+	<td></td>
+        <td></td>
+      </tr>
+    <% end %>
+  </tbody>
+<table>
+
+<% if @account.admin? %>
 <p>
   <b>Account:</b>
-  <%= @event.account %>
+  <%= @event.account.name %>
 </p>
+<% end %>
 
-
-<%= link_to 'Edit', edit_event_path(@event) %> |
-<%= link_to 'Back', events_path %>
+<p><%= link_to 'New Client', new_client_path(:id => @event.id) %></p>
+<p><%= link_to 'Back', events_path %></p>

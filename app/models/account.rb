@@ -2,6 +2,9 @@
 # Contains an account for this sysytem. Accounts as associated with projects, not people.
 #
 class Account < ActiveRecord::Base
+
+  has_many :events
+
   validates :name, :presence => true, :uniqueness => true
   validates :password, :confirmation => true
   attr_reader :password

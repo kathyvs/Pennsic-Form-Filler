@@ -2,7 +2,8 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.xml
   def index
-    @events = Event.all
+    account_id = params.has_key?('id') ? params['id'] : @account.id
+    @events = Event.find_all_by_account_id(account_id)
 
     respond_to do |format|
       format.html # index.html.erb

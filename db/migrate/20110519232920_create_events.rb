@@ -2,7 +2,7 @@ class CreateEvents < ActiveRecord::Migration
   def self.up
     create_table :events do |t|
       t.string :title
-      t.int :account_id
+      t.integer :account_id
 
       t.timestamps
     end

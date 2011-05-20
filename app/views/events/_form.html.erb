@@ -16,8 +16,8 @@
     <%= f.text_field :title %>
   </div>
   <div class="field">
-    <%= f.label :account %><br />
-    <%= f.text_field :account %>
+    <%= f.label :account_id %><br />
+    <%= f.collection_select :account_id, Account.all, :id, :name %>
   </div>
   <div class="actions">
     <%= f.submit %>

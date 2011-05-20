@@ -1,4 +1,6 @@
 FormFiller::Application.routes.draw do
+  resources :clients
+
   resources :events
 
   resources :accounts
