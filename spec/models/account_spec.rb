@@ -9,7 +9,7 @@ describe Account do
     end
 
     [{:name => 'Admin', :password => 'admin_pwd'},
-     {:name => 'pennsic', :password => 'pennsic_pwd', :expected => 'Pennsic'},
+     {:name => 'Pennsic', :password => 'pennsic_pwd', :expected => 'Pennsic'},
      {:name => 'War Practice', :password => 'wp_pwd'}].each do |a|
       it "should be able to login #{a[:name]} with correct password" do
         account = Account.login(a[:name], a[:password])

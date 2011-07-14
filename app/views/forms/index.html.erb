@@ -1,0 +1,33 @@
+<h1>Listing forms</h1>
+
+<table>
+  <tr>
+    <th>Type</th>
+    <th>Action type</th>
+    <th>Action sub type</th>
+    <th>Herald</th>
+    <th>Heralds email</th>
+    <th>Client</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @forms.each do |form| %>
+  <tr>
+    <td><%= form.type %></td>
+    <td><%= form.action_type %></td>
+    <td><%= form.action_sub_type %></td>
+    <td><%= form.herald %></td>
+    <td><%= form.heralds_email %></td>
+    <td><%= form.client_id %></td>
+    <td><%= link_to 'Show', form %></td>
+    <td><%= link_to 'Edit', edit_form_path(form) %></td>
+    <td><%= link_to 'Destroy', form, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Form', new_form_path %>

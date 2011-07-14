@@ -1,5 +1,6 @@
 source 'http://rubygems.org'
 
+gem 'rake', '0.8.7'
 gem 'rails', '3.0.5'
 
 # Bundle edge Rails instead:
@@ -12,7 +13,7 @@ gem "activerecord-jdbc-adapter"
 gem "activerecord-jdbcmysql-adapter"
 
 # Use unicorn as the web server
-# gem 'unicorn'
+# gem 'unicorn'R
 
 # Deploy with Capistrano
 # gem 'capistrano'
@@ -31,8 +32,10 @@ gem 'ruby-debug'
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
 group :development, :test do
+  gem 'jdbc-sqlite3'
+  gem 'activerecord-jdbcsqlite3-adapter'
   gem 'rspec-rails', '~> 2.5'
   gem 'rack'
-  gem 'ruby-debug'
+  #gem 'ruby-debug'
 #   gem 'webrat'
 end

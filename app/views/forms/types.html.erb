@@ -1,0 +1,8 @@
+<h1>Select form type</h1>
+
+<%= form_tag(new_form_path, :method => :get) do %>
+
+  <%= hidden_field_tag 'client', @client %>
+  <%= select_tag 'type', options_for_types(@types) %>
+  <%= submit_tag 'Create Form' %>
+<% end %>

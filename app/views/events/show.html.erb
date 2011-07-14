@@ -11,7 +11,8 @@
       <th>Society name</th>
       <th>Legal name</th>
       <th>Forms</th>
-      <th/>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
     </tr>
   </thead>
   <tbody>
@@ -19,17 +20,27 @@
       <tr>
         <td><%= client.society_name %> </td>
 	<td><%= client.legal_name %></td>
-	<td></td>
-        <td></td>
+	<td><ul class="form_list">
+              <% client.forms.each do |cl_form| %>
+              <li><%=link_to cl_form.type, edit_form_path(cl_form) %></li>
+              <% end %>
+              <li><%= render(:partial => 'forms/types',
+                             :locals => { :client => client,
+                                          :types => @types }) %></li>
+            </ul>
+            
+        </td>
+        <td><%=link_to 'Show', client %></td>
+        <td><%=link_to 'Edit', edit_client_path(client) %></td>
       </tr>
     <% end %>
   </tbody>
-<table>
+</table>
 
 <% if @account.admin? %>
 <p>
   <b>Account:</b>
-  <%= @event.account.name %>
+  <%= link_to @event.account.name, @event.account %>
 </p>
 <% end %>
 

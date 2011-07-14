@@ -15,6 +15,7 @@ class EventsController < ApplicationController
   # GET /events/1.xml
   def show
     @event = Event.find(params[:id])
+    @types = Form.types
 
     respond_to do |format|
       format.html # show.html.erb
@@ -26,7 +27,6 @@ class EventsController < ApplicationController
   # GET /events/new.xml
   def new
     @event = Event.new
-
     respond_to do |format|
       format.html # new.html.erb
       format.xml  { render :xml => @event }

@@ -210,5 +210,5 @@ describe AccountsController do
     end
   end
 
-endtmp
+end
 

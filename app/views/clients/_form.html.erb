@@ -1,0 +1,56 @@
+<%= form_for(@client) do |f| %>
+  <% if @client.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@client.errors.count, "error") %> prohibited this client from being saved:</h2>
+
+      <ul>
+      <% @client.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <%= f.hidden_field :event_id %>
+  <div class="field">
+    <%= f.label :kingdom_id %><br />
+    <%= f.collection_select :kingdom_id, Kingdom.all, :id, :name %>
+  </div>
+  <div class="field">
+    <%= f.label :society_name %><br />
+    <%= f.text_field :society_name %>
+  </div>
+  <div class="field">
+    <%= f.label :legal_name %><br />
+    <%= f.text_field :legal_name %>
+  </div>
+  <div class="field">
+    <%= f.label :address_1 %><br />
+    <%= f.text_field :address_1 %>
+  </div>
+  <div class="field">
+    <%= f.label :address_2 %><br />
+    <%= f.text_field :address_2 %>
+  </div>
+  <div class="field">
+    <%= f.label :branch_name %><br />
+    <%= f.text_field :branch_name %>
+  </div>
+  <div class="field">
+    <%= f.label :phone_number %><br />
+    <%= f.phone_field :phone_number %>
+  </div>
+  <div class="field">
+    <%= f.label :birth_date %><br />
+    <%= f.date_select :birth_date, :start_year => 1930, 
+                                   :end_year => Time.now.year,
+                                   :default => 20.years.ago
+    %>
+  </div>
+  <div class="field">
+    <%= f.label :email %><br />
+    <%= f.email_field :email %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

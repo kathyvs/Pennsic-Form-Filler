@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Type:</b>
+  <%= @form.type %>
+</p>
+
+<p>
+  <b>Action type:</b>
+  <%= @form.action_type %>
+</p>
+
+<p>
+  <b>Action sub type:</b>
+  <%= @form.action_sub_type %>
+</p>
+
+<p>
+  <b>Herald:</b>
+  <%= @form.herald %>
+</p>
+
+<p>
+  <b>Heralds email:</b>
+  <%= @form.heralds_email %>
+</p>
+
+<p>
+  <b>Client:</b>
+  <%= @form.client_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_form_path(@form) %> |
+<%= link_to 'Back', forms_path %>
