@@ -1,13 +1,14 @@
 class ClientsController < ApplicationController
+
+  before_filter :require_event
+
+  def client_url
+    event_client_url(@client, :event_id => @event)
+  end
   # GET /clients
   # GET /clients.xml
   def index
-    @clients = Client.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @clients }
-    end
+    redirect_to @event
   end
 
   # GET /clients/1
@@ -44,7 +45,7 @@ class ClientsController < ApplicationController
 
     respond_to do |format|
       if @client.save
-        format.html { redirect_to(@client, :notice => 'Client was successfully created.') }
+        format.html { redirect_to(client_url, :notice => 'Client was successfully created.') }
         format.xml  { render :xml => @client, :status => :created, :location => @client }
       else
         format.html { render :action => "new" }
@@ -60,7 +61,7 @@ class ClientsController < ApplicationController
 
     respond_to do |format|
       if @client.update_attributes(params[:client])
-        format.html { redirect_to(@client, :notice => 'Client was successfully updated.') }
+        format.html { redirect_to(client_url, :notice => 'Client was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

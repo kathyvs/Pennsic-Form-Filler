@@ -1,4 +1,4 @@
-<h1>Listing accounts</h1>
+<% @title = 'All accounts' %>
 
 <table>
   <tr>
@@ -12,7 +12,7 @@
 <% @accounts.each do |account| %>
   <tr>
     <td><%= account.name %></td>
-    <td><%= link_to 'Events', events_url, :id => account.id %></td>
+    <td><%= link_to 'Events', events_url(:id => account.id) %></td>
     <td><%= link_to 'Show', account %></td>
     <td><%= link_to 'Edit', edit_account_path(account) %></td>
     <td><%= link_to 'Destroy', account, :confirm => 'Are you sure?', :method => :delete %></td>
@@ -20,6 +20,4 @@
 <% end %>
 </table>
 
-<br />
-
-<%= link_to 'New Account', new_account_path %>
+<% @links = [link_to 'New Account', new_account_path] %>

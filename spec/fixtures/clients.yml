@@ -1,0 +1,14 @@
+
+anne:
+  id: 1
+  society_name: Anne Black
+  legal_name: Ana Smith
+  kingdom_id: 2
+  event_id: 2
+
+william:
+  id: 23
+  society_name: William Archer
+  legal_name: William Jones
+  kingdom_id: 2
+  event_id: 1

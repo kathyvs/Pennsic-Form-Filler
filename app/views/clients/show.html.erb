@@ -1,28 +1,59 @@
 <p id="notice"><%= notice %></p>
+<% @title = @client.society_name %>
+<div class="form-info">
 
-<p>
-  <b>Society name:</b>
-  <%= @client.society_name %>
-</p>
+<% if @client.has_forms? %>
+<table class="form-table">
+  <caption>Forms</caption>
+  <thead>
+    <th>Type</th>
+    <th>Name</th>
+    <th>Options</th>
+  </thead>
+  <tbody>
+    <% @client.forms.each do |f| %>
+    <tr>
+      <td><%= f.type_name %></td>
+      <td><%= f.client.society_name %> </td>
+      <td><%= link_to 'Show', form_path(f) %>
+          <%= link_to 'Print', form_path(f, :format => 'pdf') %> 
+          <%= link_to 'Edit', edit_form_path(f) %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>
 
+<%= render(:partial => 'forms/types',
+           :locals => { :event => @event,
+                        :client => @client }) %>
+</div>
+
+<div class="client-info">
 <p>
   <b>Legal name:</b>
   <%= @client.legal_name %>
 </p>
 
 <p>
-  <b>Address 1:</b>
-  <%= @client.address_1 %>
-</p>
-
-<p>
-  <b>Address 2:</b>
+  <b>Address:</b>
+  <%= @client.address_1 %><br/>
   <%= @client.address_2 %>
 </p>
 
 <p>
   <b>Branch name:</b>
   <%= @client.branch_name %>
+</p>
+
+<p>
+  <b>Kingdom:</b>
+  <%= @client.kingdom %>
+</p>
+
+<p>
+  <b>Gender of submitter:</b>
+  <%= @client.gender %>
 </p>
 
 <p>
@@ -40,6 +71,11 @@
   <%= @client.email %>
 </p>
 
+</div>
 
-<%= link_to 'Edit', edit_client_path(@client) %> |
-<%= link_to 'Back', @client.event %>
+
+
+<% @links = [link_to('Edit', edit_client_path(@client)),
+             link_to('Back to client list', @client.event)]
+%>
+

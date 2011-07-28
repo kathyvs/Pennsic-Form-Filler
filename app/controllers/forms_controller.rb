@@ -1,5 +1,7 @@
 class FormsController < ApplicationController
 
+  before_filter :require_event, :require_client
+
   # GET /forms/1
   # GET /forms/1.xml
   def show
@@ -8,42 +10,44 @@ class FormsController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @form }
+      format.pdf { send_data @form.pdf_data, :type => :pdf }
     end
   end
 
   # GET /forms/new
-  # GET /forms/new.xml
+  # GET /client/:client_id/forms/new.xml
   def new
-    if (params[:client]) 
-      if (params[:type])
-        @form = Form.new_with_type(params)
+    if params[:type]
+      if @form = Form.create(params.slice(:type, :client_id))
         respond_to do |format|
-          format.html # new.html.erb
+          format.text { render :text => @form.inspect }
+          format.html # new.html.erb 
           format.xml  { render :xml => @form }
         end
+        return
       else
-        @client = params[:client]
-        @types = Form.types
-        render :action => 'types'
+        @error = "Unknown type: #{params[:type]} from params #{params.inspect}"
       end
-    else 
-      render :text => 'Missing client', :status => 400
     end
+    @client = params[:client_id]
+    @types = Form.types
+    render :action => 'types'
   end
 
-  # GET /forms/1/edit
+  # GET /client/:client_id/forms/1/edit
   def edit
     @form = Form.find(params[:id])
   end
 
-  # POST /forms
-  # POST /forms.xml
+  # POST /client/:client_id/forms
+  # POST /client/:client_id/forms.xml
   def create
-    @form = Form.new(params[:form])
-
+    @form = Form.create(params[:form]) 
+    
     respond_to do |format|
       if @form.save
-        format.html { redirect_to(@form, :notice => 'Form was successfully created.') }
+        format.html { redirect_to(event_client_path(@client, :event_id => @event), 
+                                  :notice => 'Form was successfully saved.') }
         format.xml  { render :xml => @form, :status => :created, :location => @form }
       else
         format.html { render :action => "new" }

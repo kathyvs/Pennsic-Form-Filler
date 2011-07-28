@@ -1,4 +1,4 @@
-<%= form_for(@form) do |f| %>
+<%= form_for(@form, :as => :form, :url => event_client_forms_path(:event_id => @event, :client_id => @client)) do |f| %>
   <% if @form.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@form.errors.count, "error") %> prohibited this form from being saved:</h2>
@@ -11,31 +11,14 @@
     </div>
   <% end %>
 
+  <%= f.hidden_field :type %>
   <div class="field">
-    <%= f.label :type %><br />
-    <%= f.text_field :type %>
+    <%= f.label :action_type %>
+    <%= f.collection_select :action_type, pdf_collection(:action_type, @form.pdf), :first, :last %>
   </div>
-  <div class="field">
-    <%= f.label :action_type %><br />
-    <%= f.text_field :action_type %>
-  </div>
-  <div class="field">
-    <%= f.label :action_sub_type %><br />
-    <%= f.text_field :action_sub_type %>
-  </div>
-  <div class="field">
-    <%= f.label :herald %><br />
-    <%= f.text_field :herald %>
-  </div>
-  <div class="field">
-    <%= f.label :heralds_email %><br />
-    <%= f.text_field :heralds_email %>
-  </div>
-  <div class="field">
-    <%= f.label :client_id %><br />
-    <%= f.text_field :client_id %>
-  </div>
+
+
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit "Save" %>
   </div>
 <% end %>

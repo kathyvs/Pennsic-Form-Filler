@@ -1,18 +1,14 @@
+<% @title = "#{@event.title} Clients" %>
 <p id="notice"><%= notice %></p>
-
-<p>
-  <b>Title:</b>
-  <%= @event.title %>
-</p>
 
 <table>
   <thead>
     <tr>
       <th>Society name</th>
       <th>Legal name</th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
       <th>Forms</th>
-      <th>&nbsp;</th>
-      <th>&nbsp;</th>
     </tr>
   </thead>
   <tbody>
@@ -20,18 +16,19 @@
       <tr>
         <td><%= client.society_name %> </td>
 	<td><%= client.legal_name %></td>
+        <td><%=link_to 'Show', event_client_path(client, :event_id => @event) %></td>
+        <td><%=link_to 'Edit', edit_event_client_path(client, :event_id => @event) %></td>
 	<td><ul class="form_list">
               <% client.forms.each do |cl_form| %>
-              <li><%=link_to cl_form.type, edit_form_path(cl_form) %></li>
+              <li><%=link_to cl_form.type_name, event_client_form_path(cl_form, :event_id => @event, :client_id => client) %></li>
               <% end %>
               <li><%= render(:partial => 'forms/types',
-                             :locals => { :client => client,
+                             :locals => { :event => @event,
+                                          :client => client,
                                           :types => @types }) %></li>
             </ul>
             
         </td>
-        <td><%=link_to 'Show', client %></td>
-        <td><%=link_to 'Edit', edit_client_path(client) %></td>
       </tr>
     <% end %>
   </tbody>
@@ -44,5 +41,7 @@
 </p>
 <% end %>
 
-<p><%= link_to 'New Client', new_client_path(:id => @event.id) %></p>
-<p><%= link_to 'Back', events_path %></p>
+<%
+  @links = [link_to('New Client', new_event_client_path(:event_id => @event)),
+            link_to('Back', events_path)]
+%>

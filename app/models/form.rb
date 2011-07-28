@@ -1,34 +1,51 @@
+require 'pdf_forms'
+
 class Form < ActiveRecord::Base
   belongs_to :client
-  @@types = {}
+  @@cls_types = {}.with_indifferent_access
 
-  cattr_reader :types
-  def self.add_type(type, cls) 
-    @@types[type] = cls
+  def self.types
+    @@cls_types
   end
 
-  def self.new_with_type(type) 
-    cls = @@types[type]
-    cls ? cls.new : nil
+  def self.add_type(cls) 
+    @@cls_types[cls.label.to_s] = cls
+    @@cls_types[cls.name] = cls
   end
 
-  @@pdf_keys = {
-    :address_1 => 'Address_1',
-    :address_2 => 'Address_2',
-    :birth_date => 'DOB',
-    :branch_name => 'Branch_Name',
-    :email => 'Email',
-    :kingdom => 'Kingdom',
-    :legal_name => 'Legal_Name',
-    :society_name => 'Society_Name'
-  }
+  def self.display_name
+    label.to_s.capitalize
+  end
 
+  def self.create(params)
+    logger.warn("types: #{types.inspect}");
+    cls = types[params[:type]]
+    cls ? cls.new(params) : nil
+  end
 
+  def type_name
+    self.class.display_name
+  end
+
+  def pdf
+    self.class.pdf_class.new
+  end
+
+  def pdf_data
+    pdf.create_pdf(self)
+  end
 end
-
-class NameForm < Form
-  Form.add_type(:name, self)
-end
-
 
   
+class NameForm < Form
+  @@label = :name
+  @@pdf_class = PDFForms::IndividualName
+  cattr_reader :label, :pdf_class
+
+  Form.add_type(self)
+
+  @pdf = nil
+
+  
+end
+

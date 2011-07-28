@@ -2,9 +2,19 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.xml
   def index
-    account_id = params.has_key?('id') ? params['id'] : @account.id
-    @events = Event.find_all_by_account_id(account_id)
-
+    if @account.admin?
+      if params.has_key?(:id)
+        @events_for = Account.find(params[:id])
+        response_not_found unless @events_for
+        @events = Event.find_all_by_account_id(@events_for.id)
+      else
+        @events_for = nil
+        @events = Event.all
+      end
+    else
+      @events_for = @account
+      @events = Event.find_all_by_account_id(@account.id)
+    end
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @events }
@@ -14,7 +24,12 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.xml
   def show
-    @event = Event.find(params[:id])
+    if (@account.admin?)
+      @event = Event.find(params[:id])
+    else 
+      @event = Event.find_with_account(params[:id], @account)
+    end
+    respond_not_found unless @event
     @types = Form.types
 
     respond_to do |format|

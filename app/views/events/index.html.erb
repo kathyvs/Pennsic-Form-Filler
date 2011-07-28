@@ -1,5 +1,9 @@
-<h1>Listing events</h1>
-
+<% if (@events_for)
+     @title = "Events for #{@events_for.name}"
+   else
+     @title = "All Events"
+   end
+%>
 <table>
   <tr>
     <th>Title</th>
@@ -26,4 +30,6 @@
 
 <br />
 
-<%= link_to 'New Event', new_event_path if @account.admin? %>
+<% @links = []
+   @links << link_to('New Event', new_event_path) if @account.admin?
+%>

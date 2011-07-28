@@ -1,6 +1,6 @@
-<h1>Editing client</h1>
+<h1>Editing <%= @client.society_name %></h1>
 
 <%= render 'form' %>
 
-<%= link_to 'Show', @client %> |
-<%= link_to 'Back', clients_path %>
+<%= link_to 'Show', event_client_path(@client, :event_id => @event) %> |
+<%= link_to 'Back', event_path(@event) %>

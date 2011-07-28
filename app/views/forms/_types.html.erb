@@ -1,6 +1,5 @@
-<%= form_tag(new_client_form_path(:client_id => client), :method => :get) do %>
+<%= form_tag(new_event_client_form_path(:event_id => event, :client_id => client), :method => :get) do %>
 
-  <%= hidden_field_tag 'client', client.id %>
-  <%= select_tag 'type', options_for_select(types.keys) %>
+  <%= select_tag 'type', options_for_select(form_types) %>
   <%= submit_tag 'New Form' %>
 <% end %>
