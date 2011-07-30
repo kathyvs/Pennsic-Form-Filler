@@ -3,14 +3,14 @@ class FormsController < ApplicationController
   before_filter :require_event, :require_client
 
   # GET /forms/1
-  # GET /forms/1.xml
+  # GET /forms/1.pdf
   def show
     @form = Form.find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @form }
-      format.pdf { send_data @form.pdf_data, :type => :pdf }
+      format.pdf { send_data @form.pdf_data, :type => :pdf, :filename => @form.file_name }
     end
   end
 
@@ -18,7 +18,9 @@ class FormsController < ApplicationController
   # GET /client/:client_id/forms/new.xml
   def new
     if params[:type]
-      if @form = Form.create(params.slice(:type, :client_id))
+      if @form = Form.create(params.slice(:type))
+        @form.client = @client
+        @form.date_submitted = Date.today
         respond_to do |format|
           format.text { render :text => @form.inspect }
           format.html # new.html.erb 
@@ -39,8 +41,8 @@ class FormsController < ApplicationController
     @form = Form.find(params[:id])
   end
 
-  # POST /client/:client_id/forms
-  # POST /client/:client_id/forms.xml
+  # POST /event/:event_id/client/:client_id/forms
+  # POST /event/:event_id/client/:client_id/forms.xml
   def create
     @form = Form.create(params[:form]) 
     
@@ -56,14 +58,15 @@ class FormsController < ApplicationController
     end
   end
 
-  # PUT /forms/1
-  # PUT /forms/1.xml
+  # PUT /event/:event_id/client/:client_id/forms/1
+  # PUT /event/:event_id/client/:client_id/forms/1.xml
   def update
     @form = Form.find(params[:id])
 
     respond_to do |format|
       if @form.update_attributes(params[:form])
-        format.html { redirect_to(@form, :notice => 'Form was successfully updated.') }
+        format.html { redirect_to(event_client_path(@client, :event_id => @event), 
+                                  :notice => 'Form was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -72,8 +75,8 @@ class FormsController < ApplicationController
     end
   end
 
-  # DELETE /forms/1
-  # DELETE /forms/1.xml
+  # DELETE /event/:event_id/client/:client_id/forms/1
+  # DELETE /event/:event_id/client/:client_id/forms/1.xml
   def destroy
     @form = Form.find(params[:id])
     @form.destroy

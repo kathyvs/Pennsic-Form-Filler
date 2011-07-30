@@ -26,7 +26,7 @@ class ClientsController < ApplicationController
   # GET /clients/new.xml
   def new
     @client = Client.new
-    @client.event_id = params['id']
+    @client.event_id = @event.id
     respond_to do |format|
       format.html # new.html.erb
       format.xml  { render :xml => @client }

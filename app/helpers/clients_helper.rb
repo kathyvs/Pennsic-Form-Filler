@@ -28,4 +28,8 @@ module ClientsHelper
     new_event_client_path(:event_id => @event)
   end
 
+  def client_needs_review_class(client)
+    (client.forms.collect {|f| needs_review_class(f)}).first
+  end
+
 end

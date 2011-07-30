@@ -6,21 +6,48 @@ module FormsHelper
   end
 
   @@name_info = {
-    :action_type => {
-      :display => {},
-      :sort_key => with_default('b')
+    :authentic_flags => {
+      :display => {'LangCulture' => 'Language and/or culture',
+                   'Period' => 'Time period'},
+      :sort_key => with_default('')
     },
     :gender => {
       :display => {},
-      :sort_key => with_default('')
+      :sort_key => with_default('', 'Male' => '1', 'Female' => '2')
+    },
+    :gender_name => {
+      :display => {'DontCare' => "Don't care"},
+      :sort_key => with_default('', 'Male' => '1', 'Female' => '2', 'DontCare' => '3')
     },
     :kingdom => {
       :display => {},
+      :sort_key => with_default('', "\303\206thelmearc" => '0')
+    },
+    :preferred_changes_type => {
+      :display => {'LangCulture' => 'Language and/or culture'},
       :sort_key => with_default('')
+    },
+    :submission_type => {
+      :display => {'HouseHold' => 'Household'},
+      :sort_key => with_default('', 'Primary' => '1')
     }
+      
   }
 
-  puts @@name_info
+  def form_form_path(form)
+    if (form.id)
+       event_client_form_path(form, :event_id => @event, :client_id => @client)
+    else
+       event_client_forms_path(:event_id => @event, :client_id => @client)
+    end
+  end
+
+  TYPE_NAMES = {
+    :name => 'Name Type'
+  }
+  def submission_type_name(form)
+    TYPE_NAMES[form.class.label]
+  end
 
   def form_types
     result = {}
@@ -50,16 +77,20 @@ module FormsHelper
   #private
 
   def display_info(field)
-    @@name_info[field][:display]
+    @@name_info.has_key?(field) ? @@name_info[field][:display] : {}
   end
 
   def sort_info(field)
-    @@name_info[field][:sort_key]
+    if @@name_info.has_key?(field)
+      @@name_info[field][:sort_key]
+    else
+      Hash.new('')
+    end
   end
 
   def display_name(field, value)
     field_names = display_info(field)
-    field_names.has_key?(value) ? field_names[value] : value
+    (field_names and field_names.has_key?(value)) ? field_names[value] : value
   end
 
   def sort_key(field, value)
@@ -70,5 +101,9 @@ module FormsHelper
     opts[:client_id] = @client
     opts[:event_id] = @event
     send(method, form, opts)
+  end
+
+  def needs_review_class(form)
+    form.needs_review ? 'needs_review' : nil
   end
 end

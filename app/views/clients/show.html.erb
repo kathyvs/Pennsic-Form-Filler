@@ -13,7 +13,7 @@
   <tbody>
     <% @client.forms.each do |f| %>
     <tr>
-      <td><%= f.type_name %></td>
+      <td class="<%= needs_review_class(f) %>"><%= f.type_name %></td>
       <td><%= f.client.society_name %> </td>
       <td><%= link_to 'Show', form_path(f) %>
           <%= link_to 'Print', form_path(f, :format => 'pdf') %> 

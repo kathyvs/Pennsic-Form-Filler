@@ -1,5 +1,5 @@
-<h1>New form</h1>
+<% @title = "New #{@form.class.display_name} form for #{@client.society_name}" %>
 
 <p><%= render 'form' %></p>
 
-<%= link_to 'Back', event_client_forms_path(:client_id => @form.client_id, :event_id => @event) %>
+<% @links = [link_to 'Back', event_client_path(@form.client, :event_id => @event)] %>

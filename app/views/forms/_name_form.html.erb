@@ -1,17 +1,60 @@
 
   <div class="field">
-    <%= f.label :action_sub_type %>
-    <%= f.text_field :action_sub_type %>
+    <%= f.label :submitted_name %>
+    <%= f.text_field :submitted_name %>
+    (if not society name)
   </div>
+
   <div class="field">
-    <%= f.label :herald %>
-    <%= f.text_field :herald %>
+    <%= f.label :documentation %>
+    <%= f.text_area :documentation, :rows => 9, :cols => 64 %>
   </div>
+
   <div class="field">
-    <%= f.label :heralds_email %>
-    <%= f.text_field :heralds_email %>
+    <%= f.label :doc_upload, 'Additional docs' %>
+    <%= f.file_field :doc_upload, :accept => 'application/pdf' %> (PDF only)
   </div>
+
   <div class="field">
-    <%= f.label :client_id %>
-    <%= f.text_field :client_id %>
+    <%= f.label :authentic_text, 'Authentic for' %>
+    <%= f.text_field :authentic_text %>
+    <%= f.collection_select :authentic_flags, pdf_collection(:authentic_flags), :first, :last %>
   </div>
+
+  <div class="field label_after">
+    <%= f.check_box :no_changes_major_flag %>
+    <%= f.label :no_changes_major_flag, "Disallow major changes", :class => 'additional' %>
+  </div>
+
+  <div class="field label_after">
+    <%= f.check_box :no_changes_minor_flag %>
+    <%= f.label :no_changes_minor_flag, "Disallow minor changes", :class => 'additional' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :preferred_changes_type, 'Prefers change in' %>
+    <%= f.collection_select :preferred_changes_type, pdf_collection(:preferred_changes_type), :first, :last %>,
+    <%= f.label :preferred_changes_text, 'Notes', :class => 'additional' %>
+    <%= f.text_field :preferred_changes_text %>
+  </div>
+
+  <div class="field label_after">
+    <%= f.check_box :no_holding_name_flag %>
+    <%= f.label :no_holding_name_flag, 'Do not allow a holding name', :class => 'additional' %>
+  </div>
+
+  <div class="field">
+    <span class="label_prefix">Previous history</span>
+    <%= f.label :previous_name, "Name", :class => 'additional' %>
+    <%= f.text_field :previous_name %>
+    <%= f.label :previous_kingdom, "Kingdom", :class => 'additional' %>
+    <%= f.collection_select :previous_kingdom,  pdf_collection(:kingdom), :first, :last %>
+    <%= f.label :original_returned, "Returned", :class => 'additional' %>
+    <%= f.text_field :original_returned %>
+  </div>
+
+  <div class="field">
+    <%= f.label :gender_name, 'Gender of Name' %>
+    <%= f.collection_select :gender_name,  pdf_collection(:gender_name), :first, :last %>
+  </div>
+

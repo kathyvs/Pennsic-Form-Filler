@@ -1,0 +1,53 @@
+<p>
+  <b>Submitted Name:</b>
+  <%= @form.submitted_name %>
+</p>
+
+<p>
+  <b>Documentation:</b>
+  <% if @form.documentation and not @form.documentation.empty? %>
+  <pre><%= @form.documentation %></pre>
+  <% end %>
+</p>
+
+<p>
+  <b>Uploaded documentation:</b>
+  <%= @form.has_doc_pdf? ? "#{@form.doc_pdf_pages} page(s)" : '' %>
+</p>
+
+<p>
+  <b>Changes allowed:</b>
+  <%= @form.changes_allowed.join(', ') %>
+</p>
+
+<p>
+  <b>Preferred changes:</b>
+  <%= @form.preferred_changes %>
+</p>
+
+<p>
+  <b>Authentic for:</b>
+  <%= @form.authentic_text %>
+  <%= @form.authentic_flags %>
+</p>
+
+<p>
+  <b>Holding name allowed:</b>
+  <%= @form.no_holding_name_flag ? 'no' : 'yes' %>
+</p>
+
+<p>
+  <b>Previous history:</b>
+  Name: <%= @form.previous_name %>,
+  Kingdom: <%= @form.previous_kingdom %>,
+  Returned: <%= @form.original_returned %>
+</p>
+
+<p>
+  <b>Gender of name:</b>
+  <%= @form.gender_name %>
+</p>
+
+
+
+

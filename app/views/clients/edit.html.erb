@@ -1,6 +1,6 @@
-<h1>Editing <%= @client.society_name %></h1>
+<%= @title = "Editing #{@client.society_name}" %>
 
 <%= render 'form' %>
 
-<%= link_to 'Show', event_client_path(@client, :event_id => @event) %> |
-<%= link_to 'Back', event_path(@event) %>
+<% @links = [link_to('Show', event_client_path(@client, :event_id => @event)),
+             link_to('Back', event_path(@event))] %>

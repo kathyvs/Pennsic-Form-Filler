@@ -3,16 +3,26 @@ require 'pdf_writer'
 
 module PDFForms
 
+  class PDFFile
+
+    def self.pdf_pages(data)
+      reader =  com.itextpdf.text.pdf.PdfReader.new(data.to_java_bytes)
+      reader.number_of_pages
+    end
+  end
+
+
   class PDFForm
     @@pdf_keys = {
       :address_1 => 'Address_1',
       :address_2 => 'Address_2',
       :birth_date => 'DOB',
       :branch_name => 'Branch_Name',
+      :date_submitted => 'Date Submitted',
       :email => 'Email',
       :phone_number => "Phone_Number",
       :herald => "Consulting_Herald",
-      :herald_contact => "Herald_Contact",
+      :heralds_email => "Herald_Contact",
       :kingdom => 'Kingdom',
       :legal_name => 'Legal_Name',
       :resub_from => "Resub",
@@ -20,6 +30,8 @@ module PDFForms
     }
     cattr_reader :pdf_keys
     cattr_reader :pdf_file
+
+    attr_reader :reader
 
     def initialize(reader = nil) 
       @reader = reader || com.itextpdf.text.pdf.PdfReader.new(pdf_file)
@@ -32,6 +44,7 @@ module PDFForms
         filler.set_field(field, form.send(prop)) if form.respond_to?(prop)
         filler.set_field(field, client.send(prop)) if client.respond_to?(prop)
       end
+      filler.add_extra_pages(form.doc_pdf) if form.has_doc_pdf?
       filler.get_pdf
     end
       
@@ -46,10 +59,16 @@ module PDFForms
     def collection(field_sym) 
       fields = @reader.acro_fields
       field = pdf_keys[field_sym]
-      fields.get_appearance_states(field).map do |s|
-        s == 'Off' ? '---' : s
+      states = fields.get_appearance_states(field)
+      if (states)
+        states.map do |s|
+          s == 'Off' ? '---' : s
+        end
+      else
+          ["Unable to find states for #{field}"]
       end
     end
+
   end
 
   class Name < PDFForm
@@ -63,22 +82,22 @@ module PDFForms
       :no_changes_major => "No_Changes-Major",
       :no_changes_minor => "No_Changes_Minor",
       :no_holding_name => "No_Holding_Name",
-      :original_returned => "Date Returned",
+      :original_returned => "Date_Returned",
       :preferred_changes_type => "Acceptable",
       :preferred_changes_text => "Name_Changes",
       :previous_kingdom => "Previous_Kingdom",
       :previous_name => "Previous_Name",
       :submitted_name => "Submitted_Name"
-  )
+                                        )
   end
 
   class IndividualName < Name
     @@pdf_keys = Name.pdf_keys.merge(
       :gender => "Gender",
       :gender_name => "NameGender",
-      :name_type => "Name_Type",
-      :name_type_other => "Name_Type_Other"
-    )
+      :submission_type => "Name_Type",
+      :submission_type_other => "Name_Type_Other"
+                                     )
 
     @@pdf_file = 'Generic_name-i_Form.pdf'
   end
@@ -87,3 +106,4 @@ module PDFForms
     @@pdf_keys = Name.pdf_keys.merge({})
   end
 end
+

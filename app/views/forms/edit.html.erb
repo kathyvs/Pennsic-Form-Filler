@@ -1,6 +1,7 @@
-<h1>Editing <%= @form.type.label %> form</h1>
+<% @title = "Editing #{@form.type_name} form for #{@client.society_name}" %>
 
 <%= render 'form' %>
 
-<%= link_to 'Show', form_path(@form) %> |
-<%= link_to 'Back',  event_client_path(@client, :event_id => @event)  %>
+<% links = [
+     link_to('Show', form_path(@form)),
+     link_to('Back',  event_client_path(@client, :event_id => @event))] %>

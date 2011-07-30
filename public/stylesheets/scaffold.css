@@ -80,6 +80,10 @@ div.field, div.actions {
     color: #125B12;
 }
 
+.needs_review {
+    color: #E3171C;
+}
+
 .field_with_errors {
     padding: 2px;
     background-color: #E3171C;
@@ -122,13 +126,22 @@ ul.form_list  li {
     margin-right: 0.25 em;
 }
 
-.field label {
+.field label, .label_prefix {
     float: left;
-    width: 9em;
+    width: 12em;
+}
+
+.field label.additional {
+    float: none;
+    width: auto;
+}
+
+.label_after {
+    padding-left: 12em;
 }
 
 .field .second_line {
-    padding-left: 9em;
+    padding-left: 12em;
 }
 table caption {
     font-weight: bold;

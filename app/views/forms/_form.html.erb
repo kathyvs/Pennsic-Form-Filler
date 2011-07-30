@@ -1,4 +1,5 @@
-<%= form_for(@form, :as => :form, :url => event_client_forms_path(:event_id => @event, :client_id => @client)) do |f| %>
+<%= form_for(@form, :as => :form, :url => form_form_path(@form),
+             :html => { :multipart => true }) do |f| %>
   <% if @form.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@form.errors.count, "error") %> prohibited this form from being saved:</h2>
@@ -13,12 +14,39 @@
 
   <%= f.hidden_field :type %>
   <div class="field">
-    <%= f.label :action_type %>
-    <%= f.collection_select :action_type, pdf_collection(:action_type, @form.pdf), :first, :last %>
+    <%= f.label :submission_type, submission_type_name(@form) %>
+    <%= f.collection_select :submission_type, pdf_collection(:submission_type), :first, :last %>
+    <%= f.label :submission_type_other, '(if other)', :class => 'additional' %>
+    <%= f.text_field :submission_type_other %>
   </div>
+  <div class="field">
+    <%= f.label :full_action_type, 'Action type' %>
+    <%= f.collection_select :full_action_type, @form.action_types, :first, :last %>
+    <%= f.label :action_type_other, '(if other)', :class => 'additional' %>
+    <%= f.text_field :action_type_other, :size => 20 %>
+  </div>
+  <div class="field">
+    <%= f.label :herald %>
+    <%= f.text_field :herald %>
+  </div>
+  <div class="field">
+    <%= f.label :heralds_email, "Herald's Contact" %>
+    <%= f.text_field :heralds_email %>
+  </div>
+  <div class="field">
+    <%= f.label :date_submitted %>
+    <%= f.date_select :date_submitted %>
+  </div>
+  <%= render "#{@form.class.label.to_s}_form", :f => f %>
 
+  <div class="field">
+    <%= f.label :needs_review, 'Needs Review' %>
+    <%= f.check_box :needs_review %> (check if help is needed to finish form)
+  </div>
 
   <div class="actions">
     <%= f.submit "Save" %>
   </div>
 <% end %>
+
+<% @links = [link_to 'Back', event_client_path(@client, :event_id => @event)] %>

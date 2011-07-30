@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110725022103) do
+ActiveRecord::Schema.define(:version => 20110728223046) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -47,12 +47,32 @@ ActiveRecord::Schema.define(:version => 20110725022103) do
   create_table "forms", :force => true do |t|
     t.string   "type"
     t.string   "action_type"
-    t.string   "action_sub_type"
     t.string   "herald"
     t.string   "heralds_email"
     t.integer  "client_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "action_type_other"
+    t.string   "action_change_type"
+    t.string   "resub_from"
+    t.string   "submission_type"
+    t.string   "submission_type_other"
+    t.string   "submitted_name"
+    t.string   "documentation"
+    t.binary   "doc_pdf",                :limit => 16777215
+    t.date     "date_submitted"
+    t.boolean  "needs_review"
+    t.string   "authentic_text"
+    t.string   "authentic_flags"
+    t.boolean  "no_changes_minor_flag"
+    t.boolean  "no_changes_major_flag"
+    t.string   "preferred_changes_type"
+    t.string   "preferred_changes_text"
+    t.boolean  "no_holding_name_flag"
+    t.string   "previous_kingdom"
+    t.string   "previous_name"
+    t.string   "original_returned"
+    t.string   "gender_name"
   end
 
 end

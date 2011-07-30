@@ -3,3 +3,9 @@
 
 en:
   hello: "Hello world"
+
+helpers:
+  label:
+    form:
+      full_action_type: "Action Type"
+      action_type_other: 'Description when above is "Other"'
