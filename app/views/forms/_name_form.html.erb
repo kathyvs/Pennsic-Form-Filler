@@ -18,7 +18,7 @@
   <div class="field">
     <%= f.label :authentic_text, 'Authentic for' %>
     <%= f.text_field :authentic_text %>
-    <%= f.collection_select :authentic_flags, pdf_collection(:authentic_flags), :first, :last %>
+    <%= pdf_select f, :authentic_flags %>
   </div>
 
   <div class="field label_after">
@@ -33,7 +33,7 @@
 
   <div class="field">
     <%= f.label :preferred_changes_type, 'Prefers change in' %>
-    <%= f.collection_select :preferred_changes_type, pdf_collection(:preferred_changes_type), :first, :last %>,
+    <%= pdf_select f, :preferred_changes_type %>,
     <%= f.label :preferred_changes_text, 'Notes', :class => 'additional' %>
     <%= f.text_field :preferred_changes_text %>
   </div>
@@ -48,13 +48,13 @@
     <%= f.label :previous_name, "Name", :class => 'additional' %>
     <%= f.text_field :previous_name %>
     <%= f.label :previous_kingdom, "Kingdom", :class => 'additional' %>
-    <%= f.collection_select :previous_kingdom,  pdf_collection(:kingdom), :first, :last %>
+    <%= f.collection_select :previous_kingdom,  pdf_collection(:kingdom, @form.pdf), :first, :last %>
     <%= f.label :original_returned, "Returned", :class => 'additional' %>
     <%= f.text_field :original_returned %>
   </div>
 
   <div class="field">
     <%= f.label :gender_name, 'Gender of Name' %>
-    <%= f.collection_select :gender_name,  pdf_collection(:gender_name), :first, :last %>
+    <%= pdf_select f, :gender_name %>
   </div>
 

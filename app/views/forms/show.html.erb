@@ -7,12 +7,12 @@
 <% end %>
 
 <p>
-  <b><%= submission_type_name(@form)%>:</b>
-  <%= @form.submission_type %><%= ", #{@form.submission_type_other}" if @form.submission_type_other and not @form.submission_type_other.empty? %>
+  <b><%= name_type_name(@form)%>:</b>
+  <%= @form.name_type %><%= ", #{@form.name_type_other}" unless @form.name_type_other.blank? %>
 </p>
 <p>
   <b>Action type:</b>
-  <%= @form.full_action_type_display %><%= ", #{@form.action_type_other}" if @form.action_type_other and not @form.action_type_other.empty? %>
+  <%= @form.full_action_type_display %><%= ", #{@form.action_type_other}" unless @form.action_type_other.blank? %>
 </p>
 
 <p>

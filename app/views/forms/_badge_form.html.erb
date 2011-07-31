@@ -1,0 +1,15 @@
+
+
+  <div class="field">
+    <%= f.label :associated_name %>
+    <%= f.text_field :associated_name %>
+  </div>
+
+  <div class="field">
+    <%= f.label :is_joint_flag, 'Jointly owned?' %>
+    <%= f.check_box :is_joint_flag %>
+    <%= f.label :co_owner_name, 'Co-owner (if yes)', :class => 'additional' %>
+    <%= f.text_field :co_owner_name %>
+
+  <%= render "device_form", :f => f %>
+

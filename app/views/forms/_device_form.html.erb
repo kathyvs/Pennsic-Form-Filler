@@ -1,0 +1,16 @@
+
+
+<div class="field">
+  <%= f.label :blazon %>
+  <%= f.text_area :blazon, :rows => 5, :cols => 64 %>
+</div>
+
+<div class="field">
+  <%= f.label :restricted_charges, "Evidence of restricted charges" %>
+  <%= f.text_field :restricted_charges %>
+</div>
+
+<div class="field">
+  <%= f.label :doc_upload, 'Additional docs' %>
+  <%= f.file_field :doc_upload, :accept => 'application/pdf' %> (PDF only)
+</div>

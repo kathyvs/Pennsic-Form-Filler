@@ -14,7 +14,7 @@ class FormsController < ApplicationController
     end
   end
 
-  # GET /forms/new
+  # GET /client/:client_id/forms/new
   # GET /client/:client_id/forms/new.xml
   def new
     if params[:type]

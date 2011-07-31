@@ -1,0 +1,18 @@
+
+
+<p>
+  <b>Blazon:</b>
+  <i><%= @form.blazon %></i>
+</p>
+
+<p>
+  <b>Evidence of restricted charges:</b>
+  <%= @form.restricted_charges %>
+</p>
+
+<% if @form.has_doc_pdf? %>
+  <p>
+    <b>Uploaded documentation:</b>
+    <%= "#{@form.doc_pdf_pages} page(s)" %>
+  </p>
+<% end %>

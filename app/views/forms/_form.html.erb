@@ -13,16 +13,30 @@
   <% end %>
 
   <%= f.hidden_field :type %>
+  <%= f.hidden_field :client_id %>
   <div class="field">
-    <%= f.label :submission_type, submission_type_name(@form) %>
-    <%= f.collection_select :submission_type, pdf_collection(:submission_type), :first, :last %>
-    <%= f.label :submission_type_other, '(if other)', :class => 'additional' %>
-    <%= f.text_field :submission_type_other %>
+    <%= f.label :name_type, name_type_name(@form) %>
+    <%= pdf_select f, :name_type %>
+    <% if @form.has_other_name_type? %>
+      <%= f.label :name_type_other, '(if other)', :class => 'additional' %>
+      <%= f.text_field :name_type_other %>
+    <% elsif @form.has_previous_kingdom? %>
+      <%= f.label :previous_kingdom, 'in kingdom', :class => 'additional' %>
+      <%= f.text_field :previous_kingdom %>
+    <% end %>
   </div>
   <div class="field">
     <%= f.label :full_action_type, 'Action type' %>
-    <%= f.collection_select :full_action_type, @form.action_types, :first, :last %>
-    <%= f.label :action_type_other, '(if other)', :class => 'additional' %>
+    <%= f.collection_select :full_action_type, @form.action_type_options, :first, :last %>
+    <% other_classes = ['additional'] %>
+    <% if @form.has_badge_list? %>
+       <%= f.label :release1, '(badges to release)', :class => 'additional' %>
+       <%= f.text_field :release1 %>
+       <%= f.text_field :release2 %>
+       <% other_classes << 'second_line' %>
+       <br/>
+    <% end %>
+    <%= f.label :action_type_other, '(if other)', :class => other_classes %>
     <%= f.text_field :action_type_other, :size => 20 %>
   </div>
   <div class="field">

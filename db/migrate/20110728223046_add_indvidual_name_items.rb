@@ -37,6 +37,6 @@ class AddIndvidualNameItems < ActiveRecord::Migration
     remove_column :forms, :preferred_changes_type, :preferred_changes_text
     remove_column :forms, :no_holding_name_flag
     remove_column :forms, :previous_kingdom, :previous_name, :original_returned
-#    remove_column :forms, :gender_name
+    remove_column :forms, :gender_name
   end
 end

@@ -1,0 +1,20 @@
+
+<p>
+  <b>Badge associated with:</b>
+  <%= @form.associated_name %>
+</p>
+
+<% if @form.is_joint_flag %>
+  <p>
+    <b>Joint badge with:</b>
+    <%= @form.co_owner_name %>
+   </p>
+<% end %>
+<p>
+  <b>Badges to release</b>
+  <%= @form.to_release.join(', ') %>
+</p>
+
+<%= render "show_device" %>
+
+     

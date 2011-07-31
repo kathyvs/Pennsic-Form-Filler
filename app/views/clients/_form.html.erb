@@ -30,11 +30,11 @@
   </div>
   <div class="field">
     <%= f.label :kingdom %>
-    <%= f.collection_select :kingdom, pdf_collection(:kingdom), :first, :last %>
+    <%= pdf_select f, :kingdom, NameForm.new %>
   </div>
   <div class="field">
     <%= f.label :gender %>
-    <%= f.collection_select :gender, pdf_collection(:gender), :first, :last %>
+    <%= pdf_select f, :gender, NameForm.new %>
   </div>
   <div class="field">
     <%= f.label :phone_number %>

@@ -27,9 +27,12 @@ module FormsHelper
       :display => {'LangCulture' => 'Language and/or culture'},
       :sort_key => with_default('')
     },
-    :submission_type => {
-      :display => {'HouseHold' => 'Household'},
-      :sort_key => with_default('', 'Primary' => '1')
+    :name_type => {
+      :display => {'HouseHold' => 'Household',
+                   'registered' => 'Already registered',
+                   'submitted_previously' => 'Previously submitted',
+                   'submitted_with' => 'Submitted with this form'},
+      :sort_key => with_default('', 'Primary' => '1', 'submitted_previously' => 'Z')
     }
       
   }
@@ -43,9 +46,12 @@ module FormsHelper
   end
 
   TYPE_NAMES = {
-    :name => 'Name Type'
+    :name => 'Name Type',
+    :device => 'Name is',
+    :badge => 'Name is',
+    :lozenge => 'Name is'
   }
-  def submission_type_name(form)
+  def name_type_name(form)
     TYPE_NAMES[form.class.label]
   end
 
@@ -58,7 +64,11 @@ module FormsHelper
     result
   end
 
-  def pdf_collection(field, pdf = PDFForms::PDFForm.new)
+  def pdf_select(f, field, form = @form)
+    f.collection_select field, pdf_collection(field, form.pdf), :first, :last
+  end
+
+  def pdf_collection(field, pdf)
     values = pdf.collection(field)
     pairs = values.collect do |v|
       [v, display_name(field, v)]

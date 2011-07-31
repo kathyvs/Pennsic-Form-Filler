@@ -1,4 +1,5 @@
 require 'pdf_forms'
+require 'action_type'
 
 class Form < ActiveRecord::Base
   belongs_to :client
@@ -8,6 +9,9 @@ class Form < ActiveRecord::Base
      :with => /application.pdf/,
      :message => "--- you can only upload PDF files",
      :allow_nil => true
+
+  validates_length_of :doc_pdf, :maximum => 1.megabytes,
+                      :message => 'File cannot be longer than 1 M'
 
   @@cls_types = {}.with_indifferent_access
 
@@ -63,81 +67,75 @@ class Form < ActiveRecord::Base
     flag ? 'Yes' : 'Off'
   end
 
-end
-
-  
-class NameForm < Form
-  @@label = :name
-  @@pdf_class = PDFForms::IndividualName
-  cattr_reader :label, :pdf_class
-
-  Form.add_type(self)
-
-  @pdf = nil
-
-  @@action_types = {
-    :new => {:display => "New", :values => {:action_type => "New"}},
-    :resub_kingdom => {
-      :display => "Resubmission (Kingdom)", 
-      :values => {:action_type => 'Resubmission',
-                  :resub_from => 'Kingdom'}},
-    :resub_laurel => {
-      :display => "Resubmission (Laurel)",
-      :values => {:action_type => 'Resubmission',
-                  :resub_from => 'Laurel'}},
-    :change_retain => {
-      :display => "Name change (retain old as alternate)",
-      :values => {:action_type => 'Change',
-                  :action_change_type => 'Retain'}},
-    :change_release => {
-      :display => "Name change (release old name)",
-      :values => {:action_type => 'Change',
-                  :action_change_type => 'Release'}},
-    :change_holding => {
-      :display => "Name change from holding name",
-      :values => {:action_type => 'Holding'}},
-    :appeal => {
-      :display => "Appeal",
-      :values => {:action_type => 'Appeal'}},
-    :other => {
-      :display => "Other",
-      :values => {:action_type => 'Other'}},
-  }.with_indifferent_access
-  
-  def action_types
+  def action_type_options
     result = {'' => '---'}
-    @@action_types.each_pair do |key, info|
-      result[key] = info[:display]
+    action_types.each_pair do |key, info|
+      result[key] = info.display
     end
     result
   end
 
   def full_action_type
-    @@action_types.each_pair do |key, info|
-      is_same = info[:values].to_a.all? do |prop, value|
-        self.send(prop) == value
-      end
-      return key if (is_same)
+    action_types.each_pair do |key, info|
+      return key if info.matches(self)
     end
     return nil
   end
 
   def full_action_type_display
     key = full_action_type
-    @@action_types.has_key?(key) ? @@action_types[key][:display] : ''
+    action_types.has_key?(key) ? action_types[key].display : nil
   end
 
   def full_action_type=(new_value)
     self.action_type = 'Off'
     self.action_change_type = 'Off'
     self.resub_from = 'Off'
-    if @@action_types.has_key?(new_value)
-      @@action_types[new_value][:values].each_pair do |prop, value|
-        method = "#{prop}=".to_sym
-        self.send(method, value)
-      end
+    if action_types.has_key?(new_value)
+      action_types[new_value].set_values(self)
     end
   end
+
+  def has_other_name_type?
+    false
+  end
+
+  def has_previous_kingdom?
+    false
+  end
+
+  def has_badge_list?
+    false
+  end
+
+end
+
+  
+class NameForm < Form
+
+  def self.label
+    :name
+  end
+
+  def self.pdf_class
+    PDFForms::IndividualName
+  end
+
+  Form.add_type(self)
+
+  @pdf = nil
+
+  @@action_types = {
+    :new => ActionType::NEW,
+    :resub_kingdom => ActionType::RESUB_KINGDOM,
+    :resub_laurel => ActionType::RESUB_LAUREL,
+    :change_retain => ActionType::CHANGE_RETAIN.with_display('Name change (retain old as alternate)'),
+    :change_release => ActionType::CHANGE_RELEASE.with_display('Name change (release old name)'),
+    :change_holding => ActionType::NAME_CHANGE_HOLDING,
+    :appeal => ActionType::APPEAL,
+    :other => ActionType::OTHER,
+  }.with_indifferent_access
+  cattr_reader :action_types
 
   def no_changes_minor
     boolean_to_state(no_changes_minor_flag)
@@ -155,9 +153,9 @@ class NameForm < Form
   end
 
   def preferred_changes
-    result = preferred_changes_type
-    result << ', ' unless result.empty?
-    result << preferred_changes_text
+    result = preferred_changes_type || ''
+    result << ', ' unless result.empty? or preferred_changes_text.blank?
+    result << preferred_changes_text unless preferred_changes_text.blank?
     return result
   end
 
@@ -165,5 +163,112 @@ class NameForm < Form
     boolean_to_state(no_holding_name_flag)
   end
 
+  def has_other_name_type?
+    true
+  end
+
 end
 
+class DeviceForm < Form
+
+  def self.label
+    :device
+  end
+
+  def self.pdf_class
+    PDFForms::Device
+  end
+
+  Form.add_type(self)
+
+  @@action_types = {
+    :new => ActionType::NEW,
+    :resub_kingdom => ActionType::RESUB_KINGDOM,
+    :resub_laurel => ActionType::RESUB_LAUREL,
+    :change_retain => ActionType::CHANGE_RETAIN.with_display('Device change (retain old as badge)'),
+    :change_release => ActionType::CHANGE_RELEASE.with_display('Device change (release old device)'),
+    :appeal => ActionType::APPEAL,
+    :other => ActionType::OTHER
+  }.with_indifferent_access
+
+  cattr_reader :action_types
+
+  def has_previous_kingdom?
+    true
+  end
+end
+
+    
+class LozengeDeviceForm < DeviceForm
+
+  def self.label
+    :lozenge
+  end
+
+  def self.display_name
+    "Device (Lozenge form)"
+  end
+
+  def self.pdf_class
+    PDFForms::LozengeDevice
+  end
+
+  Form.add_type(self)
+end
+
+class BadgeForm < Form
+
+  def self.label
+    :badge
+  end
+
+  def self.pdf_class
+    PDFForms::Badge
+  end
+
+  Form.add_type(self)
+
+  @@action_types = {
+    :new => ActionType::NEW,
+    :resub_kingdom => ActionType::RESUB_KINGDOM,
+    :resub_laurel => ActionType::RESUB_LAUREL,
+    :change_retain => ActionType::CHANGE_RETAIN.with_display('Badge change (retain old badge)'),
+    :change_release => ActionType::CHANGE_RELEASE.with_display('Badge change (release old badge)'),
+    :appeal => ActionType::APPEAL,
+    :other => ActionType::OTHER
+  }.with_indifferent_access
+
+  cattr_reader :action_types
+
+  def has_badge_list?
+    true
+  end
+
+  def is_joint
+    boolean_to_state(is_joint_flag)
+  end
+
+  def to_release
+    result = []
+    result << release1 unless release1.blank?
+    result << release2 unless release2.blank?
+    return result
+  end
+end
+
+class FieldlessBadgeForm < BadgeForm
+
+  def self.label
+    :fieldless
+  end
+
+  def self.display_name
+    "Fieldless Badge"
+  end
+
+  def self.pdf_class
+    PDFForms::FieldlessBadge
+  end
+
+  Form.add_type(self)
+end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110728223046) do
+ActiveRecord::Schema.define(:version => 20110731035808) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -55,11 +55,11 @@ ActiveRecord::Schema.define(:version => 20110728223046) do
     t.string   "action_type_other"
     t.string   "action_change_type"
     t.string   "resub_from"
-    t.string   "submission_type"
-    t.string   "submission_type_other"
+    t.string   "name_type"
+    t.string   "name_type_other"
     t.string   "submitted_name"
     t.string   "documentation"
-    t.binary   "doc_pdf",                :limit => 16777215
+    t.binary   "doc_pdf",                :limit => 2147483647
     t.date     "date_submitted"
     t.boolean  "needs_review"
     t.string   "authentic_text"
@@ -73,6 +73,13 @@ ActiveRecord::Schema.define(:version => 20110728223046) do
     t.string   "previous_name"
     t.string   "original_returned"
     t.string   "gender_name"
+    t.string   "blazon"
+    t.string   "restricted_charges"
+    t.string   "associated_name"
+    t.string   "co_owner_name"
+    t.boolean  "is_joint_flag"
+    t.string   "release1"
+    t.string   "release2"
   end
 
 end
