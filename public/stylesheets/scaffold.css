@@ -128,7 +128,7 @@ ul.form_list  li {
 
 .field label, .label_prefix {
     float: left;
-    width: 12em;
+    width: 16em;
 }
 
 .field label.additional {
@@ -137,11 +137,11 @@ ul.form_list  li {
 }
 
 .label_after {
-    padding-left: 12em;
+    padding-left: 16em;
 }
 
 .field .second_line {
-    padding-left: 12em;
+    padding-left: 16em;
 }
 table caption {
     font-weight: bold;

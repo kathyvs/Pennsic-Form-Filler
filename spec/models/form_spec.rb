@@ -42,8 +42,8 @@ describe NameForm do
   end
   attr_reader :form
 
-  it "has eight action types plus blank" do
-    action_types = form.action_types
+  it "has eight action type options plus blank" do
+    action_types = form.action_type_options
     action_types.keys.should eq(["", :new, :resub_kingdom, :resub_laurel, :change_retain, :change_release, :change_holding, :appeal, :other].collect(&:to_s))
   end
 
