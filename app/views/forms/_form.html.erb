@@ -55,7 +55,12 @@
 
   <div class="field">
     <%= f.label :needs_review, 'Needs Review' %>
-    <%= f.check_box :needs_review %> (check if help is needed to finish form)
+    <%= f.check_box :needs_review %> (leaved checked until reviewed by senior herald)
+  </div>
+
+  <div class="field">
+    <%= f.label :printed %>
+    <%= f.check_box :printed %> (checked when printed)
   </div>
 
   <div class="actions">

@@ -21,14 +21,9 @@
     <%= pdf_select f, :authentic_flags %>
   </div>
 
-  <div class="field label_after">
-    <%= f.check_box :no_changes_major_flag %>
-    <%= f.label :no_changes_major_flag, "Disallow major changes", :class => 'additional' %>
-  </div>
-
-  <div class="field label_after">
-    <%= f.check_box :no_changes_minor_flag %>
-    <%= f.label :no_changes_minor_flag, "Disallow minor changes", :class => 'additional' %>
+  <div class="field">
+    <%= f.label :allowed_changes %>
+    <%= f.collection_select :allowed_changes, allowed_changes_select, :first, :last %>
   </div>
 
   <div class="field">

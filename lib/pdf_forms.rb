@@ -87,7 +87,7 @@ module PDFForms
   Name.pdf_keys = PDFForm.pdf_keys.merge(
     :authentic_flags => "Authentic",
     :authentic_text => "Authentic_Changes",
-    :documentation => "Name_Documentation",
+    :full_documentation => "Name_Documentation",
     :no_changes_major => "No_Changes-Major",
     :no_changes_minor => "No_Changes_Minor",
     :no_holding_name => "No_Holding_Name",

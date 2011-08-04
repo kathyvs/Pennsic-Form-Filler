@@ -137,6 +137,11 @@ class NameForm < Form
   }.with_indifferent_access
   cattr_reader :action_types
 
+  def full_documentation
+    result = documentation || ""
+    result << "\n " << 'Allows adding/deleting a word like "de" or "the" or changing language when the change is small'
+  end
+
   def no_changes_minor
     boolean_to_state(no_changes_minor_flag)
   end
@@ -149,7 +154,7 @@ class NameForm < Form
     allowed = []
     allowed << 'Minor' unless no_changes_minor_flag
     allowed << 'Major' unless no_changes_major_flag
-    return allowed
+    return allowed.blank? ? ['None'] : allowed
   end
 
   def preferred_changes
@@ -167,6 +172,36 @@ class NameForm < Form
     true
   end
 
+  def allowed_changes
+    changes = :major
+    if no_changes_major_flag
+      if is_intermediate
+        changes = :intermediate
+      elsif no_changes_minor_flag
+        changes = :no_changes
+      else
+        changes = :minor
+      end
+    end
+    return changes
+  end
+
+  def allowed_changes=(changes)
+    self.no_changes_major_flag = false
+    self.no_changes_minor_flag = false
+    self.is_intermediate = false
+    case (changes || :major).to_sym
+      when :no_changes
+        self.no_changes_major_flag = true
+        self.no_changes_minor_flag = true
+      when :minor
+        self.no_changes_major_flag = true
+      when :intermediate
+        self.no_changes_major_flag = true
+        self.is_intermediate = true
+    end
+  end
+        
 end
 
 class DeviceForm < Form

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110731035808) do
+ActiveRecord::Schema.define(:version => 20110804013932) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -80,6 +80,8 @@ ActiveRecord::Schema.define(:version => 20110731035808) do
     t.boolean  "is_joint_flag"
     t.string   "release1"
     t.string   "release2"
+    t.boolean  "is_intermediate"
+    t.boolean  "printed"
   end
 
 end

@@ -13,7 +13,7 @@
   </thead>
   <tbody>
     <% @event.clients.sort_by(&:society_name).each do |client| %>
-      <tr>
+      <tr>~
         <td class="<%= client_needs_review_class(client)%>"><%= client.society_name %> </td>
 	<td><%= client.legal_name %></td>
         <td><%=link_to 'Show', event_client_path(client, :event_id => @event) %></td>

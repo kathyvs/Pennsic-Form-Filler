@@ -21,6 +21,7 @@ class FormsController < ApplicationController
       if @form = Form.create(params.slice(:type))
         @form.client = @client
         @form.date_submitted = Date.today
+        @form.needs_review = true
         respond_to do |format|
           format.text { render :text => @form.inspect }
           format.html # new.html.erb 
