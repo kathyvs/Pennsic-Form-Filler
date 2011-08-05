@@ -32,6 +32,16 @@
 
 <%= render "show_#{@form.class.label}" %>
 
+<p>
+  <b>Needs Review:</b>
+  <%= @form.needs_review %>
+</p>
+
+<p>
+  <b>Printed:</b>
+  <%= @form.printed %>
+</p>
+
 <% @links = [link_to('Edit', edit_form_path(@form)),
              link_to('Print', form_path(@form, :format => 'pdf')),
             link_to('Back', event_client_path(@client, :event_id => @event))] %>
