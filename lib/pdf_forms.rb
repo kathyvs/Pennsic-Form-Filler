@@ -156,7 +156,7 @@ module PDFForms
   class FieldlessBadge < Badge
 
     def self.pdf_file
-      'Generic_badge_Form.pdf'
+      'Generic_badge-fieldless_Form.pdf'
     end
   end
 
