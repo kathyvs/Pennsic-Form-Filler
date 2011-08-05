@@ -29,7 +29,7 @@ module ClientsHelper
   end
 
   def client_needs_review_class(client)
-    f = client.forms.to_a.find {|f| f.needs_review}
+    f = client.forms.to_a.find {|f| f.needs_review || f.printed}
     f ? needs_review_class(f) : ""
   end
 

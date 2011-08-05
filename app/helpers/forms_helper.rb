@@ -121,6 +121,6 @@ module FormsHelper
   end
 
   def needs_review_class(form)
-    form.needs_review ? 'needs_review' : nil
+    form.needs_review ? 'needs_review' : (form.printed ? 'printed' : '')
   end
 end
