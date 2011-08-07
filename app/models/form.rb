@@ -139,7 +139,8 @@ class NameForm < Form
 
   def full_documentation
     result = documentation || ""
-    result << "\n " << 'Allows adding/deleting a word like "de" or "the" or changing language when the change is small'
+    result << "\n " << 'Allows adding/deleting a word like "de" or "the" or changing language when the change is small' if is_intermediate
+    return result
   end
 
   def no_changes_minor
