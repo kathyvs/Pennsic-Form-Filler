@@ -33,4 +33,8 @@ module ClientsHelper
     f ? needs_review_class(f) : ""
   end
 
+  def current_scope
+    descr = Client.scopes[@scope.to_sym].gsub('Show', 'showing').titleize
+  end
+
 end

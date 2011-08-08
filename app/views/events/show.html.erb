@@ -1,6 +1,7 @@
 <% @title = "#{@event.title} Clients" %>
+<h2><%= current_scope %></h2>
 <p id="notice"><%= notice %></p>
-
+<p><%= link_to 'New Client', new_event_client_path(:event_id => @event) %></p>
 <table>
   <thead>
     <tr>
@@ -12,7 +13,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @event.clients.sort_by(&:society_name).each do |client| %>
+    <% Client.send(@scope, @event.id).includes(:forms).sort_by(&:society_name).each do |client| %>
       <tr>
         <td class="<%= client_needs_review_class(client)%>"><%= client.society_name %> </td>
 	<td><%= client.legal_name %></td>
@@ -44,4 +45,7 @@
 <%
   @links = [link_to('New Client', new_event_client_path(:event_id => @event)),
             link_to('Back', events_path)]
+  Client.scopes.each_pair do |scope, descr|
+    @links << link_to(descr, event_path(@event, :scope => scope))
+  end
 %>

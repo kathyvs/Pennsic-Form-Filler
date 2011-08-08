@@ -113,6 +113,10 @@ end
   
 class NameForm < Form
 
+
+  validates_length_of :full_documentation, :maximum => 1000,
+                      :message => "Documentation is limited to 1000 characters; use the additional docs for longer documentation"
+
   def self.label
     :name
   end

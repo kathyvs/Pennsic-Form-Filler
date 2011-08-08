@@ -1,3 +1,5 @@
+<p>Society name: <%= @client.society_name %></p>
+
 <%= form_for(@form, :as => :form, :url => form_form_path(@form),
              :html => { :multipart => true }) do |f| %>
   <% if @form.errors.any? %>

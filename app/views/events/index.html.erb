@@ -8,7 +8,7 @@
   <tr>
     <th>Title</th>
     <th>Account</th>
-    <th></th>
+    <th colspan="<%= Client.scopes.size %>"></th>
     <% if @account.admin? %>
     <th></th>
     <th></th>
@@ -19,7 +19,9 @@
   <tr>
     <td><%= event.title %></td>
     <td><%= event.account.name %></td>
-    <td><%= link_to 'Show', event %></td>
+    <% Client.scopes.each_pair do |scope, descr| %>
+      <td> <%= link_to descr, event, :scope => scope %> </td>
+    <% end %>
     <% if @account.admin? %>
     <td><%= link_to 'Edit', edit_event_path(event) %></td>
     <td><%= link_to 'Destroy', event, :confirm => 'Are you sure?', :method => :delete %></td>
