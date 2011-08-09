@@ -20,7 +20,7 @@
     <td><%= event.title %></td>
     <td><%= event.account.name %></td>
     <% Client.scopes.each_pair do |scope, descr| %>
-      <td> <%= link_to descr, event, :scope => scope %> </td>
+      <td> <%= link_to descr, event_path(event, :scope => scope) %> </td>
     <% end %>
     <% if @account.admin? %>
     <td><%= link_to 'Edit', edit_event_path(event) %></td>
