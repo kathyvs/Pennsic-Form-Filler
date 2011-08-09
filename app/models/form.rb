@@ -142,7 +142,7 @@ class NameForm < Form
   cattr_reader :action_types
 
   def full_documentation
-    result = documentation || ""
+    result = (documentation || "").clone
     result << "\n " << 'Allows adding/deleting a word like "de" or "the" or changing language when the change is small' if is_intermediate
     return result
   end
