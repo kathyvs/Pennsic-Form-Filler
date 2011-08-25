@@ -1,0 +1,5 @@
+    Type:              <%= show.class.display_name %>
+    Action:            <%= full_action(show) %>
+    Herald:            <%= show.herald %>
+    Herald's Contact:  <%= show.heralds_email %>
+<%= render(:partial => "forms/show_#{show.class.label}", :object => show) %>

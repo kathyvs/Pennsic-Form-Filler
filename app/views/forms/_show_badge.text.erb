@@ -1,0 +1,5 @@
+<% form = show_badge %>
+<%= render(:partial => "forms/show_device", :object => form) %>
+    Associated Name:   <%= form.associated_name %>
+    Co-owner Name:     <%= form.co_owner_name %>
+    To release:        <%= [form.release1, form.release2].join(', ') %>

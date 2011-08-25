@@ -1,0 +1,9 @@
+<% form = show_name %>
+    Name Type:         <%= form.name_type %> (if other: <%= form.name_type_other %>)
+    Authentic?:        <%= form.authentic_flags or 'no' %>, <%= form.authentic_text %>
+    Major Changes?     <%= changes_text(form.no_changes_major_flag) %>
+    Major Changes?     <%= changes_text(form.no_changes_major_flag) %>
+    Preferred changes: <%= form.preferred_changes_type %>, <%= form.preferred_changes_text %>
+    Name Gender:       <%= form.gender_name %>
+    Documentation:     <%= form.full_documentation %>
+

@@ -1,0 +1,13 @@
+Society Name:       <%= show.society_name %>
+  Legal Name:       <%= show.legal_name %>
+  Address:          <%= show.address_1 %>
+                    <%= show.address_2 %>
+  Branch Name:      <%= show.branch_name %>
+  Phone Number:     <%= show.phone_number %>
+  Birth Date:	    <%= show.birth_date %>
+  Email:	    <%= show.email %>
+  Submitter Gender: <%= show.gender %> 
+  Forms:
+<% show.forms.each do |form| %>
+<%= render(:partial => 'forms/show', :object => form) %>
+<% end %>

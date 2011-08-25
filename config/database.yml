@@ -32,7 +32,7 @@ production:
   database: form_filler_production
   pool: 5
   username: root
-  password:
+  password: root
   host: localhost
   port: 9998
 

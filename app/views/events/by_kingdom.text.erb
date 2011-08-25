@@ -1,0 +1,7 @@
+Kingdom: <%= @kingdom %>
+
+<% @clients.each do |client| %>
+<%=render(:partial => 'clients/show', :object => client) %>
+
+------------------------------
+<% end %>

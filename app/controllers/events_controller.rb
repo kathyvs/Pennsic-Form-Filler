@@ -97,4 +97,15 @@ class EventsController < ApplicationController
       format.xml  { head :ok }
     end
   end
+
+  #GET /events/1/kingdom/East
+  def kingdom
+    @event = Event.find(params[:id])
+    respond_not_found unless @event
+    @kingdom = params[:kingdom].gsub(/^AE/, "\xc3\x86").capitalize
+    @clients = Client.find_all_by_kingdom(@kingdom)
+    respond_to do |format|
+      format.text { render(:template => 'events/by_kingdom') }
+    end
+  end
 end

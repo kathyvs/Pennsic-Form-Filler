@@ -123,4 +123,22 @@ module FormsHelper
   def needs_review_class(form)
     form.needs_review ? 'needs_review' : (form.printed ? 'printed' : '')
   end
+
+  def full_action(form)
+    result = ""
+    if form.action_type == 'Other'
+      result << form.action_type_other
+    else
+      result << form.action_type
+    end
+    if form.action_type == 'Change'
+      result << ", #{form.action_change_type}"
+    end
+    return result
+  end
+
+  def changes_text(flag)
+    flag ? 'no' : 'yes'
+  end
+
 end
