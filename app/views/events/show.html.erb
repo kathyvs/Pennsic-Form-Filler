@@ -13,7 +13,7 @@
     </tr>
   </thead>
   <tbody>
-    <% Client.send(@scope, @event.id).includes(:forms).sort_by(&:society_name).each do |client| %>
+    <% Client.send(@scope, @event.id).includes(:forms).sort_by(&:legal_name).each do |client| %>
       <tr>
         <td class="<%= client_needs_review_class(client)%>"><%= client.society_name %> </td>
 	<td><%= client.legal_name %></td>

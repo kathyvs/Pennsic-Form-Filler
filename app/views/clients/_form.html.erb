@@ -12,22 +12,18 @@
   <% end %>
   <%= f.hidden_field :event_id %>
   <div class="field">
-    <%= f.label :society_name %>
-    <%= f.text_field :society_name %>
-    (for alternate names and name changes, enter the name that is already registered)
-  </div>
-  <div class="field">
     <%= f.label :legal_name %>
     <%= f.text_field :legal_name %>
   </div>
   <div class="field">
     <%= f.label :address_1, 'Address' %>
-    <%= f.text_field :address_1 %> <br/>
+    <%= f.text_field :address_1 %> <span class="comment">(fit in two lines only)</span><br/>
     <span class="second_line"><%= f.text_field :address_2 %></span>
   </div>
   <div class="field">
     <%= f.label :branch_name %>
     <%= f.text_field :branch_name %>
+    <span class="comment">(local SCA group)</span>
   </div>
   <div class="field">
     <%= f.label :kingdom %>

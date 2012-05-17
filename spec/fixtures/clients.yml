@@ -1,14 +1,54 @@
+#   t.string   "society_name"
+#    t.string   "legal_name"
+#    t.string   "address_1"
+#    t.string   "address_2"
+#    t.string   "branch_name"
+#    t.string   "phone_number"
+#    t.string   "birth_date"
+#    t.string   "email"
+#    t.integer  "event_id"
+#    t.datetime "created_at"
+#    t.datetime "updated_at"
+#    t.string   "gender"
+#    t.string   "kingdom"
 
 anne:
   id: 1
   society_name: Anne Black
   legal_name: Ana Smith
-  kingdom_id: 2
+  address_1: 100 Main Street
+  address_2: Springport, ME, 10001
+  branch_name: Shire of Northlands
+  phone_number: 100-555-1111
+  birth_date: 10/01/93
+  email: anne@test.com
+  gender: Female
+  kingdom: East
   event_id: 2
 
 william:
   id: 23
   society_name: William Archer
   legal_name: William Jones
-  kingdom_id: 2
+  address_1: 300 Newell
+  address_2: Palo Alto, CA 94303
+  branch_name: Shire of Crosston
+  phone_number: 6055557894
+  birth_date: 12/02/80
+  email: jones@example.com
+  gender: Male
+  kingdom: West
   event_id: 1
+
+no_name:
+  id: 24
+  legal_name: David Parker
+  address_1: 1000 Center
+  address_2: Pittsburgh, PA 15201
+  branch_name: Debatable Lands
+  phone_number: 412-555-2424
+  birth_date: 05/24/1974
+  email: dparker@example.com
+  gender: Male
+  kingdom: Middle
+  event_id: 2

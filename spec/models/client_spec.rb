@@ -21,4 +21,16 @@ describe Client do
       result.should be_nil
     end
   end
+  
+  describe "display name" do
+    it "Returns SCA name if it exists" do
+      result = clients(:anne)
+      result.display_name.should eq(result.society_name)
+    end
+    
+    it "Returns the legal name if SCA name does not exist" do
+      result = clients(:no_name)
+      result.display_name.should eq("<#{result.legal_name}>")
+    end
+  end
 end

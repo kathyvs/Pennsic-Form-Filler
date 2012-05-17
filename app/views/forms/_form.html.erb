@@ -1,5 +1,3 @@
-<p>Society name: <%= @client.society_name %></p>
-
 <%= form_for(@form, :as => :form, :url => form_form_path(@form),
              :html => { :multipart => true }) do |f| %>
   <% if @form.errors.any? %>
@@ -16,6 +14,10 @@
 
   <%= f.hidden_field :type %>
   <%= f.hidden_field :client_id %>
+  <div class="field">
+    <%= label_tag "Society Name"%>
+    <%= text_field_tag 'society_name', @client.society_name, :size => 50%>
+  </div>
   <div class="field">
     <%= f.label :name_type, name_type_name(@form) %>
     <%= pdf_select f, :name_type %>

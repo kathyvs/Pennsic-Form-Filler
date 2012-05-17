@@ -31,9 +31,10 @@ gem 'ruby-debug'
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
 group :development, :test do
+  gem 'jdbc-sqlite3'
+  gem 'activerecord-jdbcsqlite3-adapter'
   gem 'rspec-rails', '~> 2.5'
   gem 'rack'
-  gem 'capybara', :git => 'git://github.com/jnicklas/capybara.git'
-
+  #gem 'ruby-debug'
 #   gem 'webrat'
 end

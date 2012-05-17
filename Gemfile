@@ -11,7 +11,7 @@ gem 'rails', '3.0.5'
 gem "jdbc-mysql"
 gem "activerecord-jdbc-adapter"
 gem "activerecord-jdbcmysql-adapter"
-
+gem "devise"
 # Use unicorn as the web server
 # gem 'unicorn'R
 
@@ -34,7 +34,7 @@ gem 'ruby-debug'
 group :development, :test do
   gem 'jdbc-sqlite3'
   gem 'activerecord-jdbcsqlite3-adapter'
-  gem 'rspec-rails', '~> 2.5'
+  gem 'rspec-rails', '>= 2.5.0'
   gem 'rack'
   #gem 'ruby-debug'
 #   gem 'webrat'

@@ -14,7 +14,7 @@ development:
   username: ff_dev
   password: dev
   host: localhost
-  port: 9998
+  port: 8889
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

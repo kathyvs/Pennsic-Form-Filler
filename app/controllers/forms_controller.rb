@@ -46,7 +46,7 @@ class FormsController < ApplicationController
   # POST /event/:event_id/client/:client_id/forms.xml
   def create
     @form = Form.create(params[:form]) 
-    
+    update_name(params[:society_name])
     respond_to do |format|
       if @form.save
         format.html { redirect_to(event_client_path(@client, :event_id => @event), 
@@ -63,6 +63,7 @@ class FormsController < ApplicationController
   # PUT /event/:event_id/client/:client_id/forms/1.xml
   def update
     @form = Form.find(params[:id])
+    update_name(params[:society_name])
 
     respond_to do |format|
       if @form.update_attributes(params[:form])
@@ -86,5 +87,15 @@ class FormsController < ApplicationController
       format.html { redirect_to(forms_url) }
       format.xml  { head :ok }
     end
+  end
+  
+  private 
+  def update_name(society_name)
+    logger.info "Checking #{society_name} against #{@client.society_name}"
+    return if !society_name || society_name.blank? || society_name == @client.society_name
+    logger.info "Updating #{society_name}"
+    @client.society_name = society_name
+    @client.save!
+    logger.info "Client name is now #{@client.society_name}"
   end
 end
