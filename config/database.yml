@@ -5,7 +5,7 @@
 #
 # And be sure to use new-style password hashing:
 #   http://dev.mysql.com/doc/refman/5.0/en/old-client.html
-development:
+xdevelopment:
   adapter: jdbcmysql
   encoding: utf8
   reconnect: true
@@ -15,6 +15,11 @@ development:
   password: dev
   host: localhost
   port: 8889
+development:
+  adapter: jdbcsqlite3
+  encoding: utf8
+  database: db/dev.sqlite3
+  timeout: 5000
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -28,13 +33,13 @@ test:
 production:
   adapter: jdbcmysql
   encoding: utf8
-  reconnect: false
-  database: form_filler_production
+  reconnect: true
+  database: pennsic_last_year
   pool: 5
-  username: root
-  password: root
+  username: ff_prod
+  password: herald
   host: localhost
-  port: 9998
+  port: 8889
 
 admin:
   username: admin

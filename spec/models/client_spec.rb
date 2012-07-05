@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Client do
   fixtures(:events, :clients)
+  
   describe "find with event" do
  
     before(:each) do 
@@ -19,6 +20,22 @@ describe Client do
     it "Returns nil if the client exists but belongs to a different event" do
       result = Client.find_with_event(clients(:william).id, @event)
       result.should be_nil
+    end
+  end
+  
+  describe "validation" do
+    before(:each) do
+      @event = events(:pennsic_39)
+      @client = Client.new()
+    end
+    
+    it "is valid as set by before clause" do
+      @client.should be_valid
+    end
+    
+    it "requires a legal name" do
+      @client.legal_name = nil
+      @client.should have_error_in(:legal_name)
     end
   end
   

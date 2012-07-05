@@ -10,19 +10,19 @@ describe AccountsController do
   fixtures :accounts
 
   def norm_account
-    @norm_account ||= Account.find_by_name('pennsic')
+    @norm_account ||= Account.find_by_name('Pennsic')
   end
 
   def admin_account
-    @admin_account ||= Account.find_by_name('admin')
+    @admin_account ||= Account.find_by_name('Admin')
   end
 
   def http_login_non_admin
-    http_login('pennsic', 'pennsic_pwd')
+    http_login(norm_account.name, 'pennsic_pwd')
   end
 
   def http_login_admin
-    http_login('admin', 'admin_pwd')
+    http_login(admin_account.name, 'admin_pwd')
   end
 
   def valid_params
@@ -39,6 +39,7 @@ describe AccountsController do
   describe "GET index" do
     it "requires admin" do 
       verify_needs_admin do
+        http_login_non_admin
         get :index
       end
     end
@@ -198,9 +199,8 @@ describe AccountsController do
 
     it "destroys the requested account" do
       http_login_admin
-      norm_account.should_receive(:destroy)
       delete :destroy, :id => norm_account.id
-      Account.exists(norm_account.id).should be_false
+      Account.exists?(norm_account.id).should be_false
     end
 
     it "redirects to the accounts list" do

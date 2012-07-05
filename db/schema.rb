@@ -58,8 +58,8 @@ ActiveRecord::Schema.define(:version => 20110804013932) do
     t.string   "name_type"
     t.string   "name_type_other"
     t.string   "submitted_name"
-    t.string   "documentation"
-    t.binary   "doc_pdf",                :limit => 2147483647
+    t.string   "documentation",          :limit => 1000
+    t.binary   "doc_pdf",                :limit => 16777215
     t.date     "date_submitted"
     t.boolean  "needs_review"
     t.string   "authentic_text"

@@ -23,7 +23,7 @@
   <div class="field">
     <%= f.label :branch_name %>
     <%= f.text_field :branch_name %>
-    <span class="comment">(local SCA group)</span>
+    <span class="comment">(such as Barony, Shire or Branch (but <em>not</em> household))</span>
   </div>
   <div class="field">
     <%= f.label :kingdom %>
@@ -43,7 +43,7 @@
   </div>
   <div class="field">
     <%= f.label :email %>
-    <%= f.email_field :email %>
+    <%= :email %>
   </div>
   <div class="actions">
     <%= f.submit %>

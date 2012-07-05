@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "LoginStories" do
-  urls = ["/", "/accounts"]
+  urls = ["/accounts"]
   
   urls.each do |url|
     describe "GET #{url}" do

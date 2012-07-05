@@ -45,4 +45,4 @@ class Client < ActiveRecord::Base
   def required?(field)
     REQUIRED.include? field
   end
-end
+  end
