@@ -20,6 +20,12 @@ div#header h1 {
     padding-left: 0.5em;
 }
 
+div#header p {
+    padding-top: 1em;
+    padding-right: 1em;
+    float: right;
+}
+
 div#main {
     background-color: white;
     color: #333;

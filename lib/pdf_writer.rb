@@ -1,8 +1,6 @@
 require 'java'
 
 module PDFForms
-
-  
   
   class PDFFiller
 

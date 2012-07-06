@@ -18,10 +18,20 @@ describe SessionController do
       response.should redirect_to(:controller => "accounts", :action => "index")
     end
     
-  end
+   end
   
-  describe "GET login" do
+  describe "GET new" do
+    it "shows the login view" do
+      get :new
+      response.should render_template(:login)
+    end
     
+    it "clears the session if logged in" do
+      login("Pennsic")
+      get :new
+      response.should be_ok
+      session[:account].should be_nil
+    end
   end
   
   describe "POST create" do

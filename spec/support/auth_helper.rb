@@ -7,7 +7,7 @@ module AuthHelper
     when Account
       account = account_info
     when String
-      account = Account.find_by_name(name)
+      account = Account.find_by_name(account_info)
     when Fixnum
       session[:account] = account_info and return
     else
