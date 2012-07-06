@@ -1,19 +1,23 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   
-  before_filter :authenticate
+  before_filter :authenticate, :except => [:session]
   
   protected
   
   def authenticate
     logger.info('Authenticating')
-    authenticate_or_request_with_http_basic do |name, password|
-      @account = Account.login(name, password)
+    unless session[:account]
+      redirect_to url_for(:new_session)
     end
+  end
+  
+  def account
+    @account ||= Account.find(session[:account])
   end
 
   def require_admin
-    if not (@account and @account.admin?) 
+    if not (account and account.admin?) 
       render :text => 'Forbidden', :status => 403
       return false
     end

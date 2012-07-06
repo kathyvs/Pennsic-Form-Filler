@@ -1,15 +1,23 @@
 require 'spec_helper'
 
 describe "LoginStories" do
-  urls = ["/accounts", "/events"]
+  urls = ["/accounts", "/events", "/session"]
   
-  urls.each do |url|
-    describe "GET #{url}" do
-      it "requests authentication" do
+  describe "when not logged in" do
+    urls.each do |url|
+      it "goes to login page" do
         get url
-        puts(self.methods.sort)
-        response.status.should be(401)
+        puts(response.methods.sort)
+        response.status.should redirect_to(:new_session)
       end
     end
+    
+    describe "login" do
+      it "gives error when logging in incorrectly" do
+        post "/session", :name => 'bad', :password => 'bad'
+      end
+    end
+  
   end
+  
 end

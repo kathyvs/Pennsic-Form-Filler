@@ -1,4 +1,10 @@
 FormFiller::Application.routes.draw do
+  
+  resource :session, :controller => :session, :except => [:update, :edit],
+                     :path_names => {:new => "login"} do
+    get 'home'
+  end
+  
   resources :events do
     resources :clients do
       resources :forms

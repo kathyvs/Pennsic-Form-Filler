@@ -13,16 +13,12 @@ describe AccountsController do
     @norm_account ||= Account.find_by_name('Pennsic')
   end
 
-  def admin_account
-    @admin_account ||= Account.find_by_name('Admin')
+  def login_non_admin
+    login(norm_account)
   end
 
-  def http_login_non_admin
-    http_login(norm_account.name, 'pennsic_pwd')
-  end
-
-  def http_login_admin
-    http_login(admin_account.name, 'admin_pwd')
+  def login_admin
+    login(admin_account)
   end
 
   def valid_params
@@ -39,14 +35,14 @@ describe AccountsController do
   describe "GET index" do
     it "requires admin" do 
       verify_needs_admin do
-        http_login_non_admin
+        login_non_admin
         get :index
       end
     end
 
     it "assigns all accounts as @accounts" do
       Account.stub(:all) { [norm_account, admin_account] }
-      http_login_admin
+      login_admin
       get :index
       assigns(:accounts).should eq([norm_account, admin_account])
     end
@@ -59,12 +55,12 @@ describe AccountsController do
       end
     end
     it "assigns the requested account as @account" do
-      http_login_admin
+      login_admin
       get :show, :id => norm_account.id.to_s
       assigns(:account).should eq(norm_account)
     end
     it "returns 404 when id is invalid" do
-      http_login_admin
+      login_admin
       get :show, :id => 100000
       response.status.should == 404
     end
@@ -77,7 +73,7 @@ describe AccountsController do
       end
     end
     it "assigns a new account as @account" do
-      http_login_admin
+      login_admin
       get :new
       assigns(:account).should be_new
     end
@@ -90,7 +86,7 @@ describe AccountsController do
       end
     end
     it "assigns the requested account as @account" do
-      http_login_admin
+      login_admin
       get :edit, :id => norm_account.id.to_s
       assigns(:account).should eq(norm_account)
     end
@@ -105,7 +101,7 @@ describe AccountsController do
     end
     describe "with valid params" do
       it "assigns a newly created account as @account" do
-        http_login_admin
+        login_admin
         post :create, :account => valid_params
         new_account = assigns(:account)
         new_account.name.should eq(valid_params['name'])
@@ -113,7 +109,7 @@ describe AccountsController do
       end
 
       it "redirects to the created account" do
-        http_login_admin
+        login_admin
         post :create, :account => valid_params
         new_account = assigns(:account)
         response.should redirect_to(account_url(new_account))
@@ -122,14 +118,14 @@ describe AccountsController do
 
     describe "with invalid params" do
       it "assigns a newly created but unsaved account as @account" do
-        http_login_admin
+        login_admin
         post :create, :account => invalid_params
         assigns(:account).should be_new
         assigns(:account).name.should == invalid_params['name']
       end
 
       it "re-renders the 'new' template" do
-        http_login_admin
+        login_admin
         post :create, :account => invalid_params
         response.should render_template("new")
       end
@@ -146,7 +142,7 @@ describe AccountsController do
 
     describe "with valid params" do
       def run_put
-        http_login_admin
+        login_admin
         put :update, :id => norm_account.id.to_s, :account => valid_params
       end
       it "updates the requested account" do
@@ -168,7 +164,7 @@ describe AccountsController do
 
     describe "with invalid params" do
       def run_put
-        http_login_admin
+        login_admin
         put :update, :id => norm_account.id.to_s, :account => invalid_params
       end
 
@@ -198,13 +194,13 @@ describe AccountsController do
     end
 
     it "destroys the requested account" do
-      http_login_admin
+      login_admin
       delete :destroy, :id => norm_account.id
       Account.exists?(norm_account.id).should be_false
     end
 
     it "redirects to the accounts list" do
-      http_login_admin
+      login_admin
       delete :destroy, :id => norm_account.id
       response.should redirect_to(accounts_url)
     end

@@ -1,20 +1,34 @@
 #This file contains helpers for handling basic authorization in tests
 
 module AuthHelper
-  def http_login(name, password)
-    request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(name, password)
+  def login(account_info)
+    account = nil
+    case account_info
+    when Account
+      account = account_info
+    when String
+      account = Account.find_by_name(name)
+    when Fixnum
+      session[:account] = account_info and return
+    else
+      fail("Unknown login parameter: #{account_info}") and return
+    end
+    session[:account] = account.id
   end 
 
   def verify_needs_authorization
     yield
-    response.status.should eq(401)
+    response.status.should redirect_to(:session)
   end
 
   def verify_needs_admin
-    http_login_non_admin
+    login_non_admin
     yield
     response.status.should eq(403)
   end
 
+  def admin_account
+    @admin_account ||= Account.find_by_name('Admin')
+  end
  
 end
