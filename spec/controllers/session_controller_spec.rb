@@ -5,16 +5,16 @@ describe SessionController do
   include AuthHelper
   fixtures :accounts
   
-  describe "GET home" do
+  describe "GET show" do
     
     it "redirects to new when not logged in" do
-      get :home
+      get :show
       response.should redirect_to(:action => "new")
     end
     
     it "redirects to accounts when admin" do
       login(admin_account)
-      get :home
+      get :show
       response.should redirect_to(:controller => "accounts", :action => "index")
     end
     
@@ -31,6 +31,13 @@ describe SessionController do
       get :new
       response.should be_ok
       session[:account].should be_nil
+    end
+    
+    it "saves a last_url_value" do
+      url = "test/test"
+      request.env["HTTP_REFERER"] = url
+      get :new
+      assigns(:last_url_value).should eq(url)
     end
   end
   

@@ -2,12 +2,14 @@ class SessionController < ApplicationController
 
   before_filter :authenticate, :except => [:new] 
    
-  def home
+  def show
     redirect_to :controller => :accounts, :action => :index
   end
   
   def new
-    session[:account] = nil
+    reset_session
+    @account = nil
+    @last_url_value = request.env["HTTP_REFERER"]
     render :login
   end
 end

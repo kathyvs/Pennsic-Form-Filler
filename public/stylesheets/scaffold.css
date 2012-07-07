@@ -20,8 +20,7 @@ div#header h1 {
     padding-left: 0.5em;
 }
 
-div#header p {
-    padding-top: 1em;
+div#header .login_status {
     padding-right: 1em;
     float: right;
 }

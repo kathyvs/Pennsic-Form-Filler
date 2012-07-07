@@ -1,0 +1,18 @@
+<% @title = 'Login' %>
+
+<%= form_tag :action => "create" do%>
+
+  <%= hidden_field_tag "last_url", @last_url_value %>
+  <div class="field">
+    <label for="name">Name or Email:</label>
+    <%= text_field_tag "name" %>
+  </div>
+  <div class="field">
+    <label for="password">Password:</label>
+    <%= password_field_tag "password"%>
+  </div>
+  <div class="actions">
+    <%= submit_tag "Log in" %>
+  </div>
+<% end %>
+<% @links = [] %>

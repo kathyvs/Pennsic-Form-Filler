@@ -11,10 +11,14 @@
 <body>
 <section>
   <div id="header">
-    <h1><%= @title %></h1>
-    <p id="login_status">
-    	TBD
+    <p class="login_status">
+      <% if logged_in? %>
+        Logged in as <%= login_name %>
+      <% else %>
+        Not logged in
+      <% end%>
     </p>
+    <h1><%= @title %></h1>
   </div>
 </section>
 <section>
