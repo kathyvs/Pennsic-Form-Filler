@@ -11,5 +11,20 @@ require 'spec_helper'
 #   end
 # end
 describe SessionHelper do
-  pending "add some examples to (or delete) #{__FILE__}"
+  
+  describe "for field_classes" do 
+    
+    before :each do
+      @login = Login.new(:name => 'a')
+      @login.valid?
+    end
+    
+    it "returns 'field' when no errors" do
+      helper.field_classes(:name).should eq('field')  
+    end
+    
+    it "returns 'field field_with_errors' when errors" do
+      helper.field_classes(:password).should eq('field field_with_errors')
+    end
+  end
 end

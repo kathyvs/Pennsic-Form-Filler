@@ -6,18 +6,20 @@ class ApplicationController < ActionController::Base
   protected
   
   def authenticate
-    logger.info('Authenticating')
-    unless session[:account]
+    unless account
       redirect_to url_for(:new_session)
     end
   end
   
   def account
-    @account ||= Account.find(session[:account])
+    logger.info("Account id = #{session[:account]}")
+    @account ||= Account.where(:id => session[:account])[0]
+    logger.info("Account = #{@account}")
+    return @account
   end
 
   def require_admin
-    if not (account and account.admin?) 
+    if !(account && account.admin?) 
       render :text => 'Forbidden', :status => 403
       return false
     end

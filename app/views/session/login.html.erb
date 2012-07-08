@@ -1,15 +1,24 @@
 <% @title = 'Login' %>
 
 <%= form_tag :action => "create" do%>
-
+  <% if @login.errors.any? %>
+    <div id="error_explanation">
+      <ul>
+      <% @login.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
   <%= hidden_field_tag "last_url", @last_url_value %>
-  <div class="field">
+  <div class="<%= field_classes :name %>">
     <label for="name">Name or Email:</label>
-    <%= text_field_tag "name" %>
+    <%= text_field_tag "name", @login.name, :name => "login[name]" %>
   </div>
-  <div class="field">
+  <div class="<%= field_classes :password %>">
     <label for="password">Password:</label>
-    <%= password_field_tag "password"%>
+    <%= password_field_tag "password", "", :name => "login[password]"%>
   </div>
   <div class="actions">
     <%= submit_tag "Log in" %>

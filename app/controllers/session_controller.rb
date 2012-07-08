@@ -1,15 +1,31 @@
 class SessionController < ApplicationController
 
-  before_filter :authenticate, :except => [:new] 
+  before_filter :authenticate, :except => [:new, :create] 
    
   def show
-    redirect_to :controller => :accounts, :action => :index
+    controller = account.is_admin? ? :accounts : :events 
+    redirect_to :controller => controller, :action => :index
   end
   
   def new
     reset_session
     @account = nil
-    @last_url_value = request.env["HTTP_REFERER"]
-    render :login
+    @login = Login.new(:last_url => request.env["HTTP_REFERER"])
+    render :login 
   end
+  
+  def create
+    @account = nil
+    @login = Login.new(params[:login])
+    if @login.valid?
+      @account = @login.login
+    end
+    if (@account)
+      session[:account] = @account.id
+      redirect_to(@login.last_url.blank? ? {:action => :show} : @login.last_url)
+    else
+      render :login
+    end
+  end
+  
 end
