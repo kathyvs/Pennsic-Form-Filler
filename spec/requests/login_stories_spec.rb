@@ -5,9 +5,10 @@ describe "LoginStories" do
   
   describe "when not logged in" do
     urls.each do |url|
-      it "goes to login page" do
+      it "#{url} goes to login page" do
         get url
-        response.status.should redirect_to(:new_session)
+        response.status.should redirect_to(
+            :controller => :session, :action => :new, :return_to => url)
       end
     end
     

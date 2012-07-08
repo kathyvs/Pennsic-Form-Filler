@@ -10,7 +10,7 @@ class SessionController < ApplicationController
   def new
     reset_session
     @account = nil
-    @login = Login.new(:last_url => request.env["HTTP_REFERER"])
+    @login = Login.new(:last_url => params[:return_to])
     render :login 
   end
   
@@ -22,6 +22,7 @@ class SessionController < ApplicationController
     end
     if (@account)
       session[:account] = @account.id
+      logger.info("Login = #{@login.inspect}")
       redirect_to(@login.last_url.blank? ? {:action => :show} : @login.last_url)
     else
       render :login

@@ -7,15 +7,14 @@ class ApplicationController < ActionController::Base
   
   def authenticate
     unless account
-      redirect_to url_for(:new_session)
+      redirect_to :controller => "session", :action => "new", 
+                  :return_to => request.env["REQUEST_URI"]
+      return false
     end
   end
   
   def account
-    logger.info("Account id = #{session[:account]}")
     @account ||= Account.where(:id => session[:account])[0]
-    logger.info("Account = #{@account}")
-    return @account
   end
 
   def require_admin

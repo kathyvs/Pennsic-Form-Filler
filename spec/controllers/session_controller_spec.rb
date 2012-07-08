@@ -40,8 +40,7 @@ describe SessionController do
     
     it "saves a last_url value" do
       url = "test/test"
-      request.env["HTTP_REFERER"] = url
-      get :new
+      get :new, :return_to => url
       assigns(:login).last_url.should eq(url)
     end
   end
