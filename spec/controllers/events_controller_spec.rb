@@ -14,7 +14,7 @@ describe EventsController do
     
     it "get index requires authentication" do
       get :index
-      response.status.should eq(401)
+      response.status.should redirect_to(:new_session)
     end
   end
   

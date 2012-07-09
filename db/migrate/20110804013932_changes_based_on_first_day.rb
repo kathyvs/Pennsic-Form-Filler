@@ -6,7 +6,7 @@ class ChangesBasedOnFirstDay < ActiveRecord::Migration
   end
 
   def self.down
-    drop_column :forms, :is_intermediate, :printed
+    remove_column :forms, :is_intermediate, :printed
     change_column :forms, :documentation, :string, :limit => 255
   end
 end

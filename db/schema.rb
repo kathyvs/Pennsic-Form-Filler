@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110804013932) do
+ActiveRecord::Schema.define(:version => 20120709042302) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -19,6 +19,11 @@ ActiveRecord::Schema.define(:version => 20110804013932) do
     t.boolean  "is_admin",        :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "accounts_events", :id => false, :force => true do |t|
+    t.integer "event_id"
+    t.integer "account_id"
   end
 
   create_table "clients", :force => true do |t|
@@ -39,7 +44,6 @@ ActiveRecord::Schema.define(:version => 20110804013932) do
 
   create_table "events", :force => true do |t|
     t.string   "title"
-    t.integer  "account_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -59,7 +63,7 @@ ActiveRecord::Schema.define(:version => 20110804013932) do
     t.string   "name_type_other"
     t.string   "submitted_name"
     t.string   "documentation",          :limit => 1000
-    t.binary   "doc_pdf",                :limit => 16777215
+    t.binary   "doc_pdf",                :limit => 5242880
     t.date     "date_submitted"
     t.boolean  "needs_review"
     t.string   "authentic_text"
