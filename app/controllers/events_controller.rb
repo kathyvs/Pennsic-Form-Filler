@@ -6,14 +6,14 @@ class EventsController < ApplicationController
       if params.has_key?(:id)
         @events_for = Account.find(params[:id])
         response_not_found unless @events_for
-        @events = Event.find_all_by_account_id(@events_for.id)
+        @events = Event.find_for_account(@events_for.id)
       else
         @events_for = nil
         @events = Event.all
       end
     else
       @events_for = @account
-      @events = Event.find_all_by_account_id(@account.id)
+      @events = Event.find_for_account(@account.id)
     end
     respond_to do |format|
       format.html # index.html.erb

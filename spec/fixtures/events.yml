@@ -1,15 +1,12 @@
 
 pennsic_40:
-  id: 1
+  id: 40
   title: "Pennsic XL"
-  account_id: 2
-
+  
 pennsic_39:
-  id: 2
+  id: 39
   title: "Pennsic XXXIX"
-  account_id: 2
 
 war_practice_2011:
-  id: 3
+  id: 511
   title: "War Practice 2011"
-  account_id: 3

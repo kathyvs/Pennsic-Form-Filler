@@ -6,6 +6,9 @@ require 'spec_helper'
 
 describe EventsController do
   include AuthHelper
+  
+  fixtures :accounts, :events
+
   def mock_event(stubs={})
     @mock_event ||= mock_model(Event, stubs).as_null_object
   end
@@ -28,15 +31,14 @@ describe EventsController do
   
   describe "Authenticated as senior herald do" do
     before :each do
-      http_login('pennsic', 'pennsic_pwd')
+      login('Pennsic')
     end
     
     describe "GET index" do
-      it "assigns all events as @events" do
-        Event.stub(:all) { [mock_event] }
+      it "assigns all events associated current account xwith as @events" do
         get :index
         response.status.should eq(:success)
-        assigns(:events).should eq([mock_event])
+        assigns(:events).should eq([events(:pennsic40), events(:pennsic39)])
       end
     end
     

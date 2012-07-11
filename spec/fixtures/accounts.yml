@@ -8,7 +8,7 @@ admin:
   
 pennsic:
   id: 2
-  name: 'Pennsic'
+  name: 'Pennsic Guest'
   salt: 2002
   is_admin: false
   hashed_password: <%= Account.encrypt_password('pennsic_pwd', '2002') %>
@@ -19,4 +19,3 @@ war_practice:
   salt: 3003
   is_admin: false
   hashed_password: <%= Account.encrypt_password('wp_pwd', '3003') %>
-    
