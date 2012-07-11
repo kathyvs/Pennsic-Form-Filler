@@ -6,15 +6,16 @@ class EventsController < ApplicationController
       if params.has_key?(:id)
         @events_for = Account.find(params[:id])
         response_not_found unless @events_for
-        @events = Event.find_for_account(@events_for.id)
+        @events = Event.find_all_for_account(@events_for)
       else
         @events_for = nil
         @events = Event.all
       end
     else
       @events_for = @account
-      @events = Event.find_for_account(@account.id)
+      @events = Event.find_all_for_account(@account)
     end
+    @events = @events.sort_by(&:title)
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @events }
@@ -58,7 +59,7 @@ class EventsController < ApplicationController
   # POST /events.xml
   def create
     @event = Event.new(params[:event])
-
+    @event.accounts = [account]
     respond_to do |format|
       if @event.save
         format.html { redirect_to(@event, :notice => 'Event was successfully created.') }

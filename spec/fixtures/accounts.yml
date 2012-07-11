@@ -8,7 +8,7 @@ admin:
   
 pennsic:
   id: 2
-  name: 'Pennsic Guest'
+  name: 'Pennsic'
   salt: 2002
   is_admin: false
   hashed_password: <%= Account.encrypt_password('pennsic_pwd', '2002') %>

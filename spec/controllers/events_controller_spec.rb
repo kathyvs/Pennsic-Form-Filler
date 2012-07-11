@@ -6,6 +6,7 @@ require 'spec_helper'
 
 describe EventsController do
   include AuthHelper
+  render_views
   
   fixtures :accounts, :events
 
@@ -35,16 +36,16 @@ describe EventsController do
     end
     
     describe "GET index" do
-      it "assigns all events associated current account xwith as @events" do
+      it "assigns all events associated with current account as @events" do
         get :index
-        response.status.should eq(:success)
-        assigns(:events).should eq([events(:pennsic40), events(:pennsic39)])
+        response.should be_ok
+        assigns(:events).should eq([events(:pennsic_40), events(:pennsic_39)])
       end
     end
     
   describe "GET show" do
     it "assigns the requested event as @event" do
-      Event.stub(:find).with("37") { mock_event }
+      Event.stub(:find_with_account).with("37", accounts(:pennsic)) { mock_event }
       get :show, :id => "37"
       assigns(:event).should be(mock_event)
     end
@@ -69,9 +70,11 @@ describe EventsController do
   describe "POST create" do
     describe "with valid params" do
       it "assigns a newly created event as @event" do
-        Event.stub(:new).with({'these' => 'params'}) { mock_event(:save => true) }
-        post :create, :event => {'these' => 'params'}
-        assigns(:event).should be(mock_event)
+        post :create, :event => {:title => 'Test1'}
+        assigns(:event).should_not be_nil
+        e = assigns(:event)
+        e.title.should eq('Test1')
+        e.accounts.should eq([assigns(:account)])
       end
 
       it "redirects to the created event" do
