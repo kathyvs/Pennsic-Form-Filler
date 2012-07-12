@@ -21,10 +21,11 @@ class SessionController < ApplicationController
       @account = @login.login
     end
     if (@account)
+      logger.info("Successfully logged in as #{@account.name}")
       session[:account] = @account.id
-      logger.info("Login = #{@login.inspect}")
       redirect_to(@login.last_url.blank? ? {:action => :show} : @login.last_url)
     else
+      logger.debug("Errors in login: #{@login.errors.inspect}")
       render :login
     end
   end
