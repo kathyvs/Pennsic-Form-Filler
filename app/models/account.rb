@@ -4,6 +4,7 @@
 class Account < ActiveRecord::Base
 
   has_and_belongs_to_many :events
+  has_and_belongs_to_many :roles
 
   validates :name, :presence => true, :uniqueness => true
   validates :password, :confirmation => true
@@ -45,4 +46,10 @@ class Account < ActiveRecord::Base
   def generate_salt
     self.salt = self.object_id.to_s + rand.to_s
   end
+end
+
+#
+# Describes an account that is also a person
+#
+class NamedAccount < Account
 end

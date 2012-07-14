@@ -4,23 +4,16 @@ describe Account do
   describe "fetch by username and password" do
     fixtures :accounts
     
-    it "should have three accounts in the fixture" do
-      Account.all.length.should == 3   
-    end
-
-    [{:name => 'Admin', :password => 'admin_pwd'},
-     {:name => 'Pennsic', :password => 'pennsic_pwd', :expected => 'Pennsic'},
-     {:name => 'War Practice', :password => 'wp_pwd'}].each do |a|
-      it "should be able to login #{a[:name]} with correct password" do
-        account = Account.login(a[:name], a[:password])
-        account.should_not be_nil
-        expected_name = a.has_key?(:expected) ? a[:expected] : a[:name]
-        account.name.should == expected_name
-        is_admin = a[:name] == 'Admin'
-        account.admin?.should == is_admin
+    [:admin, :pennsic, :war_practice, :clerk, :senior, :herald].each do |a|
+      it "should be able to login #{a} with correct password" do
+        expected_account = accounts(a)
+        account = Account.login(expected_account.name, "#{a}_pwd")
+        account.should eq(expected_account)
+        account.should be_valid
       end
-      it "should not be able to login #{a[:name]} with incorrect password" do
-       account = Account.login(a[:name], "bad")
+
+      it "should not be able to login #{a} with incorrect password" do
+       account = Account.login(a, "bad")
        account.should be_nil
       end
     end

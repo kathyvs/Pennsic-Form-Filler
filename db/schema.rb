@@ -10,20 +10,28 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120709042302) do
+ActiveRecord::Schema.define(:version => 20120713235055) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
     t.string   "hashed_password"
     t.string   "salt"
-    t.boolean  "is_admin",        :default => false
+    t.boolean  "is_admin",                      :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "type",            :limit => 15, :default => "Account", :null => false
+    t.string   "sca_name"
+    t.string   "contact_info"
   end
 
   create_table "accounts_events", :id => false, :force => true do |t|
     t.integer "event_id"
     t.integer "account_id"
+  end
+
+  create_table "accounts_roles", :id => false, :force => true do |t|
+    t.integer "account_id"
+    t.integer "role_id"
   end
 
   create_table "clients", :force => true do |t|
@@ -63,7 +71,7 @@ ActiveRecord::Schema.define(:version => 20120709042302) do
     t.string   "name_type_other"
     t.string   "submitted_name"
     t.string   "documentation",          :limit => 1000
-    t.binary   "doc_pdf",                :limit => 16777215
+    t.binary   "doc_pdf",                :limit => 5242880
     t.date     "date_submitted"
     t.boolean  "needs_review"
     t.string   "authentic_text"
@@ -86,6 +94,10 @@ ActiveRecord::Schema.define(:version => 20120709042302) do
     t.string   "release2"
     t.boolean  "is_intermediate"
     t.boolean  "printed"
+  end
+
+  create_table "roles", :force => true do |t|
+    t.string "name"
   end
 
 end
