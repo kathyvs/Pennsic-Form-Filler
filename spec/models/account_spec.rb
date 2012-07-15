@@ -27,40 +27,94 @@ describe Account do
 
   describe "validation" do
     
-    def default_params
-      {'name' => 'newName', 'password' => 'secret', 
-       'password_confirmation' => 'secret'}
-    end
-
-    def validate(override = {})
+    def validate(cls, override)
       params = default_params.merge(override)
-      Account.new(params)
+      cls.new(params)
     end
 
-    it "should be valid with default params" do
+    def verify_default
       account = validate
       account.should be_valid
     end
-
-    it "should require a non-empty name" do
+    
+    def verify_non_empty_name
       account = validate('name' => '')
       account.should have(1).error_on(:name)
     end
-
-    it "should require a unique name" do
-      Account.new(default_params).save
-      account = validate
-      account.should have(1).error_on(:name)
-    end
-
-    it "should require a non-empty password" do
+    
+    def verify_non_empty_password
       account = validate('password' => '', 'password_confirmation' => '')
       account.should have(1).error_on(:password)
     end
+    
+    describe Account do
+    
+      def default_params
+        {'name' => 'newName', 'password' => 'secret', 
+         'password_confirmation' => 'secret'}
+      end
 
-    it "should require password_confirmation to match password" do
-      account = validate('password_confirmation' => 'other')
-      account.should have(1).error_on(:password)
+      def validate(override = {})
+        super(Account, override)
+      end
+
+      it "should be valid with default params" do
+        verify_default
+      end
+
+      it "should require a non-empty name" do
+        verify_non_empty_name
+      end
+
+      it "should require a unique name" do
+        Account.new(default_params.merge({'sca_name' => '', 'contact_info' => ''})).save
+        account = validate
+        account.should have(1).error_on(:name)
+      end
+    
+      it "should require a non-empty password" do
+        verify_non_empty_password
+      end
+
+      it "sca_name should be nil" do
+        account = validate("sca_name" => 'SCA Name')
+        account.should have(1).error_on(:sca_name)
+      end
+   end
+   
+   describe NamedAccount do
+   
+     def default_params
+        {'name' => 'newName', 'password' => 'secret', 
+         'password_confirmation' => 'secret'}
+      end
+
+      def validate(override = {})
+        super(Account, override)
+      end
+
+      it "should be valid with default params" do
+        verify_default
+      end
+
+      it "should require a non-empty name" do
+        verify_non_empty_name
+      end
+
+      it "should require a unique name" do
+        Account.new(default_params).save
+        account = validate
+        account.should have(1).error_on(:name)
+      end
+    
+      it "should require a non-empty password" do
+        verify_non_empty_password
+      end
+
+      it "should require password_confirmation to match password" do
+        account = validate('password_confirmation' => 'other')
+        account.should have(1).error_on(:password)
+      end
     end
   end
 end
