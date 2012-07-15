@@ -79,8 +79,12 @@ class AccountsController < ApplicationController
   # DELETE /accounts/1.xml
   def destroy
     @account = Account.find(params[:id])
-    @account.destroy
-
+    begin
+      @account.destroy
+    rescue ActiveRecord::JDBCError
+      logger.warn "Error: #{$!.inspect}"
+    end
+    
     respond_to do |format|
       format.html { redirect_to(accounts_url) }
       format.xml  { head :ok }

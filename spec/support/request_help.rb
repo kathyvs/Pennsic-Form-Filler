@@ -1,8 +1,8 @@
 
 module AuthorizationHandler
 
-  DEF_ACCOUNTS = {:admin => 'Admin', :pennsic => 'Pennsic', 
-                  :wp => 'War Practice'}
+  DEF_ACCOUNTS = {:admin => 'Admin', :pennsic => 'Pennsic Guest', 
+                  :wp => 'War Practice Guest', :clerk => 'Clerk'}
 
   def login_as(user, pwd = nil)
     if not pwd

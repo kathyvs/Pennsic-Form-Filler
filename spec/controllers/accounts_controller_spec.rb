@@ -10,7 +10,7 @@ describe AccountsController do
   fixtures :accounts
 
   def norm_account
-    @norm_account ||= Account.find_by_name('Pennsic')
+    @norm_account ||= accounts(:pennsic)
   end
 
   def login_non_admin

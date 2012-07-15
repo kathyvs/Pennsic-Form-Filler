@@ -34,7 +34,7 @@ gem 'ruby-debug'
 group :development, :test do
   gem 'jdbc-sqlite3'
   gem 'activerecord-jdbcsqlite3-adapter'
-  gem 'rspec-rails', '>= 2.5.0'
+  gem 'rspec-rails', '>= 2.11.0'
   gem 'rack'
   #gem 'ruby-debug'
 #   gem 'webrat'

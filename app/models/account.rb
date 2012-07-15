@@ -52,4 +52,8 @@ end
 # Describes an account that is also a person
 #
 class NamedAccount < Account
+
+  def self.model_name
+    Account.model_name
+  end
 end

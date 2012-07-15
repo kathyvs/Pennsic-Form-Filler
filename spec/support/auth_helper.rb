@@ -6,12 +6,14 @@ module AuthHelper
     case account_info
     when Account
       account = account_info
+    when Symbol
+      account = accounts(account_info)
     when String
       account = Account.find_by_name(account_info)
     when Fixnum
       session[:account] = account_info and return
     else
-      fail("Unknown login parameter: #{account_info}") and return
+      fail("Unknown login parameter: #{account_info.inspect}") and return
     end
     session[:account] = account.id
   end 
