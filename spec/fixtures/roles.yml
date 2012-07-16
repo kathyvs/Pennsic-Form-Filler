@@ -1,0 +1,19 @@
+admin:
+  id: 1
+  name: admin
+
+senior:
+  id: 18
+  name: senior
+
+clerk:
+  id: 3
+  name: clear
+
+herald:
+  id: 8
+  name: herald
+  
+guest:
+  id: 7
+  name: guest

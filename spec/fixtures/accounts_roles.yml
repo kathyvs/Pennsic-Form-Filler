@@ -1,0 +1,28 @@
+
+admin_is_admin:
+  account_id: 1
+  role_id: 1
+  
+pennsic_is_guest:
+  account_id: 2
+  role_id: 7
+  
+war_practice_is_guest:
+  account_id: 3
+  role_id: 7
+  
+clerk_is_clerk:
+  account_id: 4
+  role_id: 3
+
+senior_is_senior:
+  account_id: 5
+  role_id: 18
+  
+senior_is_herald:
+  account_id: 5
+  role_id: 8
+  
+herald_is_herald:
+  account_id: 6
+  role_id: 8

@@ -10,3 +10,23 @@ pennsic_40_guest:
 war_practice_2011_guest:
   event_id: 511
   account_id: 3
+  
+pennsic_39_clerk:
+  event_id: 39
+  account_id: 4
+  
+pennsic_40_clerk:
+  event_id: 40
+  account_id: 4
+ 
+pennsic_40_senior:
+  event_id: 40
+  account_id: 5
+  
+pennsic_40_herald:
+  event_id: 40
+  account_id: 6
+  
+war_practice_senior:
+  event_id: 511
+  account_id: 5
