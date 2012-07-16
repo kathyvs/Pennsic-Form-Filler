@@ -8,6 +8,7 @@ class Account < ActiveRecord::Base
 
   validates :name, :presence => true, :uniqueness => true
   validates :password, :confirmation => true
+  
   attr_reader :password
   attr_accessor :password_confirmation
   
@@ -53,6 +54,9 @@ end
 #
 class NamedAccount < Account
 
+  validates :sca_name, :presence => true, :uniqueness => true
+  validates :contact_info, :presence => true, :uniqueness => true
+  
   def self.model_name
     Account.model_name
   end

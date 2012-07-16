@@ -76,21 +76,17 @@ describe Account do
         verify_non_empty_password
       end
 
-      it "sca_name should be nil" do
-        account = validate("sca_name" => 'SCA Name')
-        account.should have(1).error_on(:sca_name)
-      end
    end
    
    describe NamedAccount do
    
      def default_params
-        {'name' => 'newName', 'password' => 'secret', 
-         'password_confirmation' => 'secret'}
+        {'name' => 'newName', 'password' => 'secret',  'password_confirmation' => 'secret',
+         'sca_name' => 'SCA name', 'contact_info' => '111-22-3333'}
       end
 
       def validate(override = {})
-        super(Account, override)
+        super(NamedAccount, override)
       end
 
       it "should be valid with default params" do
@@ -101,10 +97,12 @@ describe Account do
         verify_non_empty_name
       end
 
-      it "should require a unique name" do
-        Account.new(default_params).save
+      it "should require a unique name, SCA name, and contact" do
+        NamedAccount.new(default_params).save
         account = validate
-        account.should have(1).error_on(:name)
+        account.should have(1).errors_on(:name)
+        account.should have(1).errors_on(:sca_name)
+        account.should have(1).errors_on(:contact_info)
       end
     
       it "should require a non-empty password" do
@@ -114,6 +112,16 @@ describe Account do
       it "should require password_confirmation to match password" do
         account = validate('password_confirmation' => 'other')
         account.should have(1).error_on(:password)
+      end
+      
+      it "should required a non-empty SCA name" do
+        account = validate("sca_name" => "")
+        account.should have(1).error_on(:sca_name)
+      end
+
+      it "should required a non-empty contact" do
+        account = validate("contact_info" => "")
+        account.should have(1).error_on(:contact_info)
       end
     end
   end
