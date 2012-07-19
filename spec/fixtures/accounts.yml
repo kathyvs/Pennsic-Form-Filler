@@ -3,7 +3,6 @@ admin:
   name: 'Admin'
   id: 1
   salt: 1001
-  is_admin: true
   hashed_password: <%= Account.encrypt_password('admin_pwd', '1001') %>
   type: Account
   
@@ -11,7 +10,6 @@ pennsic:
   id: 2
   name: 'Pennsic Guest'
   salt: 2002
-  is_admin: false
   hashed_password: <%= Account.encrypt_password('pennsic_pwd', '2002') %>
   type: Account
   
@@ -19,7 +17,6 @@ war_practice:
   id: 3
   name: 'War Practice Guest'
   salt: 3003
-  is_admin: false
   hashed_password: <%= Account.encrypt_password('war_practice_pwd', '3003') %>
   type: Account
 
@@ -27,7 +24,6 @@ clerk:
   name: 'Clerk'
   id: 4
   salt: 4004
-  is_admin: false
   hashed_password: <%= Account.encrypt_password('clerk_pwd', '4004') %>
   type: Account
   
@@ -37,7 +33,6 @@ senior:
   salt: 5005
   sca_name: 'Senior Herald'
   contact_info: 'senior@test.com'
-  is_admin: false
   hashed_password: <%= Account.encrypt_password('senior_pwd', '5005') %>
   type: NamedAccount
   
@@ -47,7 +42,6 @@ herald:
   salt: 6006
   sca_name: "Junior Herald"
   contact_info: "412-555-1212"
-  is_admin: false
   hashed_password: <%= Account.encrypt_password('herald_pwd', '6006') %>
   type: NamedAccount
   

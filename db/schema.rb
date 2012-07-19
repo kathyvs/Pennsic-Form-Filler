@@ -10,13 +10,12 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120713235055) do
+ActiveRecord::Schema.define(:version => 20120716141007) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
     t.string   "hashed_password"
     t.string   "salt"
-    t.boolean  "is_admin",                      :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type",            :limit => 15, :default => "Account", :null => false

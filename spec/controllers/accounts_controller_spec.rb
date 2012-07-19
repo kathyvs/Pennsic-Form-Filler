@@ -7,7 +7,7 @@ describe AccountsController do
 
   include AuthHelper
   include ModelHelper
-  fixtures :accounts
+  fixtures :accounts, :roles, :accounts_roles
 
   def norm_account
     @norm_account ||= accounts(:clerk)
@@ -72,10 +72,11 @@ describe AccountsController do
         get :new
       end
     end
-    it "assigns a new account as @account" do
+    it "assigns a new named account as @account" do
       login_admin
       get :new
       assigns(:account).should be_new
+      assigns(:account).should be_an_instance_of(NamedAccount)
     end
   end
 

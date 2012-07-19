@@ -35,7 +35,7 @@ class Account < ActiveRecord::Base
   end
 
   def admin?
-    is_admin
+    @is_admin ||= roles.member?(Role.find_by_name(:admin))
   end
 
   def password_must_be_present

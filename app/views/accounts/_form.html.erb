@@ -16,6 +16,14 @@
     <%= f.text_field :name %>
   </div>
   <div class="field">
+    <%= f.label :sca_name %><br />
+    <%= f.text_field :sca_name, :length => 45 %>
+  </div>
+  <div class="field">
+    <%= f.label :contact_info, "Contact information" %><span class="comment">(e-mail or phone)</span><br />
+    <%= f.text_field :contact_info %>
+  </div>
+  <div class="field">
     <%= f.label :password %><br />
     <%= f.password_field :password %>
   </div>

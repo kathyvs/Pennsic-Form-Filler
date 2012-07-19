@@ -25,6 +25,18 @@ describe Account do
 #http://railshotspot.blogspot.com/2008/07/rspec-fixtures-vs-mocks.html
   end
 
+  describe "admin?" do
+    fixtures :accounts, :roles, :accounts_roles
+    
+    it "is true for the admin" do
+      accounts(:admin).should be_admin
+    end
+    
+    it "is not true for clerk" do
+      accounts(:clerk).should_not be_admin
+    end
+  end
+
   describe "validation" do
     
     def validate(cls, override)

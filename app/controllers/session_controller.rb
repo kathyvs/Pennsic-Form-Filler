@@ -3,7 +3,7 @@ class SessionController < ApplicationController
   before_filter :authenticate, :except => [:new, :create] 
    
   def show
-    controller = account.is_admin? ? :accounts : :events 
+    controller = account.admin? ? :accounts : :events 
     redirect_to :controller => controller, :action => :index
   end
   

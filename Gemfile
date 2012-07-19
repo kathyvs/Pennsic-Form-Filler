@@ -12,8 +12,8 @@ gem "jdbc-mysql"
 gem "activerecord-jdbc-adapter"
 gem "activerecord-jdbcmysql-adapter"
 gem "devise"
-# Use unicorn as the web server
-# gem 'unicorn'R
+# Use glassfish as the web server
+gem 'glassfish'
 
 # Deploy with Capistrano
 # gem 'capistrano'

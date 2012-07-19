@@ -30,7 +30,7 @@ class AccountsController < ApplicationController
   # GET /accounts/new
   # GET /accounts/new.xml
   def new
-    @account = Account.new
+    @account = NamedAccount.new
 
     respond_to do |format|
       format.html # new.html.erb
