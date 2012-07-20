@@ -35,13 +35,6 @@
   </tbody>
 </table>
 
-<% if @account.admin? %>
-<p>
-  <b>Account:</b>
-  <%= link_to @event.account.name, @event.account %>
-</p>
-<% end %>
-
 <%
   @links = [link_to('New Client', new_event_client_path(:event_id => @event)),
             link_to('Back', events_path)]

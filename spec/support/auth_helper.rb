@@ -1,6 +1,7 @@
 #This file contains helpers for handling basic authorization in tests
 
 module AuthHelper
+  
   def login(account_info)
     account = nil
     case account_info

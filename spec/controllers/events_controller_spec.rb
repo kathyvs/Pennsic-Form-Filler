@@ -6,9 +6,10 @@ require 'spec_helper'
 
 describe EventsController do
   include AuthHelper
+  extend FixtureHelper
   render_views
   
-  fixtures :accounts, :events
+  all_fixtures account_fixtures, event_fixtures
 
   def mock_event(stubs={})
     @mock_event ||= mock_model(Event, stubs).as_null_object
@@ -22,7 +23,7 @@ describe EventsController do
     end
   end
   
-  describe "Authenticated as client" do
+  describe "Authenticated as a guest" do
     
   end
   
@@ -32,20 +33,20 @@ describe EventsController do
   
   describe "Authenticated as senior herald do" do
     before :each do
-      login('Pennsic')
+      login('Senior')
     end
     
     describe "GET index" do
       it "assigns all events associated with current account as @events" do
         get :index
         response.should be_ok
-        assigns(:events).should eq([events(:pennsic_40), events(:pennsic_39)])
+        assigns(:events).should eq([events(:pennsic_40), events(:war_practice_2011)])
       end
     end
     
   describe "GET show" do
     it "assigns the requested event as @event" do
-      Event.stub(:find_with_account).with("37", accounts(:pennsic)) { mock_event }
+      Event.stub(:find_with_account).with("37", accounts(:senior)) { mock_event }
       get :show, :id => "37"
       assigns(:event).should be(mock_event)
     end
