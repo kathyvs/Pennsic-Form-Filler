@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120716141007) do
+ActiveRecord::Schema.define(:version => 20120719025504) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -93,6 +93,15 @@ ActiveRecord::Schema.define(:version => 20120716141007) do
     t.string   "release2"
     t.boolean  "is_intermediate"
     t.boolean  "printed"
+  end
+
+  create_table "rights", :force => true do |t|
+    t.string "name"
+  end
+
+  create_table "rights_roles", :id => false, :force => true do |t|
+    t.integer "right_id"
+    t.integer "role_id"
   end
 
   create_table "roles", :force => true do |t|
