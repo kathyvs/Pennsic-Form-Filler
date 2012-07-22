@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120722175532) do
+ActiveRecord::Schema.define(:version => 20120722211749) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -23,6 +23,9 @@ ActiveRecord::Schema.define(:version => 20120722175532) do
     t.string   "contact_info"
   end
 
+  add_index "accounts", ["name", "hashed_password"], :name => "login_idx"
+  add_index "accounts", ["sca_name"], :name => "sca_name_idx"
+
   create_table "accounts_events", :id => false, :force => true do |t|
     t.integer "event_id"
     t.integer "account_id"
@@ -32,6 +35,9 @@ ActiveRecord::Schema.define(:version => 20120722175532) do
     t.integer "account_id"
     t.integer "role_id"
   end
+
+  add_index "accounts_roles", ["account_id"], :name => "index_accounts_roles_on_account_id"
+  add_index "accounts_roles", ["role_id"], :name => "index_accounts_roles_on_role_id"
 
   create_table "clients", :force => true do |t|
     t.string   "society_name"
@@ -102,13 +108,20 @@ ActiveRecord::Schema.define(:version => 20120722175532) do
     t.string "name"
   end
 
+  add_index "rights", ["name"], :name => "index_rights_on_name"
+
   create_table "rights_roles", :id => false, :force => true do |t|
     t.integer "right_id"
     t.integer "role_id"
   end
 
+  add_index "rights_roles", ["right_id"], :name => "index_rights_roles_on_right_id"
+  add_index "rights_roles", ["role_id"], :name => "index_rights_roles_on_role_id"
+
   create_table "roles", :force => true do |t|
     t.string "name"
   end
+
+  add_index "roles", ["name"], :name => "index_roles_on_name"
 
 end
