@@ -18,7 +18,8 @@
 
 <% @events.each do |event| %>
   <tr>
-    <td><%= event.title %></td>
+    <td><%= event.current?  ? '*' : ''%>
+    	<%= event.title %></td>
     <% unless @events_for %>
       <td><%= account_names(event) %></td>
     <% end%>
