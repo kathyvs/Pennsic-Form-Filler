@@ -111,7 +111,6 @@ class EventsController < ApplicationController
       respond_not_found unless e
       e.is_current = true
       e.save!
-      current_event.save!
       redirect_to :events
     elsif
       respond :text => "unknown method", :status => 405
