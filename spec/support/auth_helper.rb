@@ -33,5 +33,18 @@ module AuthHelper
   def admin_account
     @admin_account ||= Account.find_by_name('Admin')
   end
+  
+  def login_with_rights(*rights)
+    role = Role.new(:name => "login_test_#{rights.join('_')}")
+    rights.each do |r|
+      role.rights << Right.find_by_name(r)
+    end
+    role.save!
+    a = Account.new(:name => "test_#{role.name}", :password => "test_pwd")
+    a.roles << role
+    a.save!
+    login(a)
+    return a
+  end
  
 end

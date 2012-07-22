@@ -28,6 +28,17 @@ class ApplicationController < ActionController::Base
   def respond_not_found 
     raise ActiveRecord::RecordNotFound.new
   end
+  
+  def respond_forbidden
+    raise ActionResource::ForbiddenAccess.new
+  end
+  
+  def require(right_method)
+    unless account and account.send(right_method) 
+      render :text => 'Forbidden', :status => 403
+      return false
+    end
+  end
 
   def require_event
     logger.info("Validating event #{params[:event_id]}")
@@ -40,4 +51,16 @@ class ApplicationController < ActionController::Base
     @client = Client.find_with_event(params[:client_id], @event)
     respond_not_found unless @client
   end
+  
+  CAN_PATTERN = /can_([a-z_]*)/
+  def method_missing(m, *args, &block)
+    m = m.to_s
+    case m
+    when CAN_PATTERN
+      return require("#{m}?")
+    else
+      super
+    end
+  end       
+
 end

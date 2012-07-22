@@ -25,15 +25,49 @@ describe Account do
 #http://railshotspot.blogspot.com/2008/07/rspec-fixtures-vs-mocks.html
   end
 
-  describe "admin?" do
-    fixtures :accounts, :roles, :accounts_roles
+  describe "can_<right>" do
     
-    it "is true for the admin" do
-      accounts(:admin).should be_admin
+    before :each do 
+      @right = Right.new(:name => 'xxx')
+      @role = Role.new(:name => 'test')
+      @role.rights << @right
+      @right.save!
+      @role.save!
     end
     
-    it "is not true for clerk" do
-      accounts(:clerk).should_not be_admin
+    Rspec::Matchers.define :be_able_to do |right|
+      match do |account|
+        method = "can_#{right}?"
+        account.send(method)
+      end
+    end
+    
+    it "returns false for unknown right" do
+      account = Account.new(:name => 'test', :password => 'pwd')
+      account.save!
+      account.should_not be_able_to(:zzz) 
+    end
+    
+    it "returns false if an account has no roles" do
+      account = Account.new(:name => 'test', :password => 'pwd')
+      account.save!
+      account.should_not be_able_to(:xxx) 
+    end
+    
+    it "returns false if an account has role without the correct rights" do
+      otherRight = Right.new(:name => :other)
+      otherRight.save!
+      account = Account.new(:name => 'test', :password => 'pwd')
+      account.roles << @role
+      account.save!
+      account.should_not be_able_to(:other)
+    end
+    
+    it "returns true if account has role that has right" do
+      account = Account.new(:name => 'test', :password => 'pwd')
+      account.roles << @role
+      account.save!
+      account.should be_able_to(:xxx)
     end
   end
 
@@ -137,5 +171,6 @@ describe Account do
       end
     end
   end
+  
 end
 

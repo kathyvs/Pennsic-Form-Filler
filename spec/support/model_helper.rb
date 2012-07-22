@@ -9,8 +9,6 @@ module ModelHelper
   
   Spec::Matchers.define :have_error do
     match do |model|
-      puts model.errors.inspect
-      puts model.errors.contains.inspect
       model.errors.contains
     end
   end

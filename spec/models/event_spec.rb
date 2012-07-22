@@ -8,15 +8,8 @@ describe Event do
  
     before(:each) do 
       @account = accounts(:pennsic)
-      puts @account.events.inspect
     end
 
-    it "test of fixture" do
-      Event.all.each do |e|
-        puts "Event ##{e.id}: #{e.accounts.inspect}"
-      end
-    end
-    
     it "Returns nil if the event does not exist" do
       result = Event.find_with_account(100, @account)
       result.should be_nil
@@ -49,4 +42,5 @@ describe Event do
       result.should eq(events(:pennsic_40, :pennsic_39))
     end
   end
+  
 end

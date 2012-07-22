@@ -27,9 +27,5 @@ describe EventsController do
       { :put => "/events/1" }.should route_to(:controller => "events", :action => "update", :id => "1")
     end
 
-    it "recognizes and generates #destroy" do
-      { :delete => "/events/1" }.should route_to(:controller => "events", :action => "destroy", :id => "1")
-    end
-
   end
 end

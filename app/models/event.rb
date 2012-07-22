@@ -8,5 +8,5 @@ class Event < ActiveRecord::Base
 
   def self.find_with_account(id, account)
     account.events.where(:id => id).first
-  end         
+  end
 end

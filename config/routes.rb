@@ -4,7 +4,7 @@ FormFiller::Application.routes.draw do
                      :path_names => {:new => "login"} do
  end
   
-  resources :events do
+  resources :events, :except => [:destroy] do
     resources :clients do
       resources :forms
     end

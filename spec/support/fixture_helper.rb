@@ -9,7 +9,7 @@ module FixtureHelper
     [:events, :accounts_events]
   end
   
-  def all_fixtures(*fixture_lists)
+  def fixture_list(*fixture_lists)
     total = fixture_lists.flatten
     fixtures(*total)
   end

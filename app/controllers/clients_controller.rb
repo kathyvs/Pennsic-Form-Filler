@@ -8,7 +8,7 @@ class ClientsController < ApplicationController
   # GET /clients
   # GET /clients.xml
   def index
-    redirect_to @event
+    render :text => 'TBD'
   end
 
   # GET /clients/1

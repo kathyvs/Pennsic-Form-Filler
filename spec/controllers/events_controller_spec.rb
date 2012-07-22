@@ -9,145 +9,259 @@ describe EventsController do
   extend FixtureHelper
   render_views
   
-  all_fixtures account_fixtures, event_fixtures
+  fixture_list event_fixtures
 
   def mock_event(stubs={})
     @mock_event ||= mock_model(Event, stubs).as_null_object
   end
 
-  describe "Unauthenticated" do
+  describe "GET index" do
     
-    it "get index requires authentication" do
+    it "requires authentication" do
       get :index
       response.status.should redirect_to(:new_session)
     end
-  end
   
-  describe "Authenticated as a guest" do
+    describe "when has modify_event right" do
+      
+      before :each do
+        login_with_rights(:modify_event)
+      end
+       
+      it "assigns all events as @events" do
+        get :index
+        response.should be_ok
+        @events = Event.all
+        assigns(:events).size.should be(@events.size)
+        @events.each do |e|
+          assigns(:events).should include(e)
+        end
+      end
     
-  end
-  
-  describe "Authenticated as herald" do
-    
-  end
-  
-  describe "Authenticated as senior herald do" do
-    before :each do
-      login('Senior')
     end
     
-    describe "GET index" do
+    describe "otherwise" do
+      
+      before :each do
+        @account = login_with_rights
+      end
+
       it "assigns all events associated with current account as @events" do
-        get :index
+        @account.events << events(:pennsic_40)
+        @account.events << events(:war_practice_2011)
+        @account.save!
+        get :index              
         response.should be_ok
         assigns(:events).should eq([events(:pennsic_40), events(:war_practice_2011)])
       end
     end
+  end
     
   describe "GET show" do
-    it "assigns the requested event as @event" do
-      Event.stub(:find_with_account).with("37", accounts(:senior)) { mock_event }
-      get :show, :id => "37"
-      assigns(:event).should be(mock_event)
+    include ActionController::UrlWriter
+    
+    fixtures :accounts, :accounts_events
+    
+    it "requires authentication" do
+      get :show, :id => 40
+      response.status.should redirect_to(:new_session)
+    end
+
+    def redirect_to_clients(event_id) 
+      redirect_to(event_clients_path(:event_id => event_id))
+    end
+    
+    it "assigns event to events" do
+      login(:senior)
+      get :show, :id => 40
+      response.status.should redirect_to_clients(40)
+    end
+
+    it "returns not found for standard accounts not associated with the event" do
+      login(:senior)
+      expect {get :show, :id => 39}.to raise_error(ActiveRecord::RecordNotFound)
+    end
+    
+    it "redirects when account has modify_event rights" do
+      login_with_rights(:modify_event)
+      get :show, :id => 39
+      response.status.should redirect_to_clients(39)
     end
   end
 
   describe "GET new" do
-    it "assigns a new event as @event" do
-      Event.stub(:new) { mock_event }
+    it "requires authentication" do
       get :new
-      assigns(:event).should be(mock_event)
+      response.status.should redirect_to(:new_session)
+    end
+    
+    describe "when has modify_event right" do
+      
+      before :each do
+        login_with_rights(:modify_event)
+      end
+       
+      it "assigns a new event as @event" do
+        Event.stub(:new) { mock_event }
+        get :new
+        assigns(:event).should be(mock_event)
+      end
+    end
+    
+    describe "otherwise" do
+      before :each do
+        login_with_rights
+      end
+      
+      it "is forbidden" do
+        get :new
+        response.status.should be(403)
+      end
     end
   end
 
   describe "GET edit" do
-    it "assigns the requested event as @event" do
-      Event.stub(:find).with("37") { mock_event }
-      get :edit, :id => "37"
-      assigns(:event).should be(mock_event)
+    it "requires authentication" do
+      get :new
+      response.status.should redirect_to(:new_session)
+    end
+    
+    describe "when has modify_event right" do
+      
+      before :each do
+        login_with_rights(:modify_event)
+      end
+       
+      it "assigns the requested event as @event" do
+        Event.stub(:find).with("37") { mock_event }
+        get :edit, :id => "37"
+        assigns(:event).should be(mock_event)
+      end
+    end
+    
+    describe "otherwise" do
+      before :each do
+        login_with_rights
+      end
+      
+      it "is forbidden" do
+        get :edit, :id => 333
+        response.status.should be(403)
+      end
     end
   end
 
   describe "POST create" do
-    describe "with valid params" do
-      it "assigns a newly created event as @event" do
-        post :create, :event => {:title => 'Test1'}
-        assigns(:event).should_not be_nil
-        e = assigns(:event)
-        e.title.should eq('Test1')
-        e.accounts.should eq([assigns(:account)])
+    it "requires authentication" do
+      post :create, :event => {:title => 'Test1'}
+      response.status.should redirect_to(:new_session)
+    end
+    
+    describe "when has modify_event right" do
+      
+      before :each do
+        @account = login_with_rights(:modify_event)
       end
+     
+      describe "with valid params" do
+        it "assigns a newly created event as @event" do
+          post :create, :event => {:title => 'Test1'}
+          assigns(:event).should_not be_nil
+          e = assigns(:event)
+          e.title.should eq('Test1')
+          e.accounts.should eq([@account])
+        end
+  
+        it "redirects to the created event" do
+           Event.stub(:new) { mock_event(:save => true) }
+          post :create, :event => {}
+          response.should redirect_to(event_url(mock_event))
+        end
+      end
+      
+      describe "with invalid params" do
+        it "assigns a newly created but unsaved event as @event" do
+          Event.stub(:new).with({'these' => 'params'}) { mock_event(:save => false) }
+          post :create, :event => {'these' => 'params'}
+          assigns(:event).should be(mock_event)
+        end
 
-      it "redirects to the created event" do
-        Event.stub(:new) { mock_event(:save => true) }
-        post :create, :event => {}
-        response.should redirect_to(event_url(mock_event))
+        it "re-renders the 'new' template" do
+          Event.stub(:new) { mock_event(:save => false) }
+          post :create, :event => {}
+          response.should render_template("new")
+        end
       end
     end
-
-    describe "with invalid params" do
-      it "assigns a newly created but unsaved event as @event" do
-        Event.stub(:new).with({'these' => 'params'}) { mock_event(:save => false) }
-        post :create, :event => {'these' => 'params'}
-        assigns(:event).should be(mock_event)
+  
+    describe "otherwise" do
+      before :each do
+        login_with_rights
       end
-
-      it "re-renders the 'new' template" do
-        Event.stub(:new) { mock_event(:save => false) }
-        post :create, :event => {}
-        response.should render_template("new")
+      
+      it "is forbidden" do
+        post :create, :event => {:title => 'test'}
+        response.status.should be(403)
       end
     end
   end
 
   describe "PUT update" do
-    describe "with valid params" do
-      it "updates the requested event" do
-        Event.stub(:find).with("37") { mock_event }
-        mock_event.should_receive(:update_attributes).with({'these' => 'params'})
-        put :update, :id => "37", :event => {'these' => 'params'}
+    it "requires authentication" do
+      post :create, :event => {:title => 'Test1'}
+      response.status.should redirect_to(:new_session)
+    end
+    
+    describe "when has modify_event right" do
+      
+      before :each do
+        @account = login_with_rights(:modify_event)
+      end
+     
+      describe "with valid params" do
+        it "updates the requested event" do
+          Event.stub(:find).with("37") { mock_event }
+          mock_event.should_receive(:update_attributes).with({'these' => 'params'})
+          put :update, :id => "37", :event => {'these' => 'params'}
+        end
+
+        it "assigns the requested event as @event" do
+          Event.stub(:find) { mock_event(:update_attributes => true) }
+          put :update, :id => "1"
+          assigns(:event).should be(mock_event)
+        end
+
+        it "redirects to the event" do
+          Event.stub(:find) { mock_event(:update_attributes => true) }
+          put :update, :id => "1"
+          response.should redirect_to(event_url(mock_event))
+        end
       end
 
-      it "assigns the requested event as @event" do
-        Event.stub(:find) { mock_event(:update_attributes => true) }
-        put :update, :id => "1"
-        assigns(:event).should be(mock_event)
-      end
+      describe "with invalid params" do
+        it "assigns the event as @event" do
+          Event.stub(:find) { mock_event(:update_attributes => false) }
+          put :update, :id => "1"
+          assigns(:event).should be(mock_event)
+        end
 
-      it "redirects to the event" do
-        Event.stub(:find) { mock_event(:update_attributes => true) }
-        put :update, :id => "1"
-        response.should redirect_to(event_url(mock_event))
+        it "re-renders the 'edit' template" do
+          Event.stub(:find) { mock_event(:update_attributes => false) }
+          put :update, :id => "1"
+          response.should render_template("edit")
+        end
       end
     end
-
-    describe "with invalid params" do
-      it "assigns the event as @event" do
-        Event.stub(:find) { mock_event(:update_attributes => false) }
-        put :update, :id => "1"
-        assigns(:event).should be(mock_event)
+ 
+    describe "otherwise" do
+      before :each do
+        login_with_rights
       end
-
-      it "re-renders the 'edit' template" do
-        Event.stub(:find) { mock_event(:update_attributes => false) }
-        put :update, :id => "1"
-        response.should render_template("edit")
+      
+      it "is forbidden" do
+        post :create, :event => {:title => 'test'}
+        response.status.should be(403)
       end
     end
-  end
-
-  describe "DELETE destroy" do
-    it "destroys the requested event" do
-      Event.stub(:find).with("37") { mock_event }
-      mock_event.should_receive(:destroy)
-      delete :destroy, :id => "37"
-    end
-
-    it "redirects to the events list" do
-      Event.stub(:find) { mock_event }
-      delete :destroy, :id => "1"
-      response.should redirect_to(events_url)
-    end
-  end
   end
 end

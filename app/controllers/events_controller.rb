@@ -1,8 +1,11 @@
 class EventsController < ApplicationController
+  
+  before_filter :can_modify_event, {:only => [:new, :edit, :create]}
+  
   # GET /events
   # GET /events.xml
   def index
-    if @account.admin?
+    if @account.can_modify_event?
       if params.has_key?(:id)
         @events_for = Account.find(params[:id])
         response_not_found unless @events_for
@@ -25,19 +28,13 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.xml
   def show
-    if (@account.admin?)
+    if (@account.can_modify_event?)
       @event = Event.find(params[:id])
     else 
       @event = Event.find_with_account(params[:id], @account)
     end
-
     respond_not_found unless @event
-    @types = Form.types
-    @scope = (params[:scope] || :todays).to_sym
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @event }
-    end
+    redirect_to(event_clients_path(:event_id => @event.id))
   end
 
   # GET /events/new
@@ -52,6 +49,7 @@ class EventsController < ApplicationController
 
   # GET /events/1/edit
   def edit
+    #requie(:modify_event)
     @event = Event.find(params[:id])
   end
 
@@ -84,18 +82,6 @@ class EventsController < ApplicationController
         format.html { render :action => "edit" }
         format.xml  { render :xml => @event.errors, :status => :unprocessable_entity }
       end
-    end
-  end
-
-  # DELETE /events/1
-  # DELETE /events/1.xml
-  def destroy
-    @event = Event.find(params[:id])
-    @event.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(events_url) }
-      format.xml  { head :ok }
     end
   end
 

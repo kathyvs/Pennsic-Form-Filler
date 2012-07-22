@@ -17,7 +17,7 @@
     <td><%= account.name %></td>
     <td><%= account.sca_name%></td>
     <td><%= account.contact_info%></td>
-    <td><%= account.roles.map(&:name).join(', ')%></td>
+    <td><%= account.roles.join(', ')%></td>
     <td><%= link_to 'Events', events_url(:id => account.id) %></td>
     <td><%= link_to 'Show', account %></td>
     <td><%= link_to 'Edit', edit_account_path(account) %></td>

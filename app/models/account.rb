@@ -42,11 +42,29 @@ class Account < ActiveRecord::Base
     errors.add(:password, "Missing password") unless hashed_password.present? 
   end
 
+  def has_right?(right_name)
+    roles.detect do |role|
+      role.has_right?(right_name)
+    end
+  end
+  
   private
 
   def generate_salt
     self.salt = self.object_id.to_s + rand.to_s
   end
+  
+  CAN_PATTERN = /can_([a-z_]*)\?/
+  def method_missing(m, *args, &block)
+    match = CAN_PATTERN.match(m.to_s)
+    if (match)
+      right = match[1]
+      has_right?(right)
+    else
+      super
+    end
+  end       
+
 end
 
 #
