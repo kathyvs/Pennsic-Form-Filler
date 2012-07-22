@@ -9,4 +9,12 @@ class Event < ActiveRecord::Base
   def self.find_with_account(id, account)
     account.events.where(:id => id).first
   end
+  
+  def self.current_event
+    Event.where(:is_current => true).first
+  end
+
+  def current?
+    is_current
+  end
 end

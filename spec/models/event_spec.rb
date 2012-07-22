@@ -43,4 +43,34 @@ describe Event do
     end
   end
   
+  describe "current?" do
+    
+    it "returns is_current" do
+      Event.all do |e|
+        result = e.current?
+        result.should eq(e.is_current)
+      end
+    end
+  end
+  
+  describe "current_event" do
+    it "returns nil if there is no current event" do
+      Event.all.each do |e|
+        puts "Updated event #{e.inspect}"
+        e.is_current = false
+        e.save!
+      end
+      puts "Events = #{Event.all.inspect}"
+      Event.current_event.should be_nil
+    end
+    
+    it "returns the current event if there is one" do
+      current_event = nil
+      Event.all.each do |e|
+        current_event = e if e.current?
+      end
+      current_event.should_not be_nil
+      Event.current_event.should eq(current_event)
+    end
+  end
 end

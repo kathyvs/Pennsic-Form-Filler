@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120721024329) do
+ActiveRecord::Schema.define(:version => 20120722175532) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -53,7 +53,10 @@ ActiveRecord::Schema.define(:version => 20120721024329) do
     t.string   "title"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_current", :default => false, :null => false
   end
+
+  add_index "events", ["is_current"], :name => "event_current_idx"
 
   create_table "forms", :force => true do |t|
     t.string   "type"
