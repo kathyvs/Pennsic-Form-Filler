@@ -56,11 +56,9 @@ describe Event do
   describe "current_event" do
     it "returns nil if there is no current event" do
       Event.all.each do |e|
-        puts "Updated event #{e.inspect}"
         e.is_current = false
         e.save!
       end
-      puts "Events = #{Event.all.inspect}"
       Event.current_event.should be_nil
     end
     

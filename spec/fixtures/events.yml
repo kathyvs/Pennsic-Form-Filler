@@ -2,6 +2,7 @@
 pennsic_40:
   id: 40
   title: "Pennsic XL"
+  is_current: true
   
 pennsic_39:
   id: 39

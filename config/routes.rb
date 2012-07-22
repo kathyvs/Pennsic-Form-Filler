@@ -9,6 +9,10 @@ FormFiller::Application.routes.draw do
       resources :forms
     end
     get 'kingdom/:kingdom', :to => 'events#kingdom', :on => :member
+    collection do 
+      get 'current'
+      put 'current'
+    end
   end
 
   resources :accounts

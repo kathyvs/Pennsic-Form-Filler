@@ -29,11 +29,7 @@ class ApplicationController < ActionController::Base
     raise ActiveRecord::RecordNotFound.new
   end
   
-  def respond_forbidden
-    raise ActionResource::ForbiddenAccess.new
-  end
-  
-  def require(right_method)
+   def require(right_method)
     unless account and account.send(right_method) 
       render :text => 'Forbidden', :status => 403
       return false

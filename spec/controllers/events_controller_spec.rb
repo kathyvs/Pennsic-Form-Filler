@@ -37,7 +37,6 @@ describe EventsController do
           assigns(:events).should include(e)
         end
       end
-    
     end
     
     describe "otherwise" do
@@ -253,6 +252,71 @@ describe EventsController do
       end
     end
  
+    describe "otherwise" do
+      before :each do
+        login_with_rights
+      end
+      
+      it "is forbidden" do
+        post :create, :event => {:title => 'test'}
+        response.status.should be(403)
+      end
+    end
+  end
+  
+  describe "GET current" do
+    it "requires authentication" do
+      get :current
+      response.status.should redirect_to(:new_session)
+    end
+
+    it "returns 404 when no event is current" do
+      login_with_rights
+      e = Event.current_event
+      e.is_current = false
+      e.save!
+      expect {get :current}.to raise_error(ActiveRecord::RecordNotFound)
+    end
+    
+    it "redirects to show when an event is current" do
+      login_with_rights
+      e = Event.current_event
+      get :current
+      response.status.should redirect_to(e)
+    end
+  end
+  
+  describe "PUT current" do
+    it "requires authentication" do
+      put :current, :event_id => 39
+      response.status.should redirect_to(:new_session)
+    end
+    
+    describe "when has set_current_event right" do
+      
+      before :each do
+        @account = login_with_rights(:set_current_event)
+        @current = Event.current_event
+        @new_event = Event.where("id <> ?", @current.id).first
+      end
+      
+      it "resets the current event" do
+        put :current, :event_id => @new_event.id.to_s
+        Event.all do |e|
+          if (e == @new_event) 
+            e.should be_current
+          else
+            e.should_not be_current
+          end
+        end
+      end
+      
+      it "redirects to events" do
+        put :current, :event_id => @new_event.id.to_s
+        response.should redirect_to(:events)
+      end
+    end
+    
     describe "otherwise" do
       before :each do
         login_with_rights

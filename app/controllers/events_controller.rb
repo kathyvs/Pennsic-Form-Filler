@@ -95,4 +95,26 @@ class EventsController < ApplicationController
       format.text { render(:template => 'events/by_kingdom') }
     end
   end
+  
+  #GET/PUT /events/current
+  def current
+    current_event = Event.current_event
+    if request.get?
+      respond_not_found unless current_event
+      redirect_to(current_event)
+    elsif request.put?
+      if (current_event)
+        current_event.is_current = false
+        current_event.save!
+      end
+      e = Event.find(params[:event_id])
+      respond_not_found unless e
+      e.is_current = true
+      e.save!
+      current_event.save!
+      redirect_to :events
+    elsif
+      respond :text => "unknown method", :status => 405
+    end
+  end
 end
