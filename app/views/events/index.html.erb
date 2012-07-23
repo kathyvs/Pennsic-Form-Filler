@@ -38,7 +38,7 @@
 <%= form_tag("/events/current", :method => :put) do |f|%>
   <%= label_tag "event_id", "Current Event"%>
   <%= select_tag "event_id", current_event_options(@events)%>
-  <%= submit_tag "Update"%>
+  <span class="actions"><%= submit_tag "Update"%></span>
 <% end%>
 <% @links = []
    @links << link_to('New Event', new_event_path) if @account.admin?

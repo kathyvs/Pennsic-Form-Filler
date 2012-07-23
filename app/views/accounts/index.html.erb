@@ -1,12 +1,12 @@
 <% @title = 'All accounts' %>
 
+<%= form_tag do |f| %>
 <table>
   <tr>
     <th>Name</th>
     <th>SCA Name</th>
     <th>Contact Info</th>
     <th>Roles</th>
-    <th></th>
     <th></th>
     <th></th>
     <th></th>
@@ -17,13 +17,13 @@
     <td><%= account.name %></td>
     <td><%= account.sca_name%></td>
     <td><%= account.contact_info%></td>
-    <td><%= account.roles.join(', ')%></td>
+    <td><%= account.roles.map(&:name).join(', ') %></td>
     <td><%= link_to 'Events', events_url(:id => account.id) %></td>
     <td><%= link_to 'Show', account %></td>
     <td><%= link_to 'Edit', edit_account_path(account) %></td>
-    <td><%= link_to 'Destroy', account, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>
+<% end %>
 
 <% @links = [link_to 'New Account', new_account_path] %>

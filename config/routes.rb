@@ -15,7 +15,12 @@ FormFiller::Application.routes.draw do
     end
   end
 
-  resources :accounts
+  resources :accounts, :except => [:destroy] do
+    member do
+      get 'roles'
+      put 'roles'
+    end
+  end
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

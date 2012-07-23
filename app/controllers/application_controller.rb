@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   
-  before_filter :authenticate, :except => [:session]
+  before_filter :authenticate, :except => [:session, :accounts]
   
   protected
   
@@ -29,9 +29,13 @@ class ApplicationController < ActionController::Base
     raise ActiveRecord::RecordNotFound.new
   end
   
-   def require(right_method)
+  def respond_forbidden
+    render :text => 'Forbidden', :status => 403
+  end
+  
+  def require(right_method)
     unless account and account.send(right_method) 
-      render :text => 'Forbidden', :status => 403
+      respond_forbidden
       return false
     end
   end
@@ -55,6 +59,7 @@ class ApplicationController < ActionController::Base
     when CAN_PATTERN
       return require("#{m}?")
     else
+      puts "Unable to find method #{m} in class #{self.class}"
       super
     end
   end       

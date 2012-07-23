@@ -27,8 +27,8 @@ describe AccountsController do
       { :put => "/accounts/1" }.should route_to(:controller => "accounts", :action => "update", :id => "1")
     end
 
-    it "recognizes and generates #destroy" do
-      { :delete => "/accounts/1" }.should route_to(:controller => "accounts", :action => "destroy", :id => "1")
+    it "recognizes and generates #roles" do
+      { :get => "/accounts/1/roles" }.should route_to(:controller => "accounts", :action => "roles", :id => "1")
     end
 
   end

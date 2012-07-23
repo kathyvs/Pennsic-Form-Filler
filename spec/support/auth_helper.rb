@@ -21,11 +21,11 @@ module AuthHelper
 
   def verify_needs_authorization
     yield
-    response.status.should redirect_to(:session)
+    response.status.should redirect_to(:new_session)
   end
 
-  def verify_needs_admin
-    login_non_admin
+  def verify_needs_right(right)
+    login_with_no_rights
     yield
     response.status.should eq(403)
   end
@@ -47,4 +47,7 @@ module AuthHelper
     return a
   end
  
+  def login_with_no_rights
+    login_with_rights
+  end
 end

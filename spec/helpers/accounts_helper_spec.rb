@@ -18,13 +18,15 @@ describe AccountsHelper do
     
     before :each do
       @account = Account.new(:name => 'test')
-      @account.roles << Role.find_by_name(:clerk)
-      @account.roles << Role.find_by_name(:herald)
-      @result = role_checkboxes(@account)
+      @account.roles << roles(:clerk)
+      @account.roles << roles(:herald)
+      @roles = [roles(:clerk), roles(:herald), roles(:senior)]
+      @result = role_checkboxes(@roles, @account)
     end
     
-    it "has a role for each role" do
-      Role.all.each do |role|
+    it "has a role for each given role" do
+      @result.size.should eq(@roles.size)
+      @roles.each do |role|
         found = false
         @result.each do |checkbox, label|
           if checkbox.include?("value=\"#{role.id}")
@@ -37,7 +39,7 @@ describe AccountsHelper do
     end
     
     it "checks roles in account" do
-      Role.all.each do |role|
+      @roles.each do |role|
         @result.each do |checkbox, label|
           if checkbox.include?("value=\"#{role.id}")
             if (@account.roles.include?(role))
