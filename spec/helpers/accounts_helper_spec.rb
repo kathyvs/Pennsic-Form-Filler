@@ -11,5 +11,43 @@ require 'spec_helper'
 #   end
 # end
 describe AccountsHelper do
-  pending "add some examples to (or delete) #{__FILE__}"
+  
+  fixtures :roles
+  
+  describe "role_checkboxes" do
+    
+    before :each do
+      @account = Account.new(:name => 'test')
+      @account.roles << Role.find_by_name(:clerk)
+      @account.roles << Role.find_by_name(:herald)
+      @result = role_checkboxes(@account)
+    end
+    
+    it "has a role for each role" do
+      Role.all.each do |role|
+        found = false
+        @result.each do |checkbox, label|
+          if checkbox.include?("value=\"#{role.id}")
+            label.should include('label')
+            found = true
+          end
+        end
+        found.should be_true
+      end
+    end
+    
+    it "checks roles in account" do
+      Role.all.each do |role|
+        @result.each do |checkbox, label|
+          if checkbox.include?("value=\"#{role.id}")
+            if (@account.roles.include?(role))
+              checkbox.should include('checked="checked"')
+            else
+              checkbox.should_not include('checked')
+            end
+          end
+        end
+      end
+    end
+  end
 end
