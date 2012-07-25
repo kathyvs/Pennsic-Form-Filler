@@ -13,7 +13,7 @@
   
   <%= hidden_field_tag "login[last_url]", @login.last_url %>
   <div class="<%= field_classes :name %>">
-    <label for="name">Name or Email:</label>
+    <label for="name">User name:</label>
     <%= text_field_tag "name", @login.name, :name => "login[name]" %>
   </div>
   <div class="<%= field_classes :password %>">
