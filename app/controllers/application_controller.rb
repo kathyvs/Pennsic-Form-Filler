@@ -33,6 +33,10 @@ class ApplicationController < ActionController::Base
     render :text => 'Forbidden', :status => 403
   end
   
+  def respond_bad_method
+    render :text => "unknown method", :status => 405
+  end
+  
   def require(right_method)
     unless account and account.send(right_method) 
       respond_forbidden

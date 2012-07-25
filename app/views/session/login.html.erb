@@ -24,4 +24,4 @@
     <%= submit_tag "Log in" %>
   </div>
 <% end %>
-<% @links = [] %>
+<% @links = [link_to 'Create Account', url_for(:new_account)] %>

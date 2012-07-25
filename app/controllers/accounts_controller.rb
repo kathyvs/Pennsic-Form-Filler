@@ -37,7 +37,7 @@ class AccountsController < ApplicationController
   # GET /accounts/new
   # GET /accounts/new.xml
   def new
-    @account = NamedAccount.new
+    @account = Account.new_named
 
     respond_to do |format|
       format.html # new.html.erb
@@ -53,7 +53,7 @@ class AccountsController < ApplicationController
 
   # POST /accounts
   def create
-    @account = Account.new(params[:account])
+    @account = Account.new_named(params[:account])
     e = Event.current_event
     @account.events << e if e
 
@@ -85,7 +85,22 @@ class AccountsController < ApplicationController
   
   # GET/PUT /accounts/1/roles
   def roles
-    @roles = account.can_add_all_account_roles? ? Role.all : account.roles
     @role_account = Account.find(params[:id])
+    if request.get?
+      @roles = account.can_add_all_account_roles? ? Role.all : account.roles
+    elsif request.put?
+      new_role_ids = params[:roles] || {}
+      param_error = {:text => "invalid params: #{params.inspect}", :status => 400}
+      render(param_error) and return unless new_role_ids.respond_to?(:keys)
+      begin
+        @role_account.update_roles(new_role_ids.keys)
+        @role_account.save!
+        redirect_to(:accounts)
+      rescue ActiveRecord::RecordNotFound
+        render(param_error)
+      end
+    else
+      respond_bad_method
+    end
   end
 end

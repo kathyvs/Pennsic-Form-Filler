@@ -29,7 +29,7 @@ describe AccountsHelper do
       @roles.each do |role|
         found = false
         @result.each do |checkbox, label|
-          if checkbox.include?("value=\"#{role.id}")
+          if checkbox.include?(role.id.to_s)
             label.should include('label')
             found = true
           end
@@ -52,4 +52,5 @@ describe AccountsHelper do
       end
     end
   end
+  
 end

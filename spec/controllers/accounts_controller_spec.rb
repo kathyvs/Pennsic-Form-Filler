@@ -143,6 +143,11 @@ describe AccountsController do
         new_account.name.should eq(valid_params['name'])
         new_account.should be_persisted
       end
+      
+      it "the new account has type NamedAccount" do
+        post :create, :account => valid_params
+        assigns(:account).should be_instance_of(NamedAccount)
+      end
 
       it "redirects to the created account" do
         post :create, :account => valid_params
@@ -298,4 +303,60 @@ describe AccountsController do
       end
     end
   end
+  
+  describe "PUT roles" do
+    def valid_params(id)
+      role_syms = [:clerk, :senior, :herald]
+      @roles = role_syms.map {|r| Role.find_by_name(r)}
+      role_ids = Hash[@roles.map {|r| [r.id, 1]}]
+      return {:roles => role_ids, :id => id}
+    end
+      
+    it "requires authentication" do 
+      verify_needs_authorization do
+        get :roles, valid_params(1)
+      end
+    end
+
+    describe "when can edit account roles" do
+      before :each do
+        @account = login_with_rights(:edit_account_roles)
+      end
+      
+      def invalid_params
+        return {:roles => [100, 2000], :id => 3}
+      end
+      
+      describe "with valid params" do
+        it "updates the roles of the account" do
+          account = accounts(:herald)
+          put :roles, valid_params(account.id)
+          account.roles.should include(*@roles)
+          account.roles.size.should eq(@roles.size)
+        end
+      
+        it "redirects to accounts" do
+          put :roles, valid_params(accounts(:senior).id)
+          response.should redirect_to(:accounts)
+        end
+      end
+      
+      describe "with invalid params" do
+        it "returns a 400" do
+          put :roles, invalid_params
+          response.status.should be(400)
+        end
+      end
+    end
+    
+    describe "otherwise" do
+      
+      it "is forbidden" do
+        verify_needs_right(:edit_account_roles) do
+          put :roles, valid_params(1)
+        end
+      end
+    end
+  end
+
 end

@@ -1,14 +1,12 @@
 
 <% @title = "Edit roles for #{@role_account.name}" %>
 
-<p>checkboxes = <%= role_checkboxes(@roles, @role_account).inspect %></p>
 <%= form_tag({:action => :roles, :id => @role_account.id}, :method => :put) do -%>
-  <div class="field">
-    <%= label_tag :roles %><br />
-    <% role_checkboxes(@roles, @role_account).each do |checkbox, label| -%>
-      <%= checkbox%> <%= label %>
-    <% end -%>
-  </div>
+  <h3>Roles</h3>
+  <p><% role_checkboxes(@roles, @role_account).each do |checkbox, label| -%>
+    <%= checkbox%> <%= label %>
+  <% end -%>
+  </p>
   <div class="actions">
     <%= submit_tag "Update" %>
   </div>

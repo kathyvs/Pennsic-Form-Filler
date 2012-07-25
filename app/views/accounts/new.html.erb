@@ -1,5 +1,11 @@
 <% @title = "New Account" %>
 
+<p id="notice"><%= notice %></p>
+
 <%= render 'form' %>
 
-<%= link_to 'Back', accounts_path %>
+<% @links = []
+   if (@account && @account.can_modify_other_accounts?) 
+      @links << link_to('Back', accounts_path) 
+   end
+%>

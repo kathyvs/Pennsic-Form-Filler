@@ -71,6 +71,34 @@ describe Account do
     end
   end
 
+  describe "update roles" do
+    
+    fixtures :accounts_roles, :roles
+    
+    it "clears roles when empty" do
+      a = Account.new(:name => 'test', :password => 'pwd')
+      a.roles << roles(:clerk)
+      a.roles << roles(:herald)
+      a.save!
+      a.update_roles([]).inspect
+      a.roles.should be_empty
+    end
+    
+    it "updates roles by role id" do
+      a = Account.new(:name => 'test', :password => 'pwd')
+      a.roles << roles(:herald)
+      a.save!
+      a.update_roles([:clerk, :senior].map {|n| roles(n)})
+      a.roles.should_not include(roles(:herald))
+      a.roles.should include(roles(:clerk)) 
+      a.roles.should include(roles(:senior)) 
+    end
+    
+    it "throws exception on invalid role name" do
+      a = Account.new(:name => 'test', :password => 'pwd')
+      expect { a.update_roles([33, 44]) }.to raise_error(ActiveRecord::RecordNotFound)
+    end 
+  end
   describe "validation" do
     
     def validate(cls, override)

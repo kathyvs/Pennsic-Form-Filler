@@ -1,8 +1,8 @@
 <%= form_for(@account) do |f| %>
   <% if @account.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@account.errors.count, "error") %> prohibited this account from being saved:</h2>
-
+      <h2>We were unable to create your account for the following 
+      	<%= pluralize(@account.errors.count, "reason")%>:</h2>
       <ul>
       <% @account.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
@@ -17,7 +17,7 @@
   </div>
   <% if @account.instance_of?(NamedAccount)%>
   <div class="field">
-    <%= f.label :sca_name %><br />
+    <%= f.label :sca_name, "SCA Name" %><br />
     <%= f.text_field :sca_name, :length => 45 %>
   </div>
   <div class="field">
@@ -25,7 +25,6 @@
     <%= f.text_field :contact_info %>
   </div>
   <% end %>
-  <% if account.can_modify_other_accounts do %>
   <div class="field">
     <%= f.label :password %><br />
     <%= f.password_field :password %>
@@ -34,10 +33,6 @@
     <%= f.label :password_confirmation %><br />
     <%= f.password_field :password_confirmation %>
   </div>
-  <div class="field">
-    Roles: <br/>
-    
-  <% end %>
   <div class="actions">
     <%= f.submit %>
   </div>

@@ -6,10 +6,9 @@
 </p>
 
 <p>
-  <b>Password:</b>
-  <%= @account.password %>
+  <b>SCA Name</b>
+  <%= @account.sca_name %>
 </p>
 
-
-<%= link_to 'Edit', edit_account_path(@account) %> |
-<%= link_to 'Back', accounts_path %>
+<% @links = [link_to('Edit', edit_account_path(@account)),
+	    link_to('Back', accounts_path) %> 

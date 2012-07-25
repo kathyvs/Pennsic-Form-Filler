@@ -10,6 +10,9 @@
     <th></th>
     <th></th>
     <th></th>
+    <% if @account.can_edit_account_roles? -%>
+      <th></th>
+    <% end -%>
   </tr>
 
 <% @accounts.each do |account| %>
@@ -20,7 +23,16 @@
     <td><%= account.roles.map(&:name).join(', ') %></td>
     <td><%= link_to 'Events', events_url(:id => account.id) %></td>
     <td><%= link_to 'Show', account %></td>
-    <td><%= link_to 'Edit', edit_account_path(account) %></td>
+    <td>
+      <% if can_edit_account?(account) -%>
+        <%= link_to 'Edit', edit_account_path(account) %>
+      <% else -%>
+        <td>&nbsp;</td>
+      <% end -%>
+    </td>
+    <% if @account.can_edit_account_roles? -%>
+      <td><%= link_to 'Edit Roles', roles_account_path(account) %></td>
+    <% end -%>
   </tr>
 <% end %>
 </table>

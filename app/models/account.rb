@@ -25,6 +25,10 @@ class Account < ActiveRecord::Base
     debugger if not salt
     Digest::SHA2.hexdigest(password + "lucky" + salt) 
   end
+  
+  def self.new_named(*args)
+    NamedAccount.new(*args)
+  end
 
   def password=(password)
     @password = password
@@ -46,6 +50,12 @@ class Account < ActiveRecord::Base
     roles.detect do |role|
       role.has_right?(right_name)
     end
+  end
+  
+  def update_roles(new_role_ids)
+    new_roles = Role.where("id in (?)", new_role_ids)
+    raise ActiveRecord::RecordNotFound.new unless new_role_ids.size == new_roles.count
+    self.roles = new_roles
   end
   
   private
