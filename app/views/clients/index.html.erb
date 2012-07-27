@@ -3,7 +3,7 @@
 <p id="notice"><%= notice %></p>
 <% unless @counts.empty? -%>
 <div>
-  Select by first letter: <%= @counts.inspect %>
+  <h3>Select by first letter (hover over letter to get count):</h3>
   <ul class="letter_list">
   <% @counts.each_pair do |letter, letter_count| -%>
     <li><a title="<%= letter_count %> <%= pluralize(letter_count, 'item') %>"
