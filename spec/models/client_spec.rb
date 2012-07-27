@@ -23,19 +23,60 @@ describe Client do
     end
   end
   
+  describe "get_counts" do
+    
+    before(:each) do
+      @event = Event.new(:title => 'Test')
+      @event.save!
+    end
+    
+    def create_clients(sca_names, legal_names)
+      sca_names.zip(legal_names) do |sname, lname|
+        Client.new(:society_name => sname, :legal_name => lname,
+           :address_1 => 'ignored', :address_2 => 'ignored', :kingdom => 'test', 
+           :event_id => @event.id).save!
+      end
+    end
+    it "returns an empty hash when there are no client" do
+      Client.get_counts(:every, @event).should be_empty
+    end
+    
+    it "returns counts on initial society_names" do
+      sca_names = ["Abd", "Alaric", "Cecelia", "Robert"]
+      create_clients(sca_names, sca_names.map {|n| "Name for #{n}"})
+      Client.get_counts(:every, @event).should eq({'A' => 2, 'C' => 1, 'R' => 1})
+    end
+    
+    it "uses legal names if society names are missing" do
+      sca_names = ["Abd", "Alaric", nil, "Robert"]
+      legal_names = ["John Smith", "Robert", "Jane", "William"]
+      create_clients(sca_names, legal_names)
+      Client.get_counts(:every, @event).should eq({'A' => 2, 'J' => 1, 'R' => 1})
+    end
+
+  end
+  
   describe "validation" do
     before(:each) do
       @event = events(:pennsic_39)
-      @client = Client.new()
+      @client = Client.new(
+          :legal_name => 'John Smith',
+          :address_1 => '100 Main St',
+          :kingdom => 'East')
     end
     
-    it "is valid as set by before clause" do
+    it "defaults are valid" do
+      if (!@client.valid?)
+        fail("Unexpected errors: #{@client.errors}")
+      end
       @client.should be_valid
     end
     
-    it "requires a legal name" do
-      @client.legal_name = nil
-      @client.should have_error_in(:legal_name)
+    [:legal_name, :address_1, :kingdom].each do |item|
+      it "requires #{item}" do
+        @client.send("#{item}=", nil)
+        @client.should have(1).error_on(item)
+      end
     end
   end
   

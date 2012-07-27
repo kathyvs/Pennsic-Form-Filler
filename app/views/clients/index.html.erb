@@ -1,25 +1,53 @@
-
-<% @title = "Clients for #{@event.title}" %>
-
+<% @title = "#{@event.title} Clients" %>
+<h2><%= current_scope %></h2>
+<p id="notice"><%= notice %></p>
+<% unless @counts.empty? -%>
+<div>
+  Select by first letter: <%= @counts.inspect %>
+  <ul class="letter_list">
+  <% @counts.each_pair do |letter, letter_count| -%>
+    <li><a title="<%= letter_count %> <%= pluralize(letter_count, 'item') %>"
+    	  href="<%= event_clients_path(:scope => :by_letter, :letter => letter) %>">
+     <%= letter %>
+    </a></li>
+  <% end-%>
+  </ul>
+</div>
+<% end -%>
 <table>
-  <tr>
-    <th>Society name</th>
-    <th>Legal name</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-
-<% @clients.each do |client| %>
-  <tr>
-    <td><%= client.society_name %></td>
-    <td><%= client.legal_name %></td>
-    <td><%= link_to 'Show', client %></td>
-    <td><%= link_to 'Edit', edit_client_path(client) %></td>
-    <td><%= link_to 'Destroy', client, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
+  <thead>
+    <tr>
+      <th>Society name</th>
+      <th>Legal name</th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+      <th>Forms</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @clients.each do |client| %>
+    <tr>
+      <td class="<%= client_needs_review_class(client)%>"><%= client.society_name %> </td>
+	<td><%= client.legal_name %></td>
+        <td><%=link_to 'Show', event_client_path(client, :event_id => @event) %></td>
+        <td><%=link_to 'Edit', edit_event_client_path(client, :event_id => @event) %></td>
+	<td><ul class="form_list">
+              <% client.forms.each do |cl_form| %>
+              <li><%=link_to cl_form.type_name, event_client_form_path(cl_form, :event_id => @event, :client_id => client), :class => needs_review_class(cl_form) %></li>
+              <% end %>
+              <li><%= render(:partial => 'forms/types',
+                             :locals => { :event => @event,
+                                          :client => client,
+                                          :types => @types }) %></li>
+            </ul>
+            
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>
 
-<% @links = [link_to('New Client', new_client_path),
-             link_to('Back', events_path)] %>
+<% @links = []
+   @links << link_to('New Client', new_client_path) if (@account.can_create_client?)
+#   @links << link_to('Events', events_path) if (@account.can)
+%>

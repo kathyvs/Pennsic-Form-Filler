@@ -2,7 +2,7 @@ class Client < ActiveRecord::Base
   belongs_to :event
   has_many :forms
  
-  REQUIRED = :legal_name, :address_1, :address_2, :kingdom
+  REQUIRED = :legal_name, :address_1
   REQUIRED.each do |s|
     validates s, :presence => true
   end
@@ -34,6 +34,11 @@ class Client < ActiveRecord::Base
      :every => 'Show all'}
   end
 
+  def self.get_counts(scope, event)
+    logger.info("Getting counts for scope #{scope} and event id #{event.id}")
+    self.every(event.id).group(:first_letter).order(:first_letter).count
+  end
+  
   def has_forms?
     not forms.empty?
   end
@@ -45,4 +50,8 @@ class Client < ActiveRecord::Base
   def required?(field)
     REQUIRED.include? field
   end
+  
+  def before_save
+    self.first_letter = (society_name || legal_name || "")[0..0]
   end
+end

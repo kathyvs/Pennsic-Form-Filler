@@ -8,7 +8,9 @@ class ClientsController < ApplicationController
   # GET /clients
   # GET /clients.xml
   def index
-    render :text => 'TBD'
+    @clients = Client.all
+    @scope = :every #@scope = (params[:scope] || :todays).to_sym
+    @counts = Client.get_counts(@scope, @event)
   end
 
   # GET /clients/1

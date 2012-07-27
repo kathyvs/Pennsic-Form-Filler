@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_event
-    logger.info("Validating event #{params[:event_id]}")
+    logger.debug("Validating event #{params[:event_id]}")
     @event = Event.find_with_account(params[:event_id], @account)
     respond_not_found unless @event
   end

@@ -39,6 +39,7 @@ GEM
     bcrypt-ruby (3.0.1-java)
     builder (2.1.2)
     columnize (0.3.2)
+    daud_coder (1.0.0)
     devise (1.5.3)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.0.3)
@@ -109,6 +110,7 @@ DEPENDENCIES
   activerecord-jdbc-adapter
   activerecord-jdbcmysql-adapter
   activerecord-jdbcsqlite3-adapter
+  daud_coder (>= 1.0.0)
   devise
   glassfish
   jdbc-mysql

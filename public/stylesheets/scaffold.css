@@ -171,4 +171,8 @@ div.form-info {
     left: 20em;
 }
 
+.letter_list li {
+    display: inline;
+}
+
 

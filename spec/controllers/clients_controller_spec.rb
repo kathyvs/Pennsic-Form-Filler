@@ -6,12 +6,57 @@ require 'spec_helper'
 
 describe ClientsController do
 
-  fixtures :accounts, :events, :clients
+  include AuthHelper
+  extend FixtureHelper
+  fixture_list account_fixtures, event_fixtures, :clients
 
-  describe "all require authentication" do
+  render_views
     
-  end
   describe "GET index" do
+    before :each do
+      @event = events(:pennsic_40)
+    end
+    
+    def get_index(params = {})
+      params[:event_id] = @event.id
+      get :index, params
+    end
+    
+    it "requires authentication" do
+      verify_needs_authorization do 
+        get_index
+      end
+    end
+    
+    describe "when can view all clients" do
+      
+      before :each do 
+        account = login_with_rights(:view_all_clients)
+        account.events << @event
+        account.save! 
+      end
+      
+      describe "with no params" do
+        
+        it "assigns clients to @clients" do
+          get_index
+          assigns(:clients).should include(*Client.all)
+        end
+        
+        it "assigns scope to :every" do
+          get_index
+          assigns(:scope).should eq(:every)
+        end
+        
+        it "assigns counts based on scope" do
+          counts = {'A' => 3}
+          Client.stub("get_counts").with(:every, @event) { counts}
+          get_index
+          assigns(:counts).should eq(counts)
+        end
+
+      end
+    end
     it "returns all clients for the given event"
   end
 
