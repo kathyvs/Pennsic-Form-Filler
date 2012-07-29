@@ -39,9 +39,13 @@ class Account < ActiveRecord::Base
   end
 
   def admin?
-    @is_admin ||= roles.member?(Role.find_by_name(:admin))
+    @is_admin ||= has_role?(:admin)
   end
 
+  def has_role?(role)
+    roles.member?(Role.find_by_name(role))
+  end
+  
   def password_must_be_present
     errors.add(:password, "Missing password") unless hashed_password.present? 
   end

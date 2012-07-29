@@ -3,8 +3,16 @@ class SessionController < ApplicationController
   before_filter :authenticate, :except => [:new, :create] 
    
   def show
-    controller = account.admin? ? :accounts : :events 
-    redirect_to :controller => controller, :action => :index
+    if (account.admin?) 
+      url = url_for(:accounts)
+    elsif (account.has_role?(:guest) && account.events.size == 1)
+      url = url_for(new_event_client_path(:event_id => account.events[0]))
+    elsif (account.has_role?(:herald) && account.events.size == 1)
+      url = url_for(event_clients_path(:event_id => account.events[0]))
+    else
+      url = url_for(:events)
+    end
+    redirect_to url
   end
   
   def new

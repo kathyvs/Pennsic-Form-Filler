@@ -3,7 +3,9 @@ require 'spec_helper'
 describe SessionController do
   
   include AuthHelper
-  fixtures :accounts
+  extend FixtureHelper
+  
+  fixture_list account_fixtures, event_fixtures
   
   describe "GET show" do
     
@@ -18,8 +20,20 @@ describe SessionController do
       response.should redirect_to(:controller => "accounts", :action => "index")
     end
     
-    it "otherwise redierects to events" do
-      login("Pennsic")
+    it "redirects to new client when guest and has single event" do
+      login('War Practice Guest')
+      get :show
+      response.should redirect_to(new_event_client_path(events(:war_practice_2011)))
+    end
+
+   it "redirects to client list when herald and has single event" do
+      login('herald')
+      get :show
+      response.should redirect_to(event_clients_path(events(:pennsic_40)))
+    end
+   
+    it "otherwise redirects to events" do
+      login("Senior")
       get :show
       response.should redirect_to(:controller => "events", :action => "index")
     end    
@@ -32,7 +46,7 @@ describe SessionController do
     end
     
     it "clears the session if logged in" do
-      login("Pennsic")
+      login("Pennsic Guest")
       get :new
       response.should be_ok
       session[:account].should be_nil
