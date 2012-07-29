@@ -36,11 +36,21 @@ describe ClientsController do
         account.save! 
       end
       
+      def build_clients(names) 
+        ids = names.map do |name|
+          c = Client.new(:legal_name => name, :event_id => @event.id,
+             :address_1 => 'ignored', :kingdom => 'Middle')
+          c.save!
+          c.id
+        end
+        return Client.where('id in (?)', ids)
+      end
+      
       describe "with no params" do
         
         it "assigns clients to @clients" do
           get_index
-          assigns(:clients).should include(*Client.all)
+          assigns(:clients).should include(*Client.where(:event_id => @event))
         end
         
         it "assigns scope to :every" do
@@ -48,16 +58,105 @@ describe ClientsController do
           assigns(:scope).should eq(:every)
         end
         
-        it "assigns counts based on scope" do
-          counts = {'A' => 3}
-          Client.stub("get_counts").with(:every, @event) { counts}
+        it "assigns counts" do
           get_index
-          assigns(:counts).should eq(counts)
+          assigns(:counts).should_not be_nil
+        end
+        
+        it "assigns link_params to have scope" do
+          get_index
+          assigns(:link_params)[:scope].should eq(:every)
         end
 
+        it "limits size to #{ClientsController::MAX_SIZE}" do
+          names = (1..75).map {|i| "John #{i}"}
+          build_clients(names)
+          get_index
+          assigns(:clients).size.should eq(ClientsController::MAX_SIZE)
+        end
+
+        it "assigns link_params to have limit" do
+          get_index
+          assigns(:link_params)[:limit].should eq(ClientsController::MAX_SIZE)
+        end
+        
+        it "assigns count to the actual count total" do
+          names = (1..75).map {|i| "John #{i}"}
+          result = build_clients(names)
+          get_index
+          assigns(:count).should eq(Client.every(@event.id).count)
+        end
+      end
+      
+      describe "with scope_id set" do
+        
+        it "assigns clients base on scope" do
+          names = ['A', 'B', 'C', 'D', 'E']
+          expected_clients = build_clients(names)
+          Client.stub(:todays).with(@event.id) {expected_clients}
+          get_index(:scope => 'todays')
+          assigns(:clients).should include(*expected_clients)
+          assigns(:clients).size.should eq(expected_clients.size)
+        end
+
+        it "assigns counts based on scope" do
+          counts = {'A' => 3}
+          Client.stub(:todays).with(@event.id) { Client.every }
+          Client.stub("get_counts").with(:todays, @event.id) { counts}
+          get_index(:scope => 'todays')
+          assigns(:counts).should eq(counts)
+        end
+        
+        it "adds scope to link_params" do
+          Client.stub(:needs_printing).with(@event.id) { Client.every }
+          get_index(:scope => 'needs_printing')
+          assigns(:link_params)[:scope].should eq(:needs_printing)
+        end
+      end
+      
+      describe "with offset set" do
+      
+        it "skips over clients" do
+          names = (1..20).map {|i| "John #{i}"}
+          build_clients(names)
+          offset = 10
+          expected = Client.every(@event).order('legal_name').offset(10)
+          get_index(:offset => offset.to_s)
+          assigns(:clients).map(&:legal_name).should match_array(expected.map(&:legal_name))
+        end
+        
+        it "assigns offset to link_params" do
+          get_index(:offset => '5')
+          assigns(:link_params)[:offset].should eq(5)
+        end
+      end
+      
+      describe "with letter set" do
+      
+        it "limits the clients to that letter" do
+          names = ((1..10).map {|i| "Richard #{i}"}).concat((1..8).map{|i| "William #{i}"})
+          build_clients(names)
+          expected = Client.every(@event).where(:first_letter => 'W')
+          get_index(:letter => 'W')
+          assigns(:clients).map(&:legal_name).should match_array(expected.map(&:legal_name))
+        end
+        
+        it "does not assign letter to link params" do
+          get_index(:letter => 'X')
+          assigns(:link_params).should_not have_key(:letter)
+        end
       end
     end
-    it "returns all clients for the given event"
+    
+    describe "otherwise" do
+      it "is forbidden" do
+        account = login_with_rights
+        account.events << @event
+        account.save!
+        get_index
+        response.status.should be(403)
+      end
+    end
   end
 
   describe "GET show" do

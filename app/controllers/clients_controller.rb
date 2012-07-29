@@ -1,16 +1,34 @@
 class ClientsController < ApplicationController
 
+  MAX_SIZE = 40
+  
   before_filter :require_event
 
+  before_filter :can_view_all_clients, :only=>[:index, :show]
+  before_filter :can_create_client, :only=>[:new]
+  
   def client_url
     event_client_url(@client, :event_id => @event)
   end
   # GET /clients
   # GET /clients.xml
   def index
-    @clients = Client.all
-    @scope = :every #@scope = (params[:scope] || :todays).to_sym
-    @counts = Client.get_counts(@scope, @event)
+    limit = (params[:limit] || MAX_SIZE).to_i
+    offset = (params[:offset] || 0).to_i
+    puts "Offset after setting: #{offset}"
+    @scope = (params[:scope] || :every).to_sym
+    search = Client.send(@scope, @event.id).order('society_name, legal_name')
+    if (params.has_key?(:letter)) 
+      letter = params[:letter].strip
+      logger.debug("Limiting to letter #{letter}")
+      search = search.where(:first_letter => letter)
+    end
+    @count = search.count
+    puts "Count = #{@count.inspect}" unless @count.instance_of?(Fixnum)
+    @clients = search.offset(offset).limit(limit)
+    @counts = Client.get_counts(@scope, @event.id)
+    @link_params = {:scope => @scope, :limit => limit}
+    @link_params[:offset] = offset if (offset > 0) 
   end
 
   # GET /clients/1
@@ -72,15 +90,4 @@ class ClientsController < ApplicationController
     end
   end
 
-  # DELETE /clients/1
-  # DELETE /clients/1.xml
-  def destroy
-    @client = Client.find(params[:id])
-    @client.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(clients_url) }
-      format.xml  { head :ok }
-    end
-  end
 end

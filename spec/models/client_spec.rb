@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+
 describe Client do
   fixtures(:events, :clients)
   
@@ -24,36 +25,55 @@ describe Client do
   end
   
   describe "get_counts" do
-    
+    # Add a simple scope for testing
+    Client.scope :women, lambda { |event_id| Client.where(:gender => 'Female', :event_id => event_id)}
+
     before(:each) do
       @event = Event.new(:title => 'Test')
       @event.save!
     end
     
-    def create_clients(sca_names, legal_names)
-      sca_names.zip(legal_names) do |sname, lname|
-        Client.new(:society_name => sname, :legal_name => lname,
+    def get_counts(scope)
+      Client.get_counts(scope, @event)
+    end
+    
+    def create_clients(sca_names, legal_names = nil, options = {})
+      legal_names ||= sca_names.map {|n| "Name for #{n}"}
+      sca_names.each_with_index do |sname, index|
+        client = Client.new(:society_name => sname, :legal_name => legal_names[index],
            :address_1 => 'ignored', :address_2 => 'ignored', :kingdom => 'test', 
-           :event_id => @event.id).save!
+           :event_id => @event.id)
+        options.each_pair do |prop, values|
+          client.send("#{prop}=", values[index])
+        end
+        client.save!
       end
     end
+
     it "returns an empty hash when there are no client" do
-      Client.get_counts(:every, @event).should be_empty
+      get_counts(:every).should be_empty
     end
     
     it "returns counts on initial society_names" do
       sca_names = ["Abd", "Alaric", "Cecelia", "Robert"]
-      create_clients(sca_names, sca_names.map {|n| "Name for #{n}"})
-      Client.get_counts(:every, @event).should eq({'A' => 2, 'C' => 1, 'R' => 1})
+      create_clients(sca_names)
+      get_counts(:every).should eq({'A' => 2, 'C' => 1, 'R' => 1})
     end
     
     it "uses legal names if society names are missing" do
       sca_names = ["Abd", "Alaric", nil, "Robert"]
       legal_names = ["John Smith", "Robert", "Jane", "William"]
       create_clients(sca_names, legal_names)
-      Client.get_counts(:every, @event).should eq({'A' => 2, 'J' => 1, 'R' => 1})
+      get_counts(:every).should eq({'A' => 2, 'J' => 1, 'R' => 1})
     end
-
+    
+    it "uses scope" do
+      sca_names = ["One", "Two", "Three", "Four"]
+      genders = ["Female", "Male", "Male", "Female"]
+      create_clients(sca_names, nil, :gender => genders)
+      get_counts(:women).should eq({'O' => 1, 'F' => 1})
+    end
+    
   end
   
   describe "validation" do

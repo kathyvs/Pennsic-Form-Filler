@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120727023905) do
+ActiveRecord::Schema.define(:version => 20120728183450) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -58,6 +58,9 @@ ActiveRecord::Schema.define(:version => 20120727023905) do
     t.string   "kingdom"
     t.string   "first_letter"
   end
+
+  add_index "clients", ["event_id"], :name => "index_clients_on_event_id"
+  add_index "clients", ["first_letter"], :name => "index_clients_on_first_letter"
 
   create_table "events", :force => true do |t|
     t.string   "title"

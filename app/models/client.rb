@@ -1,6 +1,8 @@
 class Client < ActiveRecord::Base
   belongs_to :event
   has_many :forms
+  
+  before_save :update_first_letter
  
   REQUIRED = :legal_name, :address_1
   REQUIRED.each do |s|
@@ -27,16 +29,16 @@ class Client < ActiveRecord::Base
      self.find_by_id_and_event_id(client_id, event)
   end
 
-  def self.scopes
+  def self.scope_names
     {:needs_review => 'Show needs review',
      :needs_printing => 'Show needs printing',
      :todays => "Show today's",
      :every => 'Show all'}
   end
 
-  def self.get_counts(scope, event)
-    logger.info("Getting counts for scope #{scope} and event id #{event.id}")
-    self.every(event.id).group(:first_letter).order(:first_letter).count
+  def self.get_counts(scope, event_id)
+    logger.info("Getting counts for scope #{scope} and event id #{event_id}")
+    self.send(scope, event_id).group(:first_letter).order(:first_letter).count
   end
   
   def has_forms?
@@ -51,7 +53,8 @@ class Client < ActiveRecord::Base
     REQUIRED.include? field
   end
   
-  def before_save
+  private 
+  def update_first_letter
     self.first_letter = (society_name || legal_name || "")[0..0]
   end
 end
