@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+<% @title = "Verify #{@client.display_name}" %>
+
+<%= form_for(@client, :url => event_clients_path(:event_id => @event)) do |f| %>
+<h3>Please check your values. Once you hit "Create" you will need to get 
+	help from a senior herald to change it.</h3>
+<%= f.submit('Edit')%>	
+<%= render 'show' %>
+<%= f.hidden_field :legal_name %>
+<%= f.hidden_field :address_1 %>
+<%= f.hidden_field :address_2 %>
+<%= f.hidden_field :branch_name %>
+<%= f.hidden_field :kingdom %>
+<%= f.hidden_field :gender %>
+<%= f.hidden_field :phone_number %>
+<%= f.hidden_field :birth_date %>
+<%= f.hidden_field :email %>
+<%= f.submit('Create') %>
+<% end-%>
+<% @links = []%>

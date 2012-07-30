@@ -26,7 +26,9 @@ describe Client do
   
   describe "get_counts" do
     # Add a simple scope for testing
-    Client.scope :women, lambda { |event_id| Client.where(:gender => 'Female', :event_id => event_id)}
+    class Client
+      scope :women, lambda { |event_id| where(:gender => 'Female', :event_id => event_id)}
+    end
 
     before(:each) do
       @event = Event.new(:title => 'Test')

@@ -11,7 +11,14 @@ describe ClientsController do
   fixture_list account_fixtures, event_fixtures, :clients
 
   render_views
-    
+  
+  def login_with_rights(*rights)
+    account = super
+    account.events << @event
+    account.save!
+    return account
+  end
+  
   describe "GET index" do
     before :each do
       @event = events(:pennsic_40)
@@ -32,8 +39,6 @@ describe ClientsController do
       
       before :each do 
         account = login_with_rights(:view_all_clients)
-        account.events << @event
-        account.save! 
       end
       
       def build_clients(names) 
@@ -149,12 +154,10 @@ describe ClientsController do
     end
     
     describe "otherwise" do
-      it "is forbidden" do
+      it "redirects to show" do
         account = login_with_rights
-        account.events << @event
-        account.save!
         get_index
-        response.status.should be(403)
+        response.status.should redirect_to(:controller => :session, :action => :show)
       end
     end
   end
@@ -166,22 +169,168 @@ describe ClientsController do
   describe "GET new" do
     it "assigns a new client as @client"
   end
+  
+  describe "POST verify" do
+    before :each do
+      @event = events(:pennsic_39)
+    end
+    
+    def valid_params(options = {})
+      {:legal_name => 'Test User', :address_1 => '100 Main St.', :kingdom => 'East'}.merge(options)
+    end
+    
+    def invalid_params(options = {})
+      options
+    end
+
+    def verify(params = {})
+      post :verify, :event_id => @event.id, :client => params
+    end
+    
+    it "requires authentication" do
+      verify_needs_authorization do 
+        verify valid_params
+      end
+    end
+    
+    describe "when as create_client rights" do
+      before :each do 
+        account = login_with_rights(:create_client)
+      end
+
+      describe "with valid params" do
+        it "assigns a non-persisted  client as @client" do
+          verify valid_params
+          client = assigns(:client)
+          client.should_not be_persisted
+        end
+        
+        it "has the parameters in the client" do
+          email = 'test@test.com'
+          params = valid_params(:email => email)
+          verify params
+          assigns(:client).email.should eq(email)
+        end
+        
+        it "renders verification" do
+          verify valid_params
+          response.should render_template('verification')
+        end
+      end
+      
+      describe "with invalid params" do
+         it "assigns a non-persisted  client as @client" do
+          verify invalid_params
+          client = assigns(:client)
+          client.should_not be_persisted
+        end
+        
+        it "has the parameters in the client" do
+          email = 'test@test.com'
+          params = invalid_params(:email => email)
+          verify params
+          assigns(:client).email.should eq(email)
+        end
+        
+        it "the client has errors" do
+          verify invalid_params
+          assigns(:client).errors.should_not be_empty
+        end
+        
+        it "renders new" do
+          verify invalid_params
+          response.should render_template('new')
+        end
+      end
+    end
+
+    describe "otherwise" do
+      
+      it "is forbidden" do
+        login_with_rights
+        verify valid_params
+        response.should be_forbidden
+      end
+    end
+  end 
 
   describe "GET edit" do
     it "assigns the requested client as @client" 
   end
 
   describe "POST create" do
-    describe "with valid params" do
-      it "assigns a newly created client as @client"
+    before :each do
+      @event = events(:pennsic_40)
+    end
+    
+    def valid_params(options = {})
+      {:legal_name => 'Test User', :address_1 => '100 Main St.', :kingdom => 'East'}.merge(options)
+    end
+    
+    def create(client_params = {}, top_params = {})
+      params = top_params
+      params[:event_id] = @event.id.to_s
+      params[:client] = client_params
+      post :create, params
+    end
+    
+    it "requires authentication" do
+      verify_needs_authorization do 
+        create valid_params
+      end
+    end
+    
+    describe "when has create_client rights" do
+      
+      before :each do 
+        @account = login_with_rights(:create_client)
+      end
 
-      it "redirects to the created client"
+      describe "with valid params" do
+        it "assigns a newly created client as @client" do
+          create valid_params
+          client = assigns(:client)
+          client.id.should_not be_nil
+        end
+
+        it "renders :new if commit = Edit" do
+          create valid_params, :commit => 'Edit'
+          response.should render_template("new")
+        end
+ 
+        it "does not persist client if commit = Edit" do
+          create valid_params, :commit => 'Edit'
+          assigns(:client).should_not be_persisted          
+        end
+       
+        it "redirects to new client if guest" do
+          @account.roles << roles(:guest)
+          @account.save!
+          create valid_params
+          response.should redirect_to(new_event_client_path(@event))
+        end
+        
+        it "redirect to client list if not guest" do
+          create valid_params
+          response.should redirect_to(event_clients_path(@event))
+        end
+      end
+
+      describe "with invalid params" do
+        it "assigns a newly created but unsaved client as @client"
+
+        it "re-renders the 'new' template"
+      end
+      
     end
 
-    describe "with invalid params" do
-      it "assigns a newly created but unsaved client as @client"
-
-      it "re-renders the 'new' template"
+    describe "otherwise" do
+      
+      it "is forbidden" do
+        login_with_rights
+        create valid_params
+        response.should be_forbidden
+      end
     end
   end
 

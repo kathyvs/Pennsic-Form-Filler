@@ -7,6 +7,8 @@ module ClientsHelper
   def client_form_url(client) 
     if (client.id) 
       client_url(client)
+    elsif @account.has_role?(:guest)
+      verify_event_clients_path(:event_id => @event)
     else
       event_clients_path(:event_id => @event)
     end

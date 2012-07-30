@@ -43,6 +43,13 @@ class ApplicationController < ActionController::Base
       return false
     end
   end
+  
+  def redirect_when_missing(right)
+    unless account and account.has_right?(right)
+      redirect_to :controller => :session, :action => :show
+      return false
+    end
+  end
 
   def require_event
     logger.debug("Validating event #{params[:event_id]}")
@@ -56,14 +63,17 @@ class ApplicationController < ActionController::Base
     respond_not_found unless @client
   end
   
-  CAN_PATTERN = /can_([a-z_]*)/
+  CAN_PATTERN = /^can_([a-z_]*)/
+  REDIRECT_PATTERN = /^redirect_unless_([a-z_]*)/
   def method_missing(m, *args, &block)
     m = m.to_s
     case m
     when CAN_PATTERN
       return require("#{m}?")
+    when REDIRECT_PATTERN
+      return redirect_when_missing(REDIRECT_PATTERN.match(m)[1])
     else
-      puts "Unable to find method #{m} in class #{self.class}"
+      logger.error "Unable to find method #{m} in class #{self.class}"
       super
     end
   end       

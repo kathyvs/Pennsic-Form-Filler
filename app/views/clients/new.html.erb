@@ -2,4 +2,5 @@
 
 <%= render 'form' %>
 
-<% @links = [link_to 'Back', clients_path] %>
+<% @links = [] 
+   @links << link_to('Back', clients_path) if @account.can_view_all_clients? %>

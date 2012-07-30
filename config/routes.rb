@@ -6,6 +6,9 @@ FormFiller::Application.routes.draw do
   
   resources :events, :except => [:destroy] do
     resources :clients do
+      collection do
+        post 'verify'
+      end
       resources :forms
     end
     get 'kingdom/:kingdom', :to => 'events#kingdom', :on => :member
