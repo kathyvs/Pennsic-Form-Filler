@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120728183450) do
+ActiveRecord::Schema.define(:version => 20120801014146) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -110,6 +110,9 @@ ActiveRecord::Schema.define(:version => 20120728183450) do
     t.boolean  "is_intermediate"
     t.boolean  "printed"
   end
+
+  add_index "forms", ["client_id"], :name => "index_forms_on_client_id"
+  add_index "forms", ["type"], :name => "index_forms_on_type"
 
   create_table "rights", :force => true do |t|
     t.string "name"
