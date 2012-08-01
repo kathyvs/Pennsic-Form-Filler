@@ -6,10 +6,8 @@
   <h3>Select by first letter (hover over letter to get count):</h3>
   <ul class="letter_list">
   <% @counts.each_pair do |letter, letter_count| -%>
-    <li><a title="<%= letter_count %> <%= pluralize(letter_count, 'item') %>"
-    	  href="<%= update_clients_path(:letter => letter) %>">
-     <%= letter %>
-    </a></li>
+    <li><a title="<%= pluralize(letter_count, 'item') %>"
+    	  href="<%= update_clients_path(:letter => letter) %>"><%= letter -%></a></li>
   <% end-%>
   </ul>
 </div>

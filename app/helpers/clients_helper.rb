@@ -48,7 +48,9 @@ module ClientsHelper
   
   def offset_range
     first = (@link_params[:offset] || 0).to_i
+    logger.info("First = #{first}, size = #{@clients.size}")
     last = first + @clients.size
+    logger.info("Range is #{first..last}")
     return first..last
   end
   

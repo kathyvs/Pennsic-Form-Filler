@@ -40,5 +40,14 @@ describe DecodeMap do
       m.extend(DecodeMap)
       m[:a].should_not be_kind_of(DecodeMap)
     end
+    
+    it "applies encoding to each as well" do
+      m = {:a => 1, :b => 'Do{n~}a'}
+      m.extend(DecodeMap)
+      s = {:a => m[:a], :b => m[:b]}
+      m.each do |k, v|
+        v.should eq(s[k])
+      end
+    end
   end
 end

@@ -16,10 +16,10 @@ class Client < ActiveRecord::Base
   
   JOINS = 'inner join forms f on f.client_id = clients.id'
   scope :needs_review, lambda { |event_id| joins(JOINS)\
-                               .where('f.needs_review = 1 and event_id = ?', event_id)\
+                               .where('f.needs_review' => true).where('event_id' => event_id)\
                                .group('clients.id')}
   scope :needs_printing, lambda { |event_id| joins(JOINS)\
-                              .where('f.needs_review = 0 AND f.printed = 0 and event_id = ?', event_id)\
+                              .where('f.needs_review' => false).where('f.printed' => false).where('event_id' => event_id)\
                               .group('clients.id')}
   scope :todays, lambda {|event_id| joins(JOINS)\
     .where('f.date_submitted = ? and event_id = ?', Date.today, event_id)\
@@ -34,6 +34,10 @@ class Client < ActiveRecord::Base
      :needs_printing => 'Show needs printing',
      :todays => "Show today's",
      :every => 'Show all'}
+  end
+  
+  def self.scope_has_joins(scope)
+    scope.to_sym != :every
   end
 
   def self.get_counts(scope, event_id)

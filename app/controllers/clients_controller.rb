@@ -5,6 +5,7 @@ class ClientsController < ApplicationController
   before_filter :require_event
   before_filter :can_create_client, :only => [:create, :verify]
   before_filter :redirect_unless_view_all_clients, :only => [:index, :show]
+  before_filter :redirect_unless_edit_client, :only => [:edit]
   before_filter :redirect_unless_create_client, :only => [:new]
   
   def client_url
@@ -23,10 +24,20 @@ class ClientsController < ApplicationController
       logger.debug("Limiting to letter #{letter}")
       search = search.where(:first_letter => letter)
     end
-    @count = search.count
-    puts "Count = #{@count.inspect}" unless @count.instance_of?(Fixnum)
-    @clients = search.offset(offset).limit(limit)
-    @counts = Client.get_counts(@scope, @event.id)
+    if Client.scope_has_joins(@scope)
+      all_clients = search.to_a
+      @count = all_clients.size
+      @clients = all_clients[offset...(offset+limit)]
+      @counts = Hash.new(0)
+      all_clients.each do |cl|
+        @counts[cl.first_letter] += 1
+      end 
+    else 
+      @count = search.count
+      logger.warn "Count = #{@count.inspect}" unless @count.instance_of?(Fixnum)
+      @clients = search.offset(offset).limit(limit).to_a
+      @counts = Client.get_counts(@scope, @event.id)
+    end
     @link_params = {:scope => @scope, :limit => limit}
     @link_params[:offset] = offset if (offset > 0) 
   end
@@ -55,7 +66,6 @@ class ClientsController < ApplicationController
 
   # GET /clients/1/edit
   def edit
-    return unless redirect_unless(:edit_client)
     @client = Client.find(params[:id])
   end
 
