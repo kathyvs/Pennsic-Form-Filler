@@ -99,6 +99,7 @@ describe Account do
       expect { a.update_roles([33, 44]) }.to raise_error(ActiveRecord::RecordNotFound)
     end 
   end
+ 
   describe "validation" do
     
     def validate(cls, override)

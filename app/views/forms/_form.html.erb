@@ -43,14 +43,16 @@
     <%= f.label :action_type_other, '(if other)', :class => other_classes %>
     <%= f.text_field :action_type_other, :size => 20 %>
   </div>
-  <div class="field">
+  <%= f.hidden_field :herald %>
+  <%= f.hidden_field :heralds_email %>
+  <!--<div class="field">
     <%= f.label :herald %>
     <%= f.text_field :herald %>
   </div>
   <div class="field">
     <%= f.label :heralds_email, "Herald's Contact" %>
     <%= f.text_field :heralds_email %>
-  </div>
+  </div> -->
   <div class="field">
     <%= f.label :date_submitted %>
     <%= f.date_select :date_submitted %>

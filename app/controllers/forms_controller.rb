@@ -22,6 +22,8 @@ class FormsController < ApplicationController
         @form.client = @client
         @form.date_submitted = Date.today
         @form.needs_review = true
+        @form.herald = account.sca_name
+        @form.heralds_email = account.contact_info
         respond_to do |format|
           format.text { render :text => @form.inspect }
           format.html # new.html.erb 

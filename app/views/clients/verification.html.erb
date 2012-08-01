@@ -1,5 +1,5 @@
 <p id="notice"><%= notice %></p>
-<% @title = "Verify #{@client.display_name}" %>
+<% @title = "Verify #{@client.legal_name}" %>
 
 <%= form_for(@client, :url => event_clients_path(:event_id => @event)) do |f| %>
 <h3>Please check your values. Once you hit "Create" you will need to get 

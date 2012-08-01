@@ -13,7 +13,8 @@ class Account < ActiveRecord::Base
   attr_accessor :password_confirmation
   
   validate :password_must_be_present
-
+  scope :every, lambda {|event_id| where('event_id = ?', event_id) }
+  
   def self.login(name, password)
     account = find_by_name(name)
     if account && account.hashed_password == encrypt_password(password, account.salt)
@@ -88,7 +89,7 @@ class NamedAccount < Account
 
   validates :sca_name, :presence => true, :uniqueness => true
   validates :contact_info, :presence => true, :uniqueness => true
-  
+    
   def self.model_name
     Account.model_name
   end
