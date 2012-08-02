@@ -90,7 +90,7 @@ class ClientsController < ApplicationController
         if @client.save
           format.html { redirect_to(@account.has_role?(:guest) ? new_event_client_path(@event)\
                               : event_clients_path(@event), 
-                           :notice => 'Client was successfully created.') }
+                           :notice => 'Congratulations, you information has been saved. Please wait to be called.') }
           format.xml  { render :xml => @client, :status => :created, :location => @client }
         else
           format.html { render :action => "new" }
