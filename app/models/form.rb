@@ -47,7 +47,7 @@ class Form < ActiveRecord::Base
   end
 
   def file_name
-    name = client.society_name.downcase.gsub(/ /, '_') + '_' + self.class.label.to_s + id.to_s
+    name = client.display_name.downcase.gsub(/ /, '_') + '_' + self.class.label.to_s + id.to_s
   end
 
   def doc_upload=(doc_field)
