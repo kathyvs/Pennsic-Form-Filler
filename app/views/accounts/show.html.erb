@@ -1,4 +1,4 @@
-<% @title = "Account #" %>
+<% @title = "Account #{@account.name}" %>
 
 <p id="notice"><%= notice %>
 </p>
@@ -13,5 +13,10 @@
   <%= @account.sca_name %>
 </p>
 
+<p>
+  <b>Contact informationt</b>
+  <%= @account.contact_info %>
+</p>
+
 <% @links = [link_to('Edit', edit_account_path(@account)),
-	    link_to('Back', accounts_path) %> 
+	    link_to('Home', :controller => :session, :action => :show)] %> 

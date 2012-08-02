@@ -59,7 +59,10 @@ class AccountsController < ApplicationController
 
     respond_to do |format|
       if @account.save
-        format.html { redirect_to(@account, :notice => 'Account was successfully created.') }
+        session[:account] = @account.id
+        format.html do 
+          redirect_to(@account, :notice => 'Account was successfully created -- Contact a senior herald for activiation ')
+        end
       else
         format.html { render :action => "new" }
       end
