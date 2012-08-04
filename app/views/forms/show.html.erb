@@ -33,6 +33,11 @@
 <%= render "show_#{@form.class.label}" %>
 
 <p>
+  <b>Notes:</b>
+  <%= @form.notes %>
+</p>
+
+<p>
   <b>Needs Review:</b>
   <%= @form.needs_review %>
 </p>
