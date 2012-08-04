@@ -101,7 +101,7 @@ div.field, div.actions {
 #error_explanation {
     width: 28em;
     border: 2px solid #6C0305;
-    padding: 0.5 em;
+    padding: 0.5em;
     padding-bottom: 0;
     margin-bottom: 1.4em;
     background-color: #F8B0B1;
@@ -110,7 +110,7 @@ div.field, div.actions {
 #error_explanation h2 {
     text-align: left;
     font-weight: bold;
-    padding: 0.4em 0.4em 0.4em 1 em;
+    padding: 0.4em 0.4em 0.4em 1em;
     font-size: 0.8em;
     margin: -0.5em;
     margin-bottom: 0px;
@@ -131,7 +131,7 @@ ul.form_list {
 ul.form_list  li {
     list-style: none;
     display: inline-block;
-    margin-right: 0.25 em;
+    margin-right: 0.25em;
 }
 
 .field label, .label_prefix {

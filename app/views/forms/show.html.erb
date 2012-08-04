@@ -47,6 +47,15 @@
   <%= @form.printed %>
 </p>
 
+<% if @account.has_role?(:senior) || @account.has_role?(:clerk) -%>
+
+<%= form_tag(:controller => :forms, :id => @form.id, :event_id => @event, 
+         :client_id => @client, :action => :destroy) -%>
+  <%= submit_tag "Delete", :confirm=> "Are you certain you want to delete this form?"%>
+  <%= hidden_field_tag "_method", "DELETE"%>
+<% end -%>
+
 <% @links = [link_to('Edit', edit_form_path(@form)),
              link_to('Print', form_path(@form, :format => 'pdf')),
-            link_to('Back', event_client_path(@client, :event_id => @event))] %>
+             link_to('Back', event_client_path(@client, :event_id => @event))]
+%>

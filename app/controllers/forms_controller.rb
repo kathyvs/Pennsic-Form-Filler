@@ -86,7 +86,7 @@ class FormsController < ApplicationController
     @form.destroy
 
     respond_to do |format|
-      format.html { redirect_to(forms_url) }
+      format.html { redirect_to(event_client_path(@client, :event_id => @event)) }
       format.xml  { head :ok }
     end
   end
