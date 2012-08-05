@@ -5,6 +5,11 @@ module PDFForms
 
   class PDFFile
 
+    def self.valid_pdf?(data)
+      reader =  com.itextpdf.text.pdf.PdfReader.new(data.to_java_bytes)
+      !reader.encrypted?
+    end
+    
     def self.pdf_pages(data)
       reader =  com.itextpdf.text.pdf.PdfReader.new(data.to_java_bytes)
       reader.number_of_pages

@@ -13,6 +13,20 @@ class Form < ActiveRecord::Base
   validates_length_of :doc_pdf, :maximum => 1.megabytes,
                       :message => 'File cannot be longer than 1 M'
 
+  validate do |form|
+    if form.has_doc_pdf? 
+      begin
+        unless PDFForms::PDFFile.valid_pdf?(form.doc_pdf)
+          form.errors.add(:doc_pdf, 'Documentation cannot be encrypted')
+        end
+      rescue
+        form.errors.add(:doc_pdf, 'Unable to read documentation')
+      end
+    else
+      true
+    end
+  end
+  
   @@cls_types = {}.with_indifferent_access
 
   def self.types
