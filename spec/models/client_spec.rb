@@ -113,4 +113,12 @@ describe Client do
       result.display_name.should eq("<#{result.legal_name}>")
     end
   end
+  
+  describe "short_gender" do
+    {"Female" => "F", "Male" => "M", "---" => "U" }.each do |gender, expected|
+      it "should map #{gender} to #{expected}" do
+        Client.new(:gender => gender).short_gender.should eq(expected)
+      end
+    end
+  end
 end

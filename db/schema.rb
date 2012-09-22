@@ -86,7 +86,7 @@ ActiveRecord::Schema.define(:version => 20120804025553) do
     t.string   "name_type_other"
     t.string   "submitted_name"
     t.string   "documentation",          :limit => 1000
-    t.binary   "doc_pdf",                :limit => 5242880
+    t.binary   "doc_pdf",                :limit => 16777215
     t.date     "date_submitted"
     t.boolean  "needs_review"
     t.string   "authentic_text"
@@ -109,7 +109,7 @@ ActiveRecord::Schema.define(:version => 20120804025553) do
     t.string   "release2"
     t.boolean  "is_intermediate"
     t.boolean  "printed"
-    t.text     "notes",                  :limit => 500
+    t.text     "notes"
   end
 
   add_index "forms", ["client_id"], :name => "index_forms_on_client_id"

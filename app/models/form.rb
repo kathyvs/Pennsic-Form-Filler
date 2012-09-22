@@ -122,6 +122,14 @@ class Form < ActiveRecord::Base
     false
   end
 
+  def new_to_kingdom?
+    key = full_action_type
+    action_types.has_key?(key) ? action_types[key].new_to_kingdom? : true
+  end
+  
+  def full_documentation
+    documentation
+  end
 end
 
   
@@ -190,7 +198,7 @@ class NameForm < Form
   def has_other_name_type?
     true
   end
-
+  
   def allowed_changes
     changes = :major
     if no_changes_major_flag
@@ -220,7 +228,21 @@ class NameForm < Form
         self.is_intermediate = true
     end
   end
-        
+  
+  def content
+    submitted_name.blank? ? client.society_name : submitted_name
+  end
+  
+  def oscar_type
+    case name_type
+    when 'Alternate'
+      'Alternate Name'
+    when 'HouseHold'
+      'Household Name'
+    else
+      'Name'
+    end
+  end
 end
 
 class DeviceForm < Form
@@ -249,6 +271,14 @@ class DeviceForm < Form
 
   def has_previous_kingdom?
     true
+  end
+  
+  def content
+    blazon
+  end
+  
+  def oscar_type
+    'Device'
   end
 end
 
@@ -307,6 +337,14 @@ class BadgeForm < Form
     result << release1 unless release1.blank?
     result << release2 unless release2.blank?
     return result
+  end
+  
+  def content
+    blazon
+  end
+  
+  def oscar_type
+    'Badge'
   end
 end
 

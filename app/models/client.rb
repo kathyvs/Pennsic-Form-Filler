@@ -53,8 +53,39 @@ class Client < ActiveRecord::Base
     society_name.blank? ? "<#{legal_name}>" : society_name
   end
   
+  def short_gender
+    short = gender[0..0]
+    return short == '-' ? 'U' : short.upcase
+  end
+  
   def required?(field)
     REQUIRED.include? field
+  end
+  
+  def primary_name_form
+    forms.each do |form|
+      if form.type_name == 'Name' && form.name_type == 'Primary'
+        return form
+      end
+    end
+    return nil
+  end
+  
+  def has_primary_name_form?
+    primary_name_form
+  end
+  
+  def device_form
+    forms.each do |form|
+      if form.type_name == 'Device'
+        return form
+      end
+    end
+    nil
+  end
+  
+  def has_device_form?
+    device_form
   end
   
   private 

@@ -51,4 +51,5 @@ describe EventsHelper do
     end
     
   end
+  
 end

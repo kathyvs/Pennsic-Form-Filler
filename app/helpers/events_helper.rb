@@ -1,3 +1,5 @@
+require 'daud_coder'
+
 module EventsHelper
   
   def account_names(event)
@@ -14,5 +16,13 @@ module EventsHelper
       current_id = e.id if e.current?
     end
     options_from_collection_for_select(@coll, "id", "title", current_id)
+  end
+  
+  def yes_no(bool)
+    bool ? 'y' : 'n'
+  end
+  
+  def d(s)
+    s ? DaudCoder.from_daud(s) : ""
   end
 end
