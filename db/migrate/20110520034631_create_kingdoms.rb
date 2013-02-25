@@ -1,4 +1,7 @@
 class CreateKingdoms < ActiveRecord::Migration
+  class Kingdom < ActiveRecord
+  end
+  
   def self.up
     create_table :kingdoms do |t|
       t.string :name

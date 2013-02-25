@@ -147,10 +147,10 @@ describe NameForm do
   
   describe "oscar types" do
     
-    it "is ':name' when name_type is primary and action_type is not 'Change'" do
+    it "is 'Name' when name_type is primary and action_type is not 'Change'" do
       form.name_type = 'Primary'
       form.full_action_type = 'New'
-      form.oscar_type.should eq(:name)
+      form.oscar_type.should eq("Name")
     end
     
   end

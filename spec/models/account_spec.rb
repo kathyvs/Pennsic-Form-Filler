@@ -35,7 +35,7 @@ describe Account do
       @role.save!
     end
     
-    Rspec::Matchers.define :be_able_to do |right|
+    RSpec::Matchers.define :be_able_to do |right|
       match do |account|
         method = "can_#{right}?"
         account.send(method)

@@ -57,7 +57,7 @@ describe EventsController do
   end
     
   describe "GET show" do
-    include ActionController::UrlWriter
+    include Rails.application.routes.url_helpers
     
     fixtures :accounts, :accounts_events
     

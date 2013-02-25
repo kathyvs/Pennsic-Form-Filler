@@ -37,7 +37,8 @@ describe Login do
     
     def verify_invalid(login, field = nil)
       login.should_not be_valid
-      login.errors.should have_key(field) if field
+      puts login.methods.sort
+      login.errors.messages.should have_key(field) if field
     end
   end
 end
