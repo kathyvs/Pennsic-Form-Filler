@@ -18,6 +18,7 @@ class ClientsController < ApplicationController
     limit = (params[:limit] || MAX_SIZE).to_i
     offset = (params[:offset] || 0).to_i
     @scope = (params[:scope] || :every).to_sym
+    puts "Scope = #{@scope.inspect}" 
     search = Client.send(@scope, @event.id).order('society_name, legal_name')
     if (params.has_key?(:letter)) 
       letter = params[:letter].strip
@@ -36,6 +37,8 @@ class ClientsController < ApplicationController
       @count = search.count
       logger.warn "Count = #{@count.inspect}" unless @count.instance_of?(Fixnum)
       @clients = search.offset(offset).limit(limit).to_a
+      logger.debug "about to call get_counts"
+      puts "Calling Client.get_counts(#{@scope.inspect}, #{@event.id.inspect}"
       @counts = Client.get_counts(@scope, @event.id)
     end
     @link_params = {:scope => @scope, :limit => limit}

@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-FormFiller::Application.config.secret_token = '19e50ef70b8d96afba31802104d900e42dad0158f758a11ee16c34587b66cb30193e569ff70efbf1e320e6f36a173d41956cd99fbf036cdcb2ce8aa0a7b4bfda'
+FormFiller::Application.config.secret_token = '6c726023189d7da8e89fd55b47c8284cd37f5b0fc85f210d37d4cf78317d27b5853d0ae77a9541862e74983996b219dd95e9cfa27c5a6eb8ebb29eb55308380e'

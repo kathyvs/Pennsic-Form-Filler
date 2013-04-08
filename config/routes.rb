@@ -11,6 +11,7 @@ FormFiller::Application.routes.draw do
       end
       resources :forms
     end
+    get 'kingdoms', :to => 'events#list_kingdoms', :on => :member
     get 'kingdom/:kingdom', :to => 'events#kingdom', :on => :member
     collection do 
       get 'current'

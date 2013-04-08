@@ -232,9 +232,9 @@ describe AccountsController do
           saved_account.name.should == norm_account.name
         end
 
-        it "assigns the account as @account" do
+        it "keeps the original account" do
           run_put
-          assigns(:account).should eq(norm_account)
+          assigns(:account).should eq(admin_account)
         end
 
         it "re-renders the 'edit' template" do

@@ -47,8 +47,11 @@ class AccountsController < ApplicationController
 
   # GET /accounts/1/edit
   def edit
-    respond_forbidden and return unless account.can_modify_other_accounts? || params[:id] == account.id
-    @account = Account.find(params[:id])
+    edit_id = params[:id].to_i
+    puts "edit_id = #{edit_id.inspect} and account.id = #{account.id.inspect}"
+    
+    respond_forbidden and return unless account.can_modify_other_accounts? || edit_id == account.id
+    @account = Account.find(edit_id)
   end
 
   # POST /accounts
@@ -72,8 +75,9 @@ class AccountsController < ApplicationController
   # PUT /accounts/1
   # PUT /accounts/1.xml
   def update
-    respond_forbidden and return unless account.can_modify_other_accounts? || params[:id] == account.id
-    @account = Account.find(params[:id])
+    edit_id = params[:id].to_i
+    respond_forbidden and return unless account.can_modify_other_accounts? || edit_id == account.id
+    @account = Account.find(edit_id)
 
     respond_to do |format|
       if @account.update_attributes(params[:account])

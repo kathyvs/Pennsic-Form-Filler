@@ -85,12 +85,15 @@ class EventsController < ApplicationController
     end
   end
 
+  def list_kingdoms
+  
+  end
   #GET /events/1/kingdom/East
   def kingdom
     @event = Event.find(params[:id])
     respond_not_found unless @event
     @kingdom = params[:kingdom].gsub(/^AE/, "\xc3\x86").capitalize
-    @clients = Client.where(:kingdom => @kingdom).order(:society_name)
+    @clients = Client.where(:kingdom => @kingdom, :event_id => @event).order(:society_name)
     respond_to do |format|
       format.text { render(:template => 'events/by_kingdom') }
       format.xml { render(:template => 'events/by_kingdom')}

@@ -329,5 +329,27 @@ describe EventsController do
     end
   end
   
-  
+  describe "get Kingdoms" do
+    it "requires authentication" do
+      get :list_kingdoms, :id => 39
+      response.status.should redirect_to(:new_session)
+    end
+    
+    describe "when can view all clients" do
+      
+      before :each do 
+        account = login_with_rights(:view_all_clients)
+      end
+      
+    end
+    
+    describe "otherwise" do
+      it "redirects to show" do
+        account = login_with_rights
+        get :list_kingdoms, :id => 39
+        response.status.should redirect_to(:controller => :session, :action => :show)
+      end
+    end
+ 
+  end
 end
