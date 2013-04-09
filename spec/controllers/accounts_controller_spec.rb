@@ -195,7 +195,7 @@ describe AccountsController do
 
     describe "when can modify other events" do
       before :each do
-        login_with_rights(:modify_other_accounts)
+        @account = login_with_rights(:modify_other_accounts)
       end
   
       describe "with valid params" do
@@ -222,7 +222,6 @@ describe AccountsController do
 
       describe "with invalid params" do
         def run_put
-          login_admin
           put :update, :id => norm_account.id.to_s, :account => invalid_params
         end
 
@@ -234,11 +233,13 @@ describe AccountsController do
 
         it "keeps the original account" do
           run_put
-          assigns(:account).should eq(admin_account)
+          assigns(:account).should eq(norm_account)
         end
 
         it "re-renders the 'edit' template" do
+          puts "Starting to run put"
           run_put
+          puts "End running put"
           response.should render_template("edit")
         end
       end
