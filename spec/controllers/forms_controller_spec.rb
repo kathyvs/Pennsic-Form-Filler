@@ -30,6 +30,13 @@ describe FormsController do
   end
   
 
+  def post_with_client(cmd, rest = {})
+    rest[:client_id] = @client.id
+    rest[:event_id] = @event.id
+    post cmd, rest
+  end
+  
+
   describe "GET show" do
   
     it "requires authentication" do
@@ -147,33 +154,57 @@ describe FormsController do
  end
 
   describe "POST create" do
-    describe "with valid params" do
-      it "assigns a newly created form as @form" do
-        Form.stub(:new).with({'these' => 'params'}) { mock_form(:save => true) }
-        post :create, :form => {'these' => 'params'}
-        assigns(:form).should be(mock_form)
+    it "requires authentication" do
+      get_with_client(:new)
+      response.status.should redirect_to(:new_session)
+    end
+    
+    describe "when has edit_client rights" do
+ 
+      before :each do 
+        @account = login_with_rights_for_event(@event, :edit_client)
+      end
+      
+      describe "with valid params" do
+        it "assigns a newly created form as @form" do
+          Form.stub(:create).with({'these' => 'params'}) { mock_form(:save => true) }
+          post_with_client :create, :form => {'these' => 'params'}
+          assigns(:form).should be(mock_form)
+        end
+
+        it "redirects to client page" do
+          Form.stub(:create) { mock_form(:save => true) }
+          post_with_client :create, :form => {}
+          response.should redirect_to(event_client_path(@client, :event_id => @event))
+        end
       end
 
-      it "redirects to the created form" do
-        Form.stub(:new) { mock_form(:save => true) }
-        post :create, :form => {}
-        response.should redirect_to(form_url(mock_form))
+      describe "with invalid params" do
+        it "assigns a newly created but unsaved form as @form" do
+          Form.stub(:create).with({'these' => 'params'}) { mock_form(:save => false) }
+          post_with_client :create, :form => {'these' => 'params'}
+          assigns(:form).should be(mock_form)
+        end
+
+        it "re-renders the 'new' template" do
+          Form.stub(:create) { mock_form(:save => false) }
+          post_with_client :create, :form => {}
+          response.should render_template("new")
+        end
+      end
+    end
+    
+    describe "otherwise" do
+      it "redirects to session show" do
+        account = login_with_rights_for_event(@event)
+        Form.stub(:create) { mock_form(:save => true) }
+        post_with_client  :create, :form => {}
+        response.status.should redirect_to(
+           :controller => :session, :action => :show)
       end
     end
 
-    describe "with invalid params" do
-      it "assigns a newly created but unsaved form as @form" do
-        Form.stub(:new).with({'these' => 'params'}) { mock_form(:save => false) }
-        post :create, :form => {'these' => 'params'}
-        assigns(:form).should be(mock_form)
-      end
 
-      it "re-renders the 'new' template" do
-        Form.stub(:new) { mock_form(:save => false) }
-        post :create, :form => {}
-        response.should render_template("new")
-      end
-    end
   end
 
   describe "PUT update" do
