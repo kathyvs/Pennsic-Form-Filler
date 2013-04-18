@@ -13,10 +13,7 @@ describe ClientsController do
   render_views
   
   def login_with_rights(*rights)
-    account = super
-    account.events << @event
-    account.save!
-    return account
+    login_with_rights_for_event(@event, *rights)
   end
   
   describe "GET index" do

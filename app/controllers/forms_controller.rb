@@ -1,7 +1,9 @@
 class FormsController < ApplicationController
 
   before_filter :require_event, :require_client
-
+  before_filter :redirect_unless_view_all_clients, :only => [:show]
+  before_filter :redirect_unless_edit_client, :only => [:new, :edit]
+  
   # GET /forms/1
   # GET /forms/1.pdf
   def show

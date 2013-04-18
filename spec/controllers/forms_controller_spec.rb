@@ -7,50 +7,144 @@ require 'spec_helper'
 describe FormsController do
 
   include AuthHelper
-  fixtures :accounts
+  fixtures :accounts, :events, :clients
 
+  before :each do
+    @event = events(:pennsic_40)
+    @client = clients(:william)
+  end
+  
   def mock_form(stubs={})
     @mock_form ||= mock_model(Form, stubs).as_null_object
   end
 
   def get_with_login(*args)
-    http_login('pennsic', 'pennsic_pwd')
+    login(:herald)
     get(*args)
   end
+  
+  def get_with_client(cmd, rest = {})
+    rest[:client_id] = @client.id
+    rest[:event_id] = @event.id
+    get cmd, rest
+  end
+  
 
   describe "GET show" do
-    it "assigns the requested form as @form" do
-      Form.stub(:find).with("37") { mock_form }
-      get :show, :id => "37"
-      assigns(:form).should be(mock_form)
+  
+    it "requires authentication" do
+      get_with_client(:show, :id => 37)
+      response.status.should redirect_to(:new_session)
     end
+    
+    describe "when can view all clients" do
+      
+      before :each do 
+        account = login_with_rights_for_event(@event, :view_all_clients)
+      end
+
+      it "assigns the requested form as @form when exists" do
+        Form.stub(:find).with("37") { mock_form }
+        get_with_client :show, :id => "37"
+        assigns(:form).should be(mock_form)
+      end
+      
+      it "gives a RecordNotFount error when not exists" do
+        expect { 
+          get_with_client :show, :id => "111111"}.to raise_error(
+              ActiveRecord::RecordNotFound)
+      end
+    end
+     
+    describe "otherwise" do
+      it "redirects to session show" do
+        Form.stub(:find).with("37") { mock_form }
+        account = login_with_rights_for_event(@event)
+        get_with_client :show, :id => "37"
+        response.status.should redirect_to(
+           :controller => :session, :action => :show)
+      end
+    end
+
   end
 
   describe "GET new" do
-    it "returns 400 if no client" do
-      get_with_login :new
-      response.status.should eq(400)
+  
+    it "requires authentication" do
+      get_with_client(:new)
+      response.status.should redirect_to(:new_session)
     end
-    it "gets the possible types when type is not set" do
-      get_with_login :new, :client => '2'
-      assigns(:client).should eq('2')
-      assigns(:types).should eq(Form.types)
+    
+    describe "when has edit_client rights" do
+      
+      before :each do 
+        @account = login_with_rights_for_event(@event, :edit_client)
+      end
+
+      it "returns 400 if no client" do
+        expect {
+          get :new, :event_id => @event.id,  :client_id => '11111'
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+      
+      it "gets the possible types when type is not set" do
+        get_with_client :new
+        assigns(:client).to_i.should eq(@client.id)
+        assigns(:types).should eq(Form.types)
+      end
+
+      it "assigns a new form as @form when type is set" do
+        NameForm.stub(:new) { mock_form }
+        get_with_client :new, :type => 'name'
+        assigns(:form).should be(mock_form)
+      end
+    end
+    
+    describe "otherwise" do
+      it "redirects to session show" do
+        account = login_with_rights_for_event(@event)
+        get_with_client :new
+        response.status.should redirect_to(
+           :controller => :session, :action => :show)
+      end
     end
 
-    it "assigns a new form as @form when type is set" do
-      NameForm.stub(:new) { mock_form }
-      get :new, {:type => 'name'}
-      assigns(:form).should be(mock_form)
-    end
   end
 
   describe "GET edit" do
-    it "assigns the requested form as @form" do
+    
+    before :each do 
+      @form_id = "37"
       Form.stub(:find).with("37") { mock_form }
-      get :edit, :id => "37"
-      assigns(:form).should be(mock_form)
     end
-  end
+    
+    it "requires authentication" do
+      get_with_client(:new)
+      response.status.should redirect_to(:new_session)
+    end
+    
+    describe "when has edit_client rights" do
+      
+      before :each do 
+        @account = login_with_rights_for_event(@event, :edit_client)
+      end
+
+      it "assigns the requested form as @form" do
+        get_with_client :edit, :id => @form_id
+        assigns(:form).should be(mock_form)
+      end
+    end
+    
+    describe "otherwise" do
+      it "redirects to session show" do
+        account = login_with_rights_for_event(@event)
+        get_with_client :edit, :id => "37"
+        response.status.should redirect_to(
+           :controller => :session, :action => :show)
+      end
+    end
+
+ end
 
   describe "POST create" do
     describe "with valid params" do

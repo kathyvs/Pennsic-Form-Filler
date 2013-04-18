@@ -54,6 +54,14 @@ module AuthHelper
     login(a)
     return a
   end
+  
+  def login_with_rights_for_event(event, *rights)
+    account = login_with_rights(*rights)
+    account.events << event
+    account.save!
+    return account
+  end
+
  
   def login_with_no_rights
     login_with_rights
