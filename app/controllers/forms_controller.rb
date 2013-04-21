@@ -2,7 +2,7 @@ class FormsController < ApplicationController
 
   before_filter :require_event, :require_client
   before_filter :redirect_unless_view_all_clients, :only => [:show]
-  before_filter :redirect_unless_edit_client, :only => [:new, :edit, :create]
+  before_filter :redirect_unless_edit_client, :only => [:new, :edit, :create, :update, :destroy]
   
   # GET /forms/1
   # GET /forms/1.pdf
@@ -66,9 +66,11 @@ class FormsController < ApplicationController
   # PUT /event/:event_id/client/:client_id/forms/1
   # PUT /event/:event_id/client/:client_id/forms/1.xml
   def update
+    puts("Starting update")
     @form = Form.find(params[:id])
+    puts("Found form #{@form.inspect}")
     update_name(params[:society_name])
-
+    puts("Updated name")
     respond_to do |format|
       if @form.update_attributes(params[:form])
         format.html { redirect_to(event_client_path(@client, :event_id => @event), 

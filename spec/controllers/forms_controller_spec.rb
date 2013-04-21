@@ -23,20 +23,33 @@ describe FormsController do
     get(*args)
   end
   
-  def get_with_client(cmd, rest = {})
+  def run_with_client(method, cmd, rest = {})
     rest[:client_id] = @client.id
     rest[:event_id] = @event.id
-    get cmd, rest
+    send(method, cmd, rest)
+  end
+  
+  def get_with_client(cmd, rest = {})
+    run_with_client :get, cmd, rest
   end
   
 
   def post_with_client(cmd, rest = {})
-    rest[:client_id] = @client.id
-    rest[:event_id] = @event.id
-    post cmd, rest
+    run_with_client :post, cmd, rest
   end
   
-
+  def put_with_client(cmd, rest = {})
+    unless rest.has_key? :form
+      rest[:form] = {}      
+    end
+    form = rest[:form]
+    form[:society_name] = @client.society_name unless form.has_key? :society_name
+    run_with_client :put, cmd, rest
+  end
+  
+  def delete_with_client(cmd, rest = {})
+    run_with_client :delete, cmd, rest
+  end
   describe "GET show" do
   
     it "requires authentication" do
@@ -208,52 +221,98 @@ describe FormsController do
   end
 
   describe "PUT update" do
-    describe "with valid params" do
-      it "updates the requested form" do
-        Form.stub(:find).with("37") { mock_form }
-        mock_form.should_receive(:update_attributes).with({'these' => 'params'})
-        put :update, :id => "37", :form => {'these' => 'params'}
+    it "requires authentication" do
+      Form.stub(:find) { mock_form(:update_attributes => true) }
+      put_with_client(:update, :id => "37")
+      response.status.should redirect_to(:new_session)
+    end
+    
+    describe "when has edit_client rights" do
+
+      before :each do 
+        @account = login_with_rights_for_event(@event, :edit_client)
       end
 
-      it "assigns the requested form as @form" do
-        Form.stub(:find) { mock_form(:update_attributes => true) }
-        put :update, :id => "1"
-        assigns(:form).should be(mock_form)
+      describe "with valid params" do
+        it "updates the requested form" do
+          Form.stub(:find).with("37") { mock_form }
+          mock_form.should_receive(:update_attributes).with(
+            {'these' => 'params', 'society_name' => @client.society_name})
+          put_with_client :update, :id => "37", :form => {'these' => 'params'}
+        end
+
+        it "assigns the requested form as @form" do
+          Form.stub(:find).with("1") { mock_form(:update_attributes => true) }
+          put_with_client :update, :id => "1"
+          assigns(:form).should be(mock_form)
+        end
+
+        it "redirects to the client page" do
+          Form.stub(:find) { mock_form(:update_attributes => true) }
+          put_with_client :update, :id => "1"
+          response.should redirect_to(event_client_path(@client, :event_id => @event))
+        end
       end
 
-      it "redirects to the form" do
-        Form.stub(:find) { mock_form(:update_attributes => true) }
-        put :update, :id => "1"
-        response.should redirect_to(form_url(mock_form))
+      describe "with invalid params" do
+        it "assigns the form as @form" do
+          Form.stub(:find) { mock_form(:update_attributes => false) }
+          put_with_client :update, :id => "1"
+          assigns(:form).should be(mock_form)
+        end
+
+        it "re-renders the 'edit' template" do
+          Form.stub(:find) { mock_form(:update_attributes => false) }
+          put_with_client :update, :id => "1"
+          response.should render_template("edit")
+        end
       end
     end
-
-    describe "with invalid params" do
-      it "assigns the form as @form" do
-        Form.stub(:find) { mock_form(:update_attributes => false) }
-        put :update, :id => "1"
-        assigns(:form).should be(mock_form)
-      end
-
-      it "re-renders the 'edit' template" do
-        Form.stub(:find) { mock_form(:update_attributes => false) }
-        put :update, :id => "1"
-        response.should render_template("edit")
+    
+    describe "otherwise" do
+      it "redirects to session show" do
+        account = login_with_rights_for_event(@event)
+        Form.stub(:find) { mock_form(:save => true) }
+        put_with_client  :update,  :id => '1'
+        response.status.should redirect_to(
+           :controller => :session, :action => :show)
       end
     end
   end
 
   describe "DELETE destroy" do
-    it "destroys the requested form" do
-      Form.stub(:find).with("37") { mock_form }
-      mock_form.should_receive(:destroy)
-      delete :destroy, :id => "37"
+   it "requires authentication" do
+      delete_with_client(:update, :id => "37")
+      response.status.should redirect_to(:new_session)
     end
+    
+    describe "when has edit_client rights" do
 
-    it "redirects to the forms list" do
-      Form.stub(:find) { mock_form }
-      delete :destroy, :id => "1"
-      response.should redirect_to(forms_url)
+      before :each do 
+        @account = login_with_rights_for_event(@event, :edit_client)
+      end
+
+      it "destroys the requested form" do
+        Form.stub(:find).with("37") { mock_form }
+        mock_form.should_receive(:destroy)
+        delete_with_client :destroy, :id => "37"
+      end
+
+      it "redirects to the clients list" do
+        Form.stub(:find) { mock_form }
+        delete_with_client :destroy, :id => "1"
+        response.should redirect_to(event_client_path(@client, :event_id => @event))
+      end
+      
+    end
+    describe "otherwise" do
+      it "redirects to session show" do
+        account = login_with_rights_for_event(@event)
+        Form.stub(:find) { mock_form(:save => true) }
+        delete_with_client  :destroy,  :id => '1'
+        response.status.should redirect_to(
+           :controller => :session, :action => :show)
+      end
     end
   end
 
