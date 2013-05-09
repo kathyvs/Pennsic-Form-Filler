@@ -1,10 +1,14 @@
 require 'pdf_forms'
 require 'action_type'
+require 'encoder'
 
 class Form < ActiveRecord::Base
+  extend DaudDecodable
+
   belongs_to :client
   attr_accessor :doc_pdf_content_type
-
+  daud_decoded :documentation, :previous_kingdom, :blazon
+  
   validates_format_of :doc_pdf_content_type, 
      :with => /application.pdf/,
      :message => "--- you can only upload PDF files",
@@ -134,11 +138,12 @@ end
 
   
 class NameForm < Form
-
-
+  
   validates_length_of :full_documentation, :maximum => 1000,
                       :message => "Documentation is limited to 1000 characters; use the additional docs for longer documentation"
 
+  daud_decoded :submitted_name, :authentic_text, :preferred_changes_text
+  
   def self.label
     :name
   end
@@ -243,6 +248,7 @@ class NameForm < Form
       'Name'
     end
   end
+  
 end
 
 class DeviceForm < Form

@@ -1,7 +1,13 @@
 require 'daud_coder'
-module Encoder
-  def initialize(attributes = nil)
-    attributes = attributes.inject({}) { |memo, (k, v)| memo[k] = DaudCoder.from_daud v}
-    super
+module DaudDecodable
+  
+  def daud_decoded(*mnames)
+    mnames.each do |m|
+      mname = "#{m}="
+      define_method(mname) do |v|
+        super(DaudCoder.from_daud(v))
+      end
+    end
   end
+  
 end

@@ -1,4 +1,12 @@
+# encoding: UTF-8
 require 'spec_helper'
+
+def verify_decode(form, key)
+  method = "#{key}=".to_s
+  form.send(method, "a{ae}b")
+  expected = "aæb"
+  form.send(key).should == expected
+end
 
 describe Form do
 
@@ -47,6 +55,13 @@ describe NameForm do
     action_types.keys.should eq(["", :new, :resub_kingdom, :resub_laurel, :change_retain, :change_release, :change_holding, :appeal, :other].collect(&:to_s))
   end
 
+  [:submitted_name, :documentation, :authentic_text, 
+   :preferred_changes_text, :previous_kingdom].each do |m|
+    it "handles daud_encoding for #{m}" do
+      verify_decode(@form, m)
+    end 
+  end
+   
   describe 'on full_action_type=' do
     it "sets action_type to 'New' on new and unsets action_change_type and resub " do 
       form.full_action_type = 'new'
@@ -171,6 +186,11 @@ describe DeviceForm do
       form.content.should eq(blazon)
     end
   end
+  
+  it "handles daud_encoding for blazon" do
+    verify_decode(@form, :blazon)
+  end
+
 end
 
 describe BadgeForm do

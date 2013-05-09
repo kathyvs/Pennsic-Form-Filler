@@ -1,6 +1,8 @@
 class Client < ActiveRecord::Base
+  extend DaudDecodable
   belongs_to :event
   has_many :forms
+  daud_decoded :society_name
   
   before_save :update_first_letter
  
