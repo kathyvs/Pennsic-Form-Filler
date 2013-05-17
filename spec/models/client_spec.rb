@@ -1,5 +1,11 @@
 require 'spec_helper'
 
+def verify_decode(client, key)
+  method = "#{key}=".to_s
+  client.send(method, "a{ae}b")
+  expected = "aæb"
+  client.send(key).should == expected
+end
 
 describe Client do
   fixtures(:events, :clients)
@@ -96,7 +102,8 @@ describe Client do
     
     [:legal_name, :address_1, :kingdom].each do |item|
       it "requires #{item}" do
-        @client.send("#{item}=", nil)
+        @client.send("#{item}=", "")
+        @client.should_not be_valid
         @client.should have(1).error_on(item)
       end
     end
@@ -121,4 +128,11 @@ describe Client do
       end
     end
   end
+  
+  [:society_name, :legal_name, :branch_name].each do |m|
+    it "handles daud_encoding for #{m}" do
+      verify_decode(Client.new, m)
+    end 
+  end
+
 end
