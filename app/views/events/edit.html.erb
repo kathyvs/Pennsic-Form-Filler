@@ -1,6 +1,7 @@
-<h1>Editing event</h1>
+<% @title = "Editing #{@event.title}" %>
 
 <%= render 'form' %>
 
-<%= link_to 'Show', @event %> |
-<%= link_to 'Back', events_path %>
+<% @links = [link_to('Show', @event),
+             link_to('Back', events_path)] %>
+

@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   
-  before_filter :can_modify_event, {:only => [:new, :edit, :create]}
+  before_filter :can_modify_event, {:only => [:new, :edit, :create, :update]}
   
   # GET /events
   # GET /events.xml
@@ -41,6 +41,7 @@ class EventsController < ApplicationController
   # GET /events/new.xml
   def new
     @event = Event.new
+    setup_accounts
     respond_to do |format|
       format.html # new.html.erb
       format.xml  { render :xml => @event }
@@ -51,18 +52,21 @@ class EventsController < ApplicationController
   def edit
     #requie(:modify_event)
     @event = Event.find(params[:id])
+    setup_accounts
   end
 
   # POST /events
   # POST /events.xml
   def create
     @event = Event.new(params[:event])
-    @event.accounts = [account]
+    @event.account_ids = (params[:non_members] ||{}).keys
+    @event.accounts << account
     respond_to do |format|
       if @event.save
-        format.html { redirect_to(@event, :notice => 'Event was successfully created.') }
+        format.html { redirect_to(events_url, :notice => "Event #{@event.title} was successfully created.") }
         format.xml  { render :xml => @event, :status => :created, :location => @event }
       else
+        setup_accounts
         format.html { render :action => "new" }
         format.xml  { render :xml => @event.errors, :status => :unprocessable_entity }
       end
@@ -73,12 +77,16 @@ class EventsController < ApplicationController
   # PUT /events/1.xml
   def update
     @event = Event.find(params[:id])
-
     respond_to do |format|
+      keys = @event.account_ids
+      keys += params[:non_members].keys if params[:non_members]
+      params[:event] ||= {}
+      params[:event][:account_ids] = keys
       if @event.update_attributes(params[:event])
-        format.html { redirect_to(@event, :notice => 'Event was successfully updated.') }
+        format.html { redirect_to(events_url, :notice => "Event #{@event.title} was successfully created.") }
         format.xml  { head :ok }
       else
+        setup_accounts
         format.html { render :action => "edit" }
         format.xml  { render :xml => @event.errors, :status => :unprocessable_entity }
       end
@@ -119,5 +127,11 @@ class EventsController < ApplicationController
     elsif
       respond :text => "unknown method", :status => 405
     end
+  end
+  
+  private
+  
+  def setup_accounts
+    @accounts = Account.all
   end
 end

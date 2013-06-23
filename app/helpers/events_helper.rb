@@ -25,4 +25,17 @@ module EventsHelper
   def d(s)
     s ? DaudCoder.from_daud(s) : ""
   end
+  
+  def split_accounts(event, accounts)
+    members = []
+    nonmembers = []
+    accounts.each do |account|
+      if account.events.include?(event)
+        members << account
+      else
+        nonmembers << account
+      end
+    end
+    {:members => members, :nonmembers => nonmembers}
+  end
 end

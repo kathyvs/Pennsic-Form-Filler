@@ -14,6 +14,14 @@ describe EventsController do
   def mock_event(stubs={})
     @mock_event ||= mock_model(Event, stubs).as_null_object
   end
+  
+  def create_accounts(*account_names)
+    account_names.map do |name|
+      account = Account.new(:name => name, :password => 'pwd')
+      account.save!
+      account
+    end
+  end
 
   describe "GET index" do
     
@@ -105,6 +113,13 @@ describe EventsController do
         get :new
         assigns(:event).should be(mock_event)
       end
+      
+      it "assigns accounts as @account" do
+        accounts = create_accounts('aaa', 'bbb')
+        Account.stub(:all) { accounts }
+        get :new
+        assigns(:accounts).should eq(accounts)
+      end
     end
     
     describe "otherwise" do
@@ -135,6 +150,14 @@ describe EventsController do
         Event.stub(:find).with("37") { mock_event }
         get :edit, :id => "37"
         assigns(:event).should be(mock_event)
+      end
+      
+      it "assigns all accounts as @account" do
+        accounts = create_accounts('a1', 'a2', 'a3', 'a4')
+        Account.stub(:all) { accounts }
+        Event.stub(:find).with("33") { mock_event }
+        get :edit, :id => "33"
+        assigns(:accounts).should eq(accounts)
       end
     end
     
@@ -171,10 +194,27 @@ describe EventsController do
           e.accounts.should eq([@account])
         end
   
-        it "redirects to the created event" do
+        it "assigns accounts to event" do
+          accounts = create_accounts("a1", "a2", "a3", "a4")
+          to_set = [accounts[0], accounts[2]]
+          to_set_keys = Hash[to_set.map {|a| [a.id, a.id]}]
+          post :create, :event => {:title => 'Test2'}, :non_members => to_set_keys
+          e = assigns(:event)
+          member_ids = e.account_ids
+          accounts.each do |a|
+            if (to_set.include?(a))
+              member_ids.should include(a.id)
+            else
+              member_ids.should_not include(a.id) 
+            end
+          end
+          member_ids.should include(@account.id)
+        end
+        
+        it "redirects to all events" do
            Event.stub(:new) { mock_event(:save => true) }
           post :create, :event => {}
-          response.should redirect_to(event_url(mock_event))
+          response.should redirect_to(events_url)
         end
       end
       
@@ -219,9 +259,13 @@ describe EventsController do
      
       describe "with valid params" do
         it "updates the requested event" do
-          Event.stub(:find).with("37") { mock_event }
-          mock_event.should_receive(:update_attributes).with({'these' => 'params'})
-          put :update, :id => "37", :event => {'these' => 'params'}
+          e = mock_event
+          e.stub(:account_ids) { [2, 3, 4] }
+          Event.stub(:find).with("37") { e }
+          e.should_receive(:update_attributes).with({"these" => 'params',
+            "account_ids" => [2, 3, 4, "1", "2"]})
+          put :update, :id => "37", :event => {:these => 'params'}, 
+              :non_members => {"1" => "1", "2" => "2"}
         end
 
         it "assigns the requested event as @event" do
@@ -230,11 +274,13 @@ describe EventsController do
           assigns(:event).should be(mock_event)
         end
 
-        it "redirects to the event" do
+        it "redirects to all events" do
+          @account.stub(:is_admin) { true }
           Event.stub(:find) { mock_event(:update_attributes => true) }
           put :update, :id => "1"
-          response.should redirect_to(event_url(mock_event))
+          response.should redirect_to(events_url)
         end
+
       end
 
       describe "with invalid params" do
@@ -345,9 +391,9 @@ describe EventsController do
     
     describe "otherwise" do
       it "redirects to show" do
-        account = login_with_rights
-        get :list_kingdoms, :id => 39
-        response.status.should redirect_to(:controller => :session, :action => :show)
+  #      account = login_with_rights
+  #      get :list_kingdoms, :id => 39
+  #      response.status.should redirect_to(:controller => :session, :action => :show)
       end
     end
  

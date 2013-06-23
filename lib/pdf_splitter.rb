@@ -3,7 +3,7 @@ module PDFForms
   
   class PdfSplitter
     def split(outdir, prefix, reader)
-      prefix.sub!(/[0-9 \-]*/, '')
+      prefix.sub!(/[0-9 \-_]*/, '')
       prefix.gsub!(/\s/, '_')
       (1..reader.number_of_pages).each do |pnumber|
         doc = com.itextpdf.text.Document.new
