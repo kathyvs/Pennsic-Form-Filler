@@ -9,7 +9,9 @@ FormFiller::Application.routes.draw do
       collection do
         post 'verify'
       end
-      resources :forms
+      resources :forms do
+        get 'print_setup', :to => 'forms#print_setup', :on => :member
+      end
     end
     get 'kingdoms', :to => 'events#list_kingdoms', :on => :member
     get 'kingdom/:kingdom', :to => 'events#kingdom', :on => :member

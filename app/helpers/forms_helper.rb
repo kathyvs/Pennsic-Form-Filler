@@ -91,6 +91,10 @@ module FormsHelper
     build_form_path(:edit_event_client_form_path, f, opts)
   end
 
+  def print_form_path(f, opts = {})
+    build_form_path(:print_setup_event_client_form_path, f, opts)
+  end
+  
   #private
 
   def display_info(field)

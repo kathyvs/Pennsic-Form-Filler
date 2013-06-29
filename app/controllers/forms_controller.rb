@@ -1,8 +1,12 @@
 class FormsController < ApplicationController
 
   before_filter :require_event, :require_client
-  before_filter :redirect_unless_view_all_clients, :only => [:show]
+  before_filter :redirect_unless_view_all_clients, :only => [:show, :print_setup]
   before_filter :redirect_unless_edit_client, :only => [:new, :edit, :create, :update, :destroy]
+  
+  def set_print_info(print_info)
+    @print_info = print_info
+  end
   
   # GET /forms/1
   # GET /forms/1.pdf
@@ -15,6 +19,7 @@ class FormsController < ApplicationController
       format.pdf { send_data @form.pdf_data, :type => :pdf, :filename => @form.file_name }
     end
   end
+
 
   # GET /client/:client_id/forms/new
   # GET /client/:client_id/forms/new.xml
@@ -45,6 +50,12 @@ class FormsController < ApplicationController
   def edit
     @form = Form.find(params[:id])
   end
+  
+  # GET /client/:client_id/forms/1/print
+  def print_setup
+    @form = Form.find(params[:id])
+    print_info
+  end
 
   # POST /event/:event_id/client/:client_id/forms
   # POST /event/:event_id/client/:client_id/forms.xml
@@ -66,11 +77,8 @@ class FormsController < ApplicationController
   # PUT /event/:event_id/client/:client_id/forms/1
   # PUT /event/:event_id/client/:client_id/forms/1.xml
   def update
-    puts("Starting update")
     @form = Form.find(params[:id])
-    puts("Found form #{@form.inspect}")
     update_name(params[:society_name])
-    puts("Updated name")
     respond_to do |format|
       if @form.update_attributes(params[:form])
         format.html { redirect_to(event_client_path(@client, :event_id => @event), 
@@ -103,5 +111,9 @@ class FormsController < ApplicationController
     @client.society_name = society_name
     @client.save!
     logger.info "Client name is now #{@client.society_name}"
+  end
+  
+  def print_info
+    @print_info ||= PrintInfo.from_config(FormFiller::Application.config)
   end
 end

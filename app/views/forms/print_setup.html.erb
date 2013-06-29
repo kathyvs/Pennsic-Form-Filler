@@ -1,0 +1,19 @@
+<% @title = "Print #{@form.class.display_name} form for #{@client.display_name}" %>
+
+<%= form_tag(print_form_path(@form), :method => 'post') do %>
+<% if @print_info.has_printers? %>
+<p><%= radio_button_tag 'print_action', 'print' %>
+  <% if @print_info.has_singleton_printer? %>
+    Send to printer <%= @print_info.single_printer_name %>
+    <%= hidden_field_tag 'printer', @print_info.single_printer_id %>
+  <% else %>
+   Send to printer:
+     <%= options_for_select(@print_info.printer_pairs) %> 
+  <% end %>
+</p>
+<% end %>
+<p><%= radio_button_tag 'print_action', 'download' %>
+  Download as PDF
+</p>
+<% end %>
+<% @links = [link_to('Show', form_path(@form))] %>

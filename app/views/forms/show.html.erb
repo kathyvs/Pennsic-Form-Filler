@@ -56,6 +56,6 @@
 <% end -%>
 
 <% @links = [link_to('Edit', edit_form_path(@form)),
-             link_to('Print', form_path(@form, :format => 'pdf')),
+             link_to('Print', print_form_path(@form)),
              link_to('Back', event_client_path(@client, :event_id => @event))]
 %>

@@ -164,7 +164,7 @@ describe FormsController do
       end
     end
 
- end
+  end
 
   describe "POST create" do
     it "requires authentication" do
@@ -316,4 +316,50 @@ describe FormsController do
     end
   end
 
+  describe "get print_setup" do
+    
+    it "requires authentication" do
+      get_with_client(:print_setup, :id => 37)
+      response.status.should redirect_to(:new_session)
+    end
+    
+    describe "when can view all clients" do
+      
+      before :each do 
+        account = login_with_rights_for_event(@event, :view_all_clients)
+      end
+
+      describe "when can print directly" do
+        
+        before :each do
+          @print_info = PrintInfo.new(:printers => {'a' => 'b'})
+          @controller.set_print_info @print_info
+        end
+        
+        it "assigns the requested form as @form" do
+          Form.stub(:find).with("37") { mock_form }
+          get_with_client :print_setup, :id => "37"
+          assigns(:form).should be(mock_form)
+        end
+      
+        it "assigns the controller's print info" do
+          Form.stub(:find).with("37") { mock_form }
+          get_with_client :print_setup, :id => "37"
+          assigns(:print_info).should be(@print_info)
+        end
+      end 
+      
+    end
+      
+    describe "otherwise" do
+      it "redirects to session show" do
+        Form.stub(:find).with("37") { mock_form }
+        account = login_with_rights_for_event(@event)
+        get_with_client :print_setup, :id => "37"
+        response.status.should redirect_to(
+           :controller => :session, :action => :show)
+      end
+    end
+
+  end
 end
