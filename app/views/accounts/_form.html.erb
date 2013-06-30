@@ -10,14 +10,13 @@
       </ul>
     </div>
   <% end %>
-
   <div class="field">
     <%= f.label :name, "User Name" %><br />
     <%= f.text_field :name %>
   </div>
   <% if @account.instance_of?(NamedAccount)%>
   <div class="field">
-    <%= f.label :sca_name, "SCA Name" %><br />
+    <%= f.label :sca_name, "SCA Name" %><span class="comment">(as it would appear on the submission forms)</span><br />
     <%= f.text_field :sca_name, :length => 45 %>
   </div>
   <div class="field">

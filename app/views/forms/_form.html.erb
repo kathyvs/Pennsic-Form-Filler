@@ -60,7 +60,7 @@
   <%= render "#{@form.class.label.to_s}_form", :f => f %>
 
   <div class="field">
-    <%= f.label :notes %>
+    <%= f.label :notes, 'Notes (local to this site only)' %>
     <%= f.text_area :notes, :rows => 5, :cols => 64 %>
   </div>
   
@@ -77,6 +77,8 @@
   <div class="actions">
     <%= f.submit "Save" %>
   </div>
+  
+  <p>&nbsp;</p>
 <% end %>
 
 <% @links = [link_to 'Back', event_client_path(@client, :event_id => @event)] %>

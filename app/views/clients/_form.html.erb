@@ -13,12 +13,17 @@
   <%= f.hidden_field :event_id %>
   <div class="field">
     <%= f.label :legal_name %>
-    <%= f.text_field :legal_name %>
+    <%= f.text_field :legal_name, :autocomplete => "off" %>
   </div>
   <div class="field">
     <%= f.label :address_1, 'Address' %>
-    <%= f.text_field :address_1 %> <span class="comment">(fit in two lines only)</span><br/>
-    <%= f.label :address_2, 'City, State, Zip'%><%= f.text_field :address_2 %>
+    <%= f.text_field :address_1, :autocomplete => "off" %> 
+        <span class="comment">(fit in two lines only)</span><br/>
+    <%= f.label :address_2, 'City, State, Zip'%><%= f.text_field :address_2, :tabindex => 3, :autocomplete => 'off'%>
+  </div>
+  <div class="field">
+    <%= f.label :kingdom %>
+    <%= pdf_select f, :kingdom, Form.create(:type => :name) %>
   </div>
   <div class="field">
     <%= f.label :branch_name %>
@@ -26,24 +31,20 @@
     <span class="comment">(such as Barony, Shire or Branch (but <em>not</em> household))</span>
   </div>
   <div class="field">
-    <%= f.label :kingdom %>
-    <%= pdf_select f, :kingdom, Form.create(:type => :name)%>
-  </div>
-  <div class="field">
     <%= f.label :gender %>
     <%= pdf_select f, :gender, Form.create(:type => :name) %>
   </div>
   <div class="field">
     <%= f.label :phone_number %>
-    <%= f.phone_field :phone_number %>
+    <%= f.phone_field :phone_number, :autocomplete => 'off' %>
   </div>
   <div class="field">
     <%= f.label :birth_date %>
-    <%= f.text_field :birth_date %>
+    <%= f.text_field :birth_date, :autocomplete => 'off'  %>
   </div>
   <div class="field">
     <%= f.label :email %>
-    <%= f.text_field :email %>
+    <%= f.text_field :email, :autocomplete => 'off'  %>
   </div>
   <div class="actions">
     <%= f.submit %>
