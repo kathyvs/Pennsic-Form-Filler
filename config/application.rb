@@ -47,6 +47,6 @@ module FormFiller
     
     config.printers = {'Home Computer' => 'Photosmart_Plus_B209a_m__6BF0E2_',
                        'Garnet Computer' => 'HP_Photosmart_C4200_series'}
-    config.print_command = 'lpr -#%{copies} -P %{printer}'
+    config.print_command = 'lpr -#%{copies} -P%{printer}'
   end
 end

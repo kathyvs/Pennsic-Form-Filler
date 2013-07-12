@@ -98,7 +98,7 @@ describe FormsController do
     describe "when has edit_client rights" do
       
       before :each do 
-        @account = login_with_rights_for_event(@event, :edit_client)
+        @account = login_with_rights_for_event(@event, :view_all_clients)
       end
 
       it "returns 400 if no client" do
@@ -143,10 +143,10 @@ describe FormsController do
       response.status.should redirect_to(:new_session)
     end
     
-    describe "when has edit_client rights" do
+    describe "when has view_client rights" do
       
       before :each do 
-        @account = login_with_rights_for_event(@event, :edit_client)
+        @account = login_with_rights_for_event(@event, :view_all_clients)
       end
 
       it "assigns the requested form as @form" do
@@ -172,10 +172,10 @@ describe FormsController do
       response.status.should redirect_to(:new_session)
     end
     
-    describe "when has edit_client rights" do
+    describe "when has view_client rights" do
  
       before :each do 
-        @account = login_with_rights_for_event(@event, :edit_client)
+        @account = login_with_rights_for_event(@event, :view_all_clients)
       end
       
       describe "with valid params" do
@@ -216,8 +216,6 @@ describe FormsController do
            :controller => :session, :action => :show)
       end
     end
-
-
   end
 
   describe "PUT update" do
@@ -227,10 +225,10 @@ describe FormsController do
       response.status.should redirect_to(:new_session)
     end
     
-    describe "when has edit_client rights" do
+    describe "when has view_client rights" do
 
       before :each do 
-        @account = login_with_rights_for_event(@event, :edit_client)
+        @account = login_with_rights_for_event(@event, :view_all_clients)
       end
 
       describe "with valid params" do
@@ -286,10 +284,10 @@ describe FormsController do
       response.status.should redirect_to(:new_session)
     end
     
-    describe "when has edit_client rights" do
+    describe "when has view_client rights" do
 
       before :each do 
-        @account = login_with_rights_for_event(@event, :edit_client)
+        @account = login_with_rights_for_event(@event, :view_all_clients)
       end
 
       it "destroys the requested form" do
@@ -316,17 +314,17 @@ describe FormsController do
     end
   end
 
-  describe "get print_setup" do
+  describe "GET print_setup" do
     
     it "requires authentication" do
       get_with_client(:print_setup, :id => 37)
       response.status.should redirect_to(:new_session)
     end
     
-    describe "when can view all clients" do
+    describe "when can edit clients" do
       
       before :each do 
-        account = login_with_rights_for_event(@event, :view_all_clients)
+        account = login_with_rights_for_event(@event, :edit_client)
       end
 
       describe "when can print directly" do
@@ -347,6 +345,13 @@ describe FormsController do
           get_with_client :print_setup, :id => "37"
           assigns(:print_info).should be(@print_info)
         end
+        
+        it "assigns the home param to @home" do
+          Form.stub(:find).with("37") { mock_form }
+          get_with_client :print_setup, :id => "37", :home => 'aaa'
+          assigns(:home).should eq('aaa')
+          
+        end
       end 
       
     end
@@ -356,6 +361,105 @@ describe FormsController do
         Form.stub(:find).with("37") { mock_form }
         account = login_with_rights_for_event(@event)
         get_with_client :print_setup, :id => "37"
+        response.status.should redirect_to(
+           :controller => :session, :action => :show)
+      end
+    end
+
+  end
+
+  describe "POST print_setup" do
+    
+    it "requires authentication" do
+      post_with_client(:print_setup, :id => 37)
+      response.status.should redirect_to(:new_session)
+    end
+    
+    describe "when can edit clients" do
+      
+      before :each do 
+        account = login_with_rights_for_event(@event, :edit_client)
+      end
+
+      describe "when valid" do
+        
+        before :each do
+          @print_info = mock(PrintInfo)
+          @controller.set_print_info @print_info
+          @form = mock_form
+          Form.stub(:find).with("37") { @form }
+        end
+      
+        describe "when printing directly" do 
+          
+          it "sends print to print_info" do
+            @printed = false
+            @print_info.stub(:print).with(@form, :printer => "a") { @printed = true }
+            post_with_client :print, :printer => "a", :print_action => 'print', :id => "37", :home => :client
+            @printed.should be_true
+          end
+
+          it "redirects to client page if home is 'client'" do
+            @print_info.stub(:print).with(@form, :printer => "b") { }
+            post_with_client :print, :printer => "b", :id => "37", :print_action => 'print', :home => 'client'
+            response.should redirect_to(event_client_path(@client, :event_id => @event))
+          end
+
+          it "redirects to form page if home is 'form'" do
+            @print_info.stub(:print).with(@form, :printer => "c") { }
+            post_with_client :print, :printer => "c", :id => "37", :print_action => 'print', :home => 'form'
+            response.should redirect_to(event_client_form_path(@form, 
+                :client_id => @client, :event_id => @event))
+          end
+
+          it "redirects to event page if home is 'event'" do
+            @print_info.stub(:print).with(@form, :printer => 'd') { }
+            post_with_client :print, :printer => "d", :id => "37", :print_action => 'print', :home => 'event'
+            response.should redirect_to(event_path(@event))
+          end
+          
+          it "sets the form 'printed' variable to true" do
+            flag_set = false
+            @form.stub(:printed=).with(true) { flag_set = true }
+            @print_info.stub(:print).with(@form, :printer => "b") { }
+            post_with_client :print, :printer => "b", :id => "37", :print_action => 'print', :home => 'client'
+            flag_set.should be_true
+            @form.should be_saved
+          end
+        end
+        
+        describe "when downloading file" do
+          
+          it "redirects to show pdf" do
+            post_with_client :print, :print_action => 'download', :id => "37"
+            response.should redirect_to(event_client_form_path(@form, 
+              :client_id => @client, :event_id => @event, :format => 'pdf'))
+          end
+
+          it "sets the form 'printed' variable to true" do
+            flag_set = false
+            @form.stub(:printed=).with(true) { flag_set = true }
+            post_with_client :print, :id => "37", :print_action => 'download', :home => 'client'
+            flag_set.should be_true
+            @form.should be_saved
+          end
+        end
+        
+        describe "otherwise" do
+          
+          it "returns 400 error" do
+            post_with_client :print, :id => "37", :print_action => 'bad', :home => 'client'
+            response.status.should eq(400)
+          end
+        end
+      end 
+      
+    end
+      
+    describe "otherwise" do
+      it "redirects to session show" do
+        account = login_with_rights_for_event(@event)
+        post_with_client :print_setup, :id => "37"
         response.status.should redirect_to(
            :controller => :session, :action => :show)
       end

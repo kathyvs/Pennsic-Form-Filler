@@ -11,6 +11,7 @@ FormFiller::Application.routes.draw do
       end
       resources :forms do
         get 'print_setup', :to => 'forms#print_setup', :on => :member
+        post 'print_setup', :to => 'forms#print', :on => :member
       end
     end
     get 'kingdoms', :to => 'events#list_kingdoms', :on => :member

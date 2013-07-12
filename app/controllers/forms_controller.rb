@@ -1,8 +1,9 @@
 class FormsController < ApplicationController
 
   before_filter :require_event, :require_client
-  before_filter :redirect_unless_view_all_clients, :only => [:show, :print_setup]
-  before_filter :redirect_unless_edit_client, :only => [:new, :edit, :create, :update, :destroy]
+  before_filter :redirect_unless_edit_client, :only => [:print_setup, :print]
+  before_filter :redirect_unless_view_all_clients, :only => [:show, 
+                  :new, :edit, :create, :update, :destroy]
   
   def set_print_info(print_info)
     @print_info = print_info
@@ -54,7 +55,30 @@ class FormsController < ApplicationController
   # GET /client/:client_id/forms/1/print
   def print_setup
     @form = Form.find(params[:id])
+    @home = params[:home]
     print_info
+  end
+  
+  def print
+    @form = Form.find(params[:id])
+    @form.printed = true
+    @form.save!
+    case params[:print_action]
+    when 'print'
+      print_info.print @form, :printer => params[:printer]
+      case params[:home]
+      when 'client'
+        redirect_to event_client_path(@client, :event_id => @event)
+      when 'event'
+        redirect_to event_path(@event)
+      else 
+        redirect_to event_client_form_path(@form, :client_id => @client, :event_id => @event)
+      end
+    when 'download'
+      redirect_to event_client_form_path(@form, :client_id => @client, :event_id => @event, :format => 'pdf')
+    else 
+      render :status => :bad_request, :text => "Bad Request"
+    end
   end
 
   # POST /event/:event_id/client/:client_id/forms
