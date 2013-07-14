@@ -65,7 +65,7 @@ class FormsController < ApplicationController
     @form.save!
     case params[:print_action]
     when 'print'
-      print_info.print @form, :printer => params[:printer]
+      print_info.print @form, printer = params[:printer]
       case params[:home]
       when 'client'
         redirect_to event_client_path(@client, :event_id => @event)

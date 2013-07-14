@@ -394,26 +394,26 @@ describe FormsController do
           
           it "sends print to print_info" do
             @printed = false
-            @print_info.stub(:print).with(@form, :printer => "a") { @printed = true }
+            @print_info.stub(:print).with(@form, printer = "a") { @printed = true }
             post_with_client :print, :printer => "a", :print_action => 'print', :id => "37", :home => :client
             @printed.should be_true
           end
 
           it "redirects to client page if home is 'client'" do
-            @print_info.stub(:print).with(@form, :printer => "b") { }
+            @print_info.stub(:print).with(@form, printer = "b") { }
             post_with_client :print, :printer => "b", :id => "37", :print_action => 'print', :home => 'client'
             response.should redirect_to(event_client_path(@client, :event_id => @event))
           end
 
           it "redirects to form page if home is 'form'" do
-            @print_info.stub(:print).with(@form, :printer => "c") { }
+            @print_info.stub(:print).with(@form, printer = "c") { }
             post_with_client :print, :printer => "c", :id => "37", :print_action => 'print', :home => 'form'
             response.should redirect_to(event_client_form_path(@form, 
                 :client_id => @client, :event_id => @event))
           end
 
           it "redirects to event page if home is 'event'" do
-            @print_info.stub(:print).with(@form, :printer => 'd') { }
+            @print_info.stub(:print).with(@form, printer = 'd') { }
             post_with_client :print, :printer => "d", :id => "37", :print_action => 'print', :home => 'event'
             response.should redirect_to(event_path(@event))
           end
@@ -421,7 +421,7 @@ describe FormsController do
           it "sets the form 'printed' variable to true" do
             flag_set = false
             @form.stub(:printed=).with(true) { flag_set = true }
-            @print_info.stub(:print).with(@form, :printer => "b") { }
+            @print_info.stub(:print).with(@form, printer = "b") { }
             post_with_client :print, :printer => "b", :id => "37", :print_action => 'print', :home => 'client'
             flag_set.should be_true
             @form.should be_saved

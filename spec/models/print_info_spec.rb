@@ -34,6 +34,14 @@ describe PrintInfo do
     it "indicates that it has a single printer" do
       @info.should have_singleton_printer
     end
+    
+    it "displays the printer's name when asked" do
+      @info.single_printer_name.should eq('a')
+    end
+    
+    it "displays the printer's id when asked" do
+      @info.single_printer_id.should eq('b')
+    end
   end
   
   describe "when given an empty printer mapping" do

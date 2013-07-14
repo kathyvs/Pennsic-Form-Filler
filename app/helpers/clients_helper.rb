@@ -32,6 +32,10 @@ module ClientsHelper
     new_event_client_path(:event_id => @event)
   end
 
+  def print_form_path(form)
+    print_setup_event_client_form_path(form, :client_id => @client, :event_id => @event)
+  end
+  
   def client_needs_review_class(client)
     result = client.forms.to_a.find {|f| f.needs_review || f.printed}
     result ? needs_review_class(result) : ""

@@ -40,6 +40,7 @@ module PDFForms
     end
 
     def close
+      @writer.set_free_text_flattening(true) if @writer.respond_to? :set_free_text_flattening
       @writer.close
       @open = false
     end

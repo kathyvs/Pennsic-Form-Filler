@@ -16,7 +16,7 @@
       <td class="<%= needs_review_class(f) %>"><%= f.type_name %></td>
       <td><%= f.client.society_name %> </td>
       <td><%= link_to 'Show', form_path(f) %>
-          <%= link_to 'Print', form_path(f, :format => 'pdf') %> 
+          <%= link_to 'Print', print_form_path(f) %> 
           <%= link_to 'Edit', edit_form_path(f) %></td>
     </tr>
     <% end %>

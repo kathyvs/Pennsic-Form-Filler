@@ -45,8 +45,8 @@ module FormFiller
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
     
-    config.printers = {'Home Computer' => 'Photosmart_Plus_B209a_m__6BF0E2_',
-                       'Garnet Computer' => 'HP_Photosmart_C4200_series'}
-    config.print_command = 'lpr -#%{copies} -P%{printer}'
+    config.printers = {'Home Computer' => 'Photosmart_Plus_B209a_m__6BF0E2_'}
+#                       'Garnet Computer' => 'HP_Photosmart_C4200_series'}
+    config.print_command = 'lpr -#%{copies} -P %{printer}'
   end
 end

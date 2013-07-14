@@ -21,6 +21,14 @@ class PrintInfo
     @printers.size == 1
   end
   
+  def single_printer_name
+    @printers.keys[0]
+  end
+  
+  def single_printer_id
+    @printers.values[0]
+  end
+  
   def printer_pairs
     @printers.to_a.sort
   end
@@ -33,7 +41,10 @@ class PrintInfo
   protected 
   def run_system(cmd, data)
     Rails.logger.info("Running command #{cmd}")
-    IO.popen(cmd, 'r+') { |f| f.write data }
+    IO.popen(cmd, 'r+') do |f| 
+      f.write data 
+      f.close
+    end
     return $?
   end
 end
