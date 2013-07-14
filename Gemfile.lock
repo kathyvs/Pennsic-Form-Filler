@@ -24,9 +24,9 @@ GEM
       activesupport (= 3.1.12)
       arel (~> 2.2.3)
       tzinfo (~> 0.3.29)
-    activerecord-jdbc-adapter (~> 1.2.7)
-    activerecord-jdbcmysql-adapter (~> 1.2.7)
-      activerecord-jdbc-adapter (~> 1.2.7)
+    activerecord-jdbc-adapter (1.2.9)
+    activerecord-jdbcmysql-adapter (1.2.9)
+      activerecord-jdbc-adapter (~> 1.2.9)
       jdbc-mysql (~> 5.1.0)
     activerecord-jdbcsqlite3-adapter (1.2.7)
       activerecord-jdbc-adapter (~> 1.2.7)
@@ -55,6 +55,7 @@ GEM
     i18n (0.6.4)
     jdbc-mysql (5.1.22.1)
     jdbc-sqlite3 (3.7.2.1)
+    json (1.7.7)
     json (1.7.7-java)
     linecache (0.46-java)
     mail (2.4.4)
@@ -128,8 +129,8 @@ PLATFORMS
   java
 
 DEPENDENCIES
-  activerecord-jdbc-adapter
-  activerecord-jdbcmysql-adapter
+  activerecord-jdbc-adapter (>= 1.2.8)
+  activerecord-jdbcmysql-adapter (>= 1.2.8)
   activerecord-jdbcsqlite3-adapter
   daud_coder (>= 1.0.0)
   devise

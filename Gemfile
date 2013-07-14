@@ -9,8 +9,8 @@ gem 'rails', '3.1.12'
 # gem 'sqlite3'
 
 gem "jdbc-mysql"
-gem "activerecord-jdbc-adapter"
-gem "activerecord-jdbcmysql-adapter"
+gem "activerecord-jdbc-adapter", ">= 1.2.8"
+gem "activerecord-jdbcmysql-adapter", ">= 1.2.8"
 gem "devise"
 # Use glassfish as the web server
 gem 'glassfish'
