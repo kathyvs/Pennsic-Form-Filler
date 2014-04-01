@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Event do
   
-  fixtures :accounts, :events, :accounts_events
+  fixtures :accounts, :events, :accounts_events, :clients
   
   describe "on find with account" do
  
@@ -69,6 +69,20 @@ describe Event do
       end
       current_event.should_not be_nil
       Event.current_event.should eq(current_event)
+    end
+  end
+  
+  describe "kingdoms" do
+    
+    it "returns empty if there are no clients" do
+      events(:war_practice_2011).kingdoms.should be_empty
+    end
+    
+    it "returns a pairing of kingdom with counts" do
+      result = events(:pennsic_39).kingdoms
+      result["East"].should eq(1)
+      result["Middle"].should eq(2)
+      result.size.should eq(2)
     end
   end
 end

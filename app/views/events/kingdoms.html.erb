@@ -1,0 +1,12 @@
+
+<% @title = "#{@event.title} Kingdoms" %>
+<h2>Kingdoms</h2>
+<ul>
+<% @kingdoms.each do |kingdom, count|%>
+<li><%= kingdom %></li>
+<% end %>
+</ul>
+<%
+  @links = [link_to('Back', events_path)]
+%>
+

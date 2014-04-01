@@ -17,4 +17,12 @@ class Event < ActiveRecord::Base
   def current?
     is_current
   end
+  
+  def kingdoms
+    result = Hash.new(0)
+    Client.every(id).each do | client |
+      result[client.kingdom] += 1
+    end
+    result
+  end
 end
