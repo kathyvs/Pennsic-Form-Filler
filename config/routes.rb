@@ -15,7 +15,7 @@ FormFiller::Application.routes.draw do
       end
     end
     get 'kingdoms', :to => 'events#list_kingdoms', :on => :member
-    get 'kingdom/:kingdom', :to => 'events#kingdom', :on => :member
+    get 'kingdom/:kingdom', :to => 'events#kingdom', :on => :member, :as => 'kingdom'
     collection do 
       get 'current'
       put 'current'

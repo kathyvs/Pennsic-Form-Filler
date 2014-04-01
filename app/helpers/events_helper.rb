@@ -38,4 +38,9 @@ module EventsHelper
     end
     {:members => members, :nonmembers => nonmembers}
   end
+  
+  SUBSTITUTIONS = {"An Tir" => "antir", "An Tir - Tir Righ" => "tirrigh"}
+  def kingdom_link(kingdom)
+    SUBSTITUTIONS[kingdom] || kingdom
+  end
 end
