@@ -376,8 +376,57 @@ describe EventsController do
   end
   
   describe "get Kingdoms" do
+  
+    before :each do
+      @event_id = 41
+      Event.stub(:find).with("41") { mock_event }
+    end
+      
     it "requires authentication" do
-      get :list_kingdoms, :id => 39
+      get :list_kingdoms, :id => @event_id
+      response.status.should redirect_to(:new_session)
+    end
+    
+    describe "when can view all clients" do
+      
+      before :each do 
+        account = login_with_rights(:view_all_clients)
+      end
+          
+      it "fetches data about each kingdom for the event" do
+        result = {"a" => 3, "b" => 4}
+        mock_event.stub(:kingdoms) { result }
+        get :list_kingdoms, :id => @event_id
+        assigns(:kingdoms).should == result
+      end
+        
+      it "renders the kingdoms template" do
+        result = {"a" => 3, "b" => 4}
+        mock_event.stub(:kingdoms) { result }
+        get :list_kingdoms, :id => @event_id
+        response.should render_template("kingdoms")
+      end
+      
+    end
+    
+    describe "otherwise" do
+      it "redirects to event get" do
+        account = login_with_rights
+                get :list_kingdoms, :id => @event_id
+        response.status.should redirect_to(:controller => :session, :action => :show)
+      end
+    end
+ 
+  end
+
+  describe "get a Kingdom" do
+    before :each do
+      @event_id = 41
+      Event.stub(:find).with("41") { mock_event(:id => @event_id)}
+    end
+
+    it "requires authentication" do
+      get :kingdom, :id => 39, :kingdom => 'east'
       response.status.should redirect_to(:new_session)
     end
     
@@ -387,13 +436,43 @@ describe EventsController do
         account = login_with_rights(:view_all_clients)
       end
       
+      describe "when valid kingdom" do
+      
+        def search_results(result)
+          val = mock_model("TempRelation")
+          val.stub(:order).with(:society_name) { result }
+          val 
+        end
+        [["east", "East"], ["antir", "An Tir"], 
+         ["AEthelmearc", "\xc3\x86thelmearc"],
+         ["Tirrigh", "An Tir - Tir Righ"]].each do |input_name, output_name|
+          it "converts kingdom #{input_name} to a #{output_name}" do
+            Client.stub(:where).with(:kingdom => output_name, :event_id => mock_event) do
+              search_results([])
+            end
+            get :kingdom, :id => @event_id, :kingdom => input_name
+            assigns(:kingdom).should == output_name
+          end
+        end
+        
+        it "fetches the client data for that kingdom" do
+          kingdom = "Abc"
+          clients = [:a, :b, :c]
+          Client.stub(:where).with(:kingdom => kingdom, :event_id => mock_event) do
+            search_results(clients)
+          end
+          get :kingdom, :id => @event_id, :kingdom => kingdom
+          assigns(:clients).should == clients
+        end
+      end
+      
     end
     
     describe "otherwise" do
       it "redirects to show" do
-  #      account = login_with_rights
-  #      get :list_kingdoms, :id => 39
-  #      response.status.should redirect_to(:controller => :session, :action => :show)
+        account = login_with_rights
+        get :kingdom, :id => 39, :kingdom => 'east'
+        response.status.should redirect_to(:controller => :session, :action => :show)
       end
     end
  

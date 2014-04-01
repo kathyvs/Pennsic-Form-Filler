@@ -1,7 +1,8 @@
 class EventsController < ApplicationController
   
   before_filter :can_modify_event, {:only => [:new, :edit, :create, :update]}
-  
+  before_filter :redirect_unless_view_all_clients, {:only => [:list_kingdoms, :kingdom]}
+
   # GET /events
   # GET /events.xml
   def index
@@ -93,14 +94,21 @@ class EventsController < ApplicationController
     end
   end
 
+  #GEt /events/1/kingdoms`
   def list_kingdoms
-  
+    @event = Event.find(params[:id])
+    respond_not_found unless @event
+    @kingdoms = @event.kingdoms
+    render(:template => 'events/kingdoms')
   end
+  
   #GET /events/1/kingdom/East
   def kingdom
     @event = Event.find(params[:id])
     respond_not_found unless @event
     @kingdom = params[:kingdom].gsub(/^AE/, "\xc3\x86").capitalize
+    @kingdom = 'An Tir' if @kingdom == 'Antir'
+    @kingdom = 'An Tir - Tir Righ' if @kingdom == 'Tirrigh'
     @clients = Client.where(:kingdom => @kingdom, :event_id => @event).order(:society_name)
     respond_to do |format|
       format.text { render(:template => 'events/by_kingdom') }
